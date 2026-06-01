@@ -60,7 +60,6 @@ export const format = {
         'พัฒนา App Playground (.swiftpm) ด้วย Swift Playgrounds 4.6 ขึ้นไป บน iPad หรือ MacBook',
         'แอปต้องสาธิตได้ภายใน 3 นาที ใช้งานแบบออฟไลน์ และไม่เคยส่งประกวดที่ใดมาก่อน',
         'ส่งผลงานเป็นไฟล์ .swiftpm (ZIP ไม่เกิน 25 MB) พร้อมเอกสารข้อเสนอผลงาน',
-        'เลือกพัฒนาตามหัวข้อที่กำหนด 1 จาก 5 หัวข้อ',
       ],
     },
     {
@@ -69,7 +68,6 @@ export const format = {
       mode: 'วิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ กรุงเทพฯ',
       points: [
         'ทีมที่ผ่านเข้ารอบได้รับเครื่อง M-series iPad ทีมละ 1 เครื่อง (เครื่องยืมระหว่างกิจกรรม)',
-        'พัฒนาแอปสด ๆ ภายใต้ “หัวข้อพิเศษ” ที่จะประกาศในวันงาน',
         'มี Coaching Clinic คอยให้คำปรึกษาตลอดการแข่งขัน',
         'นำเสนอผลงานต่อคณะกรรมการในวันสุดท้าย',
       ],
@@ -85,11 +83,11 @@ export const eligibility = {
 export const timeline = {
   heading: 'กำหนดการ',
   milestones: [
-    { date: '3 - 30 มิ.ย. 2569', title: 'เปิดรับสมัครรอบภูมิภาค' },
-    { date: '4 ก.ค. 2569', title: 'ปฐมนิเทศและสัมมนาออนไลน์เตรียมความพร้อม' },
-    { date: '16 ส.ค. 2569', title: 'ปิดรับส่งผลงานรอบภูมิภาค' },
-    { date: '31 ส.ค. 2569', title: 'ประกาศผลทีมที่ผ่านเข้ารอบระดับประเทศ' },
-    { date: '16 – 18 ต.ค. 2569', title: 'การแข่งขันรอบระดับประเทศ ณ กรุงเทพมหานคร' },
+    { date: '3 – 30 มิถุนายน', title: 'เปิดรับสมัครรอบภูมิภาค' },
+    { date: '4 กรกฎาคม', title: 'ปฐมนิเทศและสัมมนาออนไลน์เตรียมความพร้อม' },
+    { date: '16 สิงหาคม', title: 'ปิดรับส่งผลงานรอบภูมิภาค' },
+    { date: '31 สิงหาคม', title: 'ประกาศผลทีมที่ผ่านเข้ารอบระดับประเทศ' },
+    { date: '16 – 18 ตุลาคม', title: 'การแข่งขันรอบระดับประเทศ ณ กรุงเทพมหานคร' },
   ],
 }
 
@@ -102,7 +100,7 @@ export const organizers = {
 
 export const cta = {
   heading: 'พร้อมเริ่มต้นการเดินทางของคุณแล้วหรือยัง?',
-  body: 'รวมทีม เลือกหัวข้อ และลงมือสร้างแอปแรกของคุณ\nเปิดรับสมัคร 3 – 30 มิถุนายน 2569',
+  body: 'เปิดรับสมัคร 3 – 30 มิถุนายน 2569',
   button: 'สมัครเข้าร่วม',
 }
 
@@ -110,8 +108,15 @@ export const footer = {
   org: 'Swift Coding Club Thailand',
   copyright: '© 2026 Swift Coding Club Thailand. All rights reserved.',
   links: [
-    { label: 'Instagram', href: '#' },
-    { label: 'Facebook', href: '#' },
-    { label: 'อีเมล', href: '#' },
+    {
+      label: 'Facebook',
+      href: 'https://www.facebook.com/swiftcodingclub',
+      icon: '/Facebook_Logo_Secondary.png',
+    },
+    {
+      label: 'อีเมล',
+      href: 'mailto:staff@swiftcodingclubth.com',
+      icon: '/envelope.fill.svg',
+    },
   ],
 }

@@ -2,26 +2,24 @@ import { footer } from '../data/content'
 
 export default function Footer() {
   return (
-    <footer className="bg-ink">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-12 text-center md:flex-row md:items-center md:justify-between md:text-left">
-        <img src="/logo.svg" alt={footer.org} className="h-6 w-auto" />
+    <footer className="border-t border-line bg-ink">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-8 text-center md:flex-row md:justify-between md:text-left">
+        <p className="text-sm text-muted">{footer.copyright}</p>
 
-        <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-start">
+        <nav className="flex items-center gap-6">
           {footer.links.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-sm text-muted transition-colors hover:text-fg"
+              aria-label={link.label}
+              target={link.href.startsWith('http') ? '_blank' : undefined}
+              rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="opacity-70 transition-opacity hover:opacity-100"
             >
-              {link.label}
+              <img src={link.icon} alt={link.label} className="h-5 w-auto" />
             </a>
           ))}
         </nav>
-      </div>
-      <div className="border-t border-line">
-        <p className="mx-auto max-w-6xl px-6 py-6 text-center text-sm text-muted md:text-left">
-          {footer.copyright}
-        </p>
       </div>
     </footer>
   )
