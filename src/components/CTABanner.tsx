@@ -18,7 +18,7 @@ export default function CTABanner() {
       <div className="relative mx-auto max-w-3xl px-6 py-24 text-center md:py-32">
         <span className="mx-auto mb-7 block h-0.5 w-12 rounded-full bg-swift-orange" />
         <h2 className="text-3xl font-bold leading-tight md:text-4xl">{cta.heading}</h2>
-        <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted">{cta.body}</p>
+        <p className="mx-auto mt-5 max-w-xl whitespace-pre-line text-lg leading-relaxed text-muted">{cta.body}</p>
         <div className="mt-9">
           <RegisterButton size="lg">{cta.button}</RegisterButton>
         </div>
