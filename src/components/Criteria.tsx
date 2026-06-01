@@ -3,11 +3,11 @@ import Section from './Section'
 
 export default function Criteria() {
   return (
-    <Section eyebrow={criteria.eyebrow} heading={criteria.heading}>
-      <div className="grid gap-8 md:grid-cols-2">
-        {/* Round 1 — with percentage bars */}
-        <div className="rounded-2xl border border-line bg-surface p-7">
-          <h3 className="mb-6 text-lg font-bold">{criteria.round1.title}</h3>
+    <Section heading={criteria.heading}>
+      <div className="grid gap-12 md:grid-cols-2 md:gap-16">
+        {/* Round 1 — percentage bars, no enclosing box */}
+        <div>
+          <h3 className="mb-7 text-lg font-bold">{criteria.round1.title}</h3>
           <div className="space-y-5">
             {criteria.round1.items.map((item) => (
               <div key={item.label}>
@@ -15,7 +15,7 @@ export default function Criteria() {
                   <span className="text-sm leading-snug text-muted">{item.label}</span>
                   <span className="text-sm font-bold text-swift-orange">{item.value}%</span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-surface-2">
+                <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
                   <div
                     className="h-full rounded-full bg-gradient-to-r from-swift-gold to-swift-orange"
                     style={{ width: `${item.value}%` }}
@@ -26,20 +26,18 @@ export default function Criteria() {
           </div>
         </div>
 
-        {/* Round 2 — qualitative only */}
-        <div className="flex flex-col rounded-2xl border border-line bg-gradient-to-br from-surface to-surface-2 p-7">
-          <h3 className="mb-4 text-lg font-bold">{criteria.round2.title}</h3>
-          <div className="flex flex-wrap gap-2">
+        {/* Round 2 — qualitative, separated by a hairline rule */}
+        <div className="border-t border-line pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-16">
+          <h3 className="mb-5 text-lg font-bold">{criteria.round2.title}</h3>
+          <ul className="space-y-3">
             {criteria.round2.items.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-line bg-ink/40 px-3 py-1.5 text-sm text-fg"
-              >
+              <li key={item} className="flex items-center gap-3 text-fg">
+                <span aria-hidden className="h-1.5 w-1.5 flex-none rounded-full bg-swift-orange" />
                 {item}
-              </span>
+              </li>
             ))}
-          </div>
-          <p className="mt-5 leading-relaxed text-muted">{criteria.round2.note}</p>
+          </ul>
+          <p className="mt-6 leading-relaxed text-muted">{criteria.round2.note}</p>
         </div>
       </div>
     </Section>

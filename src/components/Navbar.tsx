@@ -22,11 +22,10 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
-        <a href="#top" className="flex items-center gap-2.5">
-          <img src="/swift-mark.svg" alt="" className="h-8 w-8" />
-          <span className="flex flex-col leading-tight">
-            <span className="text-sm font-bold tracking-tight">{site.orgShort}</span>
-            <span className="text-xs text-muted">{site.shortTitle}</span>
+        <a href="#top" className="flex items-center gap-3">
+          <img src="/logo.svg" alt={site.org} className="h-5 w-auto md:h-6" />
+          <span className="hidden border-l border-line pl-3 text-xs text-muted sm:inline">
+            {site.shortTitle}
           </span>
         </a>
 

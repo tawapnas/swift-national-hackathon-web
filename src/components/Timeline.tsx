@@ -3,7 +3,7 @@ import Section from './Section'
 
 export default function Timeline() {
   return (
-    <Section id="timeline" eyebrow={timeline.eyebrow} heading={timeline.heading}>
+    <Section id="timeline" heading={timeline.heading}>
       <ol className="relative ml-2 border-l border-line">
         {timeline.milestones.map((m, i) => (
           <li key={m.date} className="relative mb-9 pl-8 last:mb-0">

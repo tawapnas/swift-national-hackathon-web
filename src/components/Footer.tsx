@@ -3,16 +3,13 @@ import { footer } from '../data/content'
 export default function Footer() {
   return (
     <footer className="bg-ink">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-12 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/swift-mark.svg" alt="" className="h-9 w-9" />
-          <div>
-            <p className="font-bold">{footer.org}</p>
-            <p className="text-sm text-muted">{footer.blurb}</p>
-          </div>
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-12 text-center md:flex-row md:items-center md:justify-between md:text-left">
+        <div>
+          <img src="/logo.svg" alt={footer.org} className="mx-auto h-6 w-auto md:mx-0" />
+          <p className="mt-3 text-sm text-muted">{footer.blurb}</p>
         </div>
 
-        <nav className="flex flex-wrap gap-x-6 gap-y-2">
+        <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-start">
           {footer.links.map((link) => (
             <a
               key={link.label}
@@ -25,7 +22,7 @@ export default function Footer() {
         </nav>
       </div>
       <div className="border-t border-line">
-        <p className="mx-auto max-w-6xl px-6 py-6 text-sm text-muted">
+        <p className="mx-auto max-w-6xl px-6 py-6 text-center text-sm text-muted md:text-left">
           {footer.copyright}
         </p>
       </div>

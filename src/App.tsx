@@ -1,6 +1,6 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
-import InvitationQuote from './components/InvitationQuote'
+import Gallery from './components/Gallery'
 import About from './components/About'
 import Format from './components/Format'
 import Themes from './components/Themes'
@@ -17,7 +17,7 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
-        <InvitationQuote />
+        <Gallery />
         <About />
         <Format />
         <Themes />

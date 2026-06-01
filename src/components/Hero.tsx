@@ -27,11 +27,6 @@ export default function Hero() {
       />
 
       <div className="relative mx-auto max-w-4xl px-6 text-center">
-        <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-4 py-1.5 text-sm text-muted backdrop-blur">
-          <span className="h-1.5 w-1.5 rounded-full bg-swift-orange" />
-          {hero.eyebrow}
-        </p>
-
         <h1 className="mx-auto whitespace-pre-line bg-gradient-to-b from-white to-white/70 bg-clip-text text-4xl font-extrabold leading-[1.1] tracking-tight text-transparent sm:text-5xl md:text-6xl">
           {hero.heading}
         </h1>
@@ -50,14 +45,16 @@ export default function Hero() {
           </a>
         </div>
 
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted">
-          {hero.facts.map((fact) => (
-            <span key={fact.label} className="inline-flex items-center gap-2">
-              <span aria-hidden>{fact.icon}</span>
-              {fact.label}
-            </span>
-          ))}
-        </div>
+        {hero.facts.length > 0 && (
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted">
+            {hero.facts.map((fact) => (
+              <span key={fact.label} className="inline-flex items-center gap-2">
+                <span aria-hidden>{fact.icon}</span>
+                {fact.label}
+              </span>
+            ))}
+          </div>
+        )}
 
         <p className="sr-only">{site.tagline}</p>
       </div>

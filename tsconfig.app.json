@@ -7,6 +7,11 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,

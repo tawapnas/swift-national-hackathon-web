@@ -3,17 +3,25 @@ import Section from './Section'
 
 export default function Themes() {
   return (
-    <Section id="themes" eyebrow={themes.eyebrow} heading={themes.heading} lead={themes.lead}>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {themes.items.map((theme) => (
+    <Section id="themes" heading={themes.heading} lead={themes.lead}>
+      {/* Editorial list — divider-separated rows, no cards */}
+      <div className="border-t border-line">
+        {themes.items.map((theme, i) => (
           <div
             key={theme.en}
-            className="group flex flex-col rounded-2xl border border-line bg-surface p-6 transition-all duration-200 hover:-translate-y-1 hover:border-swift-orange/60"
+            className="group grid items-baseline gap-x-6 gap-y-2 border-b border-line py-7 md:grid-cols-[3.5rem_1fr_minmax(0,22rem)] md:gap-x-10"
           >
-            <div className="mb-4 text-3xl">{theme.icon}</div>
-            <h3 className="text-lg font-bold leading-snug">{theme.th}</h3>
-            <p className="mt-1 text-sm font-medium text-swift-orange">{theme.en}</p>
-            <p className="mt-3 leading-relaxed text-muted">{theme.desc}</p>
+            <span className="text-sm font-medium tabular-nums text-muted">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <div>
+              <h3 className="text-xl font-bold leading-snug transition-colors group-hover:text-swift-orange">
+                <span className="mr-2.5">{theme.icon}</span>
+                {theme.th}
+              </h3>
+              <p className="mt-1 text-sm font-medium text-swift-orange">{theme.en}</p>
+            </div>
+            <p className="leading-relaxed text-muted">{theme.desc}</p>
           </div>
         ))}
       </div>

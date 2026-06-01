@@ -19,32 +19,32 @@ export const nav = [
 ]
 
 export const hero = {
-  eyebrow: 'โดย Swift Coding Club Thailand',
   heading: 'Swift Coding Club Thailand\nNational Hackathon 2026',
   subheading:
     'เวทีระดับประเทศที่เปิดโอกาสให้นักเรียนได้เปลี่ยนไอเดียให้กลายเป็นแอป iOS จริง ด้วยภาษา Swift',
   primaryCta: 'สมัครเข้าร่วม',
   secondaryCta: 'ดูรายละเอียด',
-  facts: [
-    { icon: '📅', label: 'มิ.ย. – ต.ค. 2569' },
-    { icon: '📍', label: 'COSCI SWU กรุงเทพฯ' },
-    { icon: '👥', label: 'ทีมละ 3 คน' },
-  ],
+  facts: [] as { icon: string; label: string }[],
 }
 
-export const invitation = {
-  quote:
-    'ทุกแอปที่เปลี่ยนโลก เริ่มต้นจากนักเรียนคนหนึ่งที่กล้าจะลงมือทำ\nปีนี้ ถึงตาคุณแล้ว',
-  attribution: 'Swift Coding Club Thailand',
+export const gallery = {
+  heading: 'ช่วงเวลาดี ๆ จากเวทีปีก่อน',
+  // Photos live in /public — referenced by absolute path.
+  images: [
+    '/493831636_713904610983022_2116470787306490738_n.jpg',
+    '/493866362_713920794314737_6623516236940450582_n.jpg',
+    '/493940409_713904614316355_8869879900390651710_n.jpg',
+    '/493941449_713904624316354_4139991152302725544_n.jpg',
+    '/494090761_713920717648078_2236584647831228718_n.jpg',
+  ],
 }
 
 export const about = {
   heading: 'รู้จักการแข่งขัน',
-  eyebrow: 'ภาพรวม',
   lead: 'การแข่งขันพัฒนาแอปพลิเคชัน iOS ระดับประเทศ สำหรับนักเรียนมัธยมศึกษาตอนปลายและอาชีวศึกษา ที่อยากลงมือสร้างผลงานจริงด้วยภาษา Swift',
   points: [
     {
-      icon: '🛠️',
+      icon: '/swift-logo.png',
       title: 'สร้างแอปจริงด้วย Swift',
       body: 'พัฒนา App Playground บน iPad ด้วย Swift Playgrounds เปลี่ยนความคิดสร้างสรรค์ให้กลายเป็นแอปที่ใช้งานได้จริง',
     },
@@ -68,7 +68,6 @@ export const about = {
 
 export const format = {
   heading: 'รูปแบบการแข่งขัน',
-  eyebrow: 'ขั้นตอน',
   lead: 'การแข่งขันแบ่งออกเป็น 2 รอบ — รอบคัดเลือกระดับภูมิภาคแบบออนไลน์ และรอบชิงชนะเลิศระดับประเทศแบบ Onsite ต่อเนื่อง 3 วัน',
   rounds: [
     {
@@ -85,7 +84,7 @@ export const format = {
     {
       tag: 'รอบที่ 2',
       title: 'รอบชิงชนะเลิศระดับประเทศ',
-      mode: 'Onsite Hackathon 3 วัน · COSCI SWU กรุงเทพฯ',
+      mode: 'วิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ กรุงเทพฯ',
       points: [
         'ทีมที่ผ่านเข้ารอบได้รับเครื่อง M-series iPad ทีมละ 1 เครื่อง (เครื่องยืมระหว่างกิจกรรม)',
         'พัฒนาแอปสด ๆ ภายใต้ “หัวข้อพิเศษ” ที่จะประกาศในวันงาน',
@@ -107,7 +106,6 @@ export const format = {
 
 export const themes = {
   heading: 'หัวข้อการแข่งขัน',
-  eyebrow: 'เลือก 1 จาก 5',
   lead: 'เลือกหัวข้อที่จุดประกายคุณ แล้วออกแบบแอปที่ตอบโจทย์ปัญหาจริง',
   items: [
     {
@@ -145,14 +143,13 @@ export const themes = {
 
 export const criteria = {
   heading: 'เกณฑ์การตัดสิน',
-  eyebrow: 'การให้คะแนน',
   round1: {
     title: 'รอบคัดเลือกระดับภูมิภาค',
     items: [
-      { label: 'Technical Execution — การพัฒนาทางเทคนิค', value: 30 },
-      { label: 'Creativity — ความคิดสร้างสรรค์', value: 30 },
-      { label: 'Design & User Experience — การออกแบบและประสบการณ์ใช้งาน', value: 20 },
-      { label: 'Theme Relevance — ความสอดคล้องกับหัวข้อ', value: 20 },
+      { label: 'การพัฒนาทางเทคนิค', value: 30 },
+      { label: 'ความคิดสร้างสรรค์', value: 30 },
+      { label: 'การออกแบบและประสบการณ์ใช้งาน', value: 20 },
+      { label: 'ความสอดคล้องกับหัวข้อ', value: 20 },
     ],
   },
   round2: {
@@ -163,8 +160,7 @@ export const criteria = {
 }
 
 export const timeline = {
-  heading: 'กำหนดการสำคัญ',
-  eyebrow: 'อย่าพลาดทุกช่วงเวลา',
+  heading: 'กำหนดการ',
   milestones: [
     { date: '3 มิ.ย. 2569', title: 'เปิดรับสมัครรอบภูมิภาค' },
     { date: '30 มิ.ย. 2569', title: 'ปิดรับสมัคร' },
@@ -177,7 +173,6 @@ export const timeline = {
 
 export const benefits = {
   heading: 'สิ่งที่จะได้รับ',
-  eyebrow: 'มากกว่าการแข่งขัน',
   items: [
     {
       icon: '📱',
@@ -204,7 +199,6 @@ export const benefits = {
 
 export const organizers = {
   heading: 'ผู้จัดการแข่งขัน',
-  eyebrow: 'ผู้รับผิดชอบโครงการ',
   body: 'ดำเนินโครงการโดย Swift Coding Club Thailand (SCCTH) ร่วมกับวิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ (COSCI SWU) ในฐานะสถานที่จัดงานและนิสิตผู้ช่วยสอน',
   judges:
     'คณะกรรมการตัดสินประกอบด้วยสมาชิกของ Swift Coding Club TH, Apple Certified Trainer, คณาจารย์จากสถาบันอุดมศึกษา และกรรมการรับเชิญ',
@@ -212,7 +206,7 @@ export const organizers = {
 
 export const cta = {
   heading: 'พร้อมเริ่มต้นการเดินทางของคุณแล้วหรือยัง?',
-  body: 'รวมทีม เลือกหัวข้อ และลงมือสร้างแอปแรกของคุณ — เปิดรับสมัคร 1 – 30 มิถุนายน 2569',
+  body: 'รวมทีม เลือกหัวข้อ และลงมือสร้างแอปแรกของคุณ — เปิดรับสมัคร 3 – 30 มิถุนายน 2569',
   button: 'สมัครเข้าร่วม',
 }
 
