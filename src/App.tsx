@@ -3,8 +3,7 @@ import Hero from './components/Hero'
 import Gallery from './components/Gallery'
 import About from './components/About'
 import Format from './components/Format'
-import Themes from './components/Themes'
-import Criteria from './components/Criteria'
+import Eligibility from './components/Eligibility'
 import Timeline from './components/Timeline'
 import Organizers from './components/Organizers'
 import CTABanner from './components/CTABanner'
@@ -19,8 +18,7 @@ export default function App() {
         <Gallery />
         <About />
         <Format />
-        <Themes />
-        <Criteria />
+        <Eligibility />
         <Timeline />
         <Organizers />
         <CTABanner />

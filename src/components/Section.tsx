@@ -32,7 +32,7 @@ export default function Section({
     >
       <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
         {heading && (
-          <header className="mb-12 max-w-3xl">
+          <header className={`max-w-3xl ${lead ? 'mb-12' : 'mb-6'}`}>
             <h2 className="text-3xl font-bold leading-tight md:text-4xl">{heading}</h2>
             {lead && (
               <p className="mt-5 text-lg leading-relaxed text-muted">{lead}</p>

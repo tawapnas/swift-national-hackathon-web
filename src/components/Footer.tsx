@@ -4,10 +4,7 @@ export default function Footer() {
   return (
     <footer className="bg-ink">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-12 text-center md:flex-row md:items-center md:justify-between md:text-left">
-        <div>
-          <img src="/logo.svg" alt={footer.org} className="mx-auto h-6 w-auto md:mx-0" />
-          <p className="mt-3 text-sm text-muted">{footer.blurb}</p>
-        </div>
+        <img src="/logo.svg" alt={footer.org} className="h-6 w-auto" />
 
         <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-start">
           {footer.links.map((link) => (
