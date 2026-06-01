@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { hero, site } from '../data/content'
 import RegisterButton from './RegisterButton'
 
@@ -5,7 +6,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden border-b border-line pt-32 pb-24 md:pt-44 md:pb-32"
+      className="relative overflow-hidden border-b border-line pt-24 pb-20 md:pt-28 md:pb-24"
     >
       {/* Orange radial glow */}
       <div
@@ -27,7 +28,39 @@ export default function Hero() {
       />
 
       <div className="relative mx-auto max-w-4xl px-6 text-center">
-        <h1 className="mx-auto whitespace-pre-line bg-gradient-to-b from-white to-white/70 bg-clip-text text-4xl font-extrabold leading-[1.1] tracking-tight text-transparent sm:text-5xl md:text-6xl">
+        {/* Memoji — big, overlapping, sitting fully above the title.
+            `isolate` scopes their z-stacking (they overlap each other). */}
+        <div className="relative isolate mb-6 flex items-end justify-center sm:mb-8">
+          {hero.memojis.map((src, i) => (
+            <span
+              key={src}
+              className={`relative ${i === 1 ? 'z-20' : 'z-10'} ${
+                i > 0 ? '-ml-10 sm:-ml-16 md:-ml-20' : ''
+              }`}
+              style={{ filter: 'drop-shadow(0 14px 28px rgba(0,0,0,0.5))' }}
+            >
+              <img
+                src={src}
+                alt=""
+                aria-hidden
+                draggable={false}
+                className={`memoji block select-none object-contain ${
+                  i === 1
+                    ? 'h-44 w-44 sm:h-60 sm:w-60 md:h-72 md:w-72'
+                    : 'h-36 w-36 sm:h-48 sm:w-48 md:h-56 md:w-56'
+                }`}
+                style={
+                  {
+                    '--memoji-rot': `${[-10, 0, 10][i] ?? 0}deg`,
+                    animationDelay: `${0.15 + i * 0.15}s`,
+                  } as CSSProperties
+                }
+              />
+            </span>
+          ))}
+        </div>
+
+        <h1 className="relative z-10 mx-auto whitespace-pre-line bg-gradient-to-b from-white to-white/70 bg-clip-text text-4xl font-extrabold leading-[1.1] tracking-tight text-transparent sm:text-5xl md:text-6xl">
           {hero.heading}
         </h1>
 

@@ -85,6 +85,33 @@ body {
   border-radius: 4px;
 }
 
+/* ---- Memoji morph-in (hero) ---- */
+@keyframes memoji-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.55) rotate(var(--memoji-rot, 0deg));
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(var(--memoji-rot, 0deg));
+    filter: blur(0);
+  }
+}
+.memoji {
+  animation: memoji-in 0.8s cubic-bezier(0.22, 1.15, 0.36, 1) both;
+  transform: rotate(var(--memoji-rot, 0deg));
+}
+@media (prefers-reduced-motion: reduce) {
+  .memoji {
+    animation: none;
+  }
+}
+
 /* ---- Scroll-reveal animation ---- */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
