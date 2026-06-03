@@ -3,8 +3,8 @@
 // Intelligence / Local LLM / Foundation Models — that is a reveal-later theme.
 
 export const site = {
-  title: 'Swift Coding Club Thailand National Hackathon 2026',
-  shortTitle: 'National Hackathon 2026',
+  title: 'Young iOS Developer Hackathon 2026',
+  shortTitle: 'YiDH26',
   org: 'Swift Coding Club Thailand',
   orgShort: 'SCCTH',
   tagline: 'การแข่งขันพัฒนาแอปพลิเคชัน iOS ระดับประเทศ ด้วยภาษา Swift',
@@ -19,7 +19,7 @@ export const nav = [
 export const hero = {
   // Memoji shown above the title.
   memojis: ['/memojis.001.png', '/memojis.002.png', '/memojis.003.png'],
-  heading: 'Swift Coding Club Thailand\nNational Hackathon 2026',
+  heading: 'Young iOS Developer\nHackathon 2026',
   subheading:
     'เวทีระดับประเทศที่เปิดโอกาสให้นักเรียนได้เปลี่ยนไอเดียให้กลายเป็นแอป iOS จริง ด้วยภาษา Swift',
   primaryCta: 'สมัครเข้าร่วม',

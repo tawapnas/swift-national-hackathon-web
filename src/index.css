@@ -120,13 +120,39 @@ body {
     transform: scale(1);
   }
 }
+/* Continuous gentle growing/shrinking after the entrance settles. */
+@keyframes title-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+/* Pulsing white aura. Uses drop-shadow because the title is gradient
+   bg-clip-text (text-shadow would not render on transparent glyphs). */
+@keyframes title-aura {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 36px rgba(255, 255, 255, 0.7));
+  }
+}
 .title-grow {
-  animation: title-grow 0.9s cubic-bezier(0.22, 1.15, 0.36, 1) 0.3s both;
+  animation:
+    title-grow 0.9s cubic-bezier(0.22, 1.15, 0.36, 1) 0.3s both,
+    title-breathe 4.5s ease-in-out 1.2s infinite,
+    title-aura 4.5s ease-in-out 1.2s infinite;
   transform-origin: center;
 }
 @media (prefers-reduced-motion: reduce) {
   .title-grow {
     animation: none;
+    /* Keep the white aura, just hold it steady. */
+    filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.45));
   }
 }
 @media (prefers-reduced-motion: reduce) {
