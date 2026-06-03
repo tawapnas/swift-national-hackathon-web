@@ -7,7 +7,7 @@ export const site = {
   shortTitle: 'YiDH26',
   org: 'Swift Coding Club Thailand',
   orgShort: 'SCCTH',
-  tagline: 'การแข่งขันพัฒนาแอปพลิเคชัน iOS ระดับประเทศด้วยภาษา Swift',
+  tagline: 'การแข่งขันพัฒนาแอปพลิเคชันระดับประเทศด้วยภาษา Swift',
 }
 
 export const nav = [
@@ -22,7 +22,7 @@ export const hero = {
   memojis: ['/memojis.001.png', '/memojis.002.png', '/memojis.003.png'],
   heading: 'Young iOS Developer\nHackathon 2026',
   subheading:
-    'เวทีระดับประเทศที่เปิดโอกาสให้นักเรียนได้เปลี่ยนไอเดียให้กลายเป็นแอป iOS จริง\nด้วยภาษา Swift',
+    'เวทีแข่งขันพัฒนาแอปบนระบบ iOS ระดับประเทศ',
   primaryCta: 'สมัครเข้าร่วม',
   secondaryCta: 'ดูรายละเอียด',
   facts: [] as { icon: string; label: string }[],
@@ -37,6 +37,10 @@ export const gallery = {
     '/493940409_713904614316355_8869879900390651710_n.jpg',
     '/493941449_713904624316354_4139991152302725544_n.jpg',
     '/494090761_713920717648078_2236584647831228718_n.jpg',
+    '/260468_HACKATHON-Young-iOS-Developer-2025.jpg',
+    '/270468_HACKATHON-Young-iOS-Developer-1008.jpg',
+    '/270468_HACKATHON-Young-iOS-Developer-1024.jpg',
+    '/270468_HACKATHON-Young-iOS-Developer-1065.jpg',
   ],
 }
 
@@ -44,7 +48,7 @@ export const about = {
   heading: 'รู้จักการแข่งขัน',
   body: [
     'การแข่งขันพัฒนาแอป iOS ระดับประเทศ สำหรับนักเรียนมัธยมปลายและอาชีวศึกษาที่อยากลงมือสร้างผลงานจริงด้วยภาษา Swift และเทคโนโลยีต่าง ๆ ของ Apple',
-    'ผู้เข้าแข่งขันจะได้พัฒนา App Playground ด้วย Swift Playgrounds เปลี่ยนไอเดียให้กลายเป็นแอปที่ใช้งานได้จริง',
+    'ผู้เข้าแข่งขันจะได้ลงมือสร้างสรรค์แอปพลิเคชัน พร้อมเปลี่ยนไอเดียสุดล้ำให้กลายเป็นจริง',
     'ไม่จำเป็นต้องมีประสบการณ์มาก่อน เพราะมีสื่อการเรียนรู้และสัมมนาเตรียมความพร้อมให้ พร้อมฝึกทักษะการทำงานเป็นทีมและการนำเสนอผลงาน',
   ],
 }
@@ -58,7 +62,7 @@ export const format = {
       title: 'รอบคัดเลือกระดับภูมิภาค',
       mode: 'ออนไลน์ทั่วประเทศ',
       points: [
-        'พัฒนา App Playground (.swiftpm) ด้วย Swift Playgrounds 4.6 ขึ้นไป บน iPad หรือ Mac',
+        'สร้างสรรค์ผลงานในรูปแบบไฟล์ .swiftpm โดยสามารถเลือกพัฒนาได้ทั้งบน iPad และ Mac',
         'ติดตามกฎกติกาและรายละเอียดเพิ่มเติมได้ในช่วงสัมมนาออนไลน์เตรียมความพร้อม',
       ],
     },
