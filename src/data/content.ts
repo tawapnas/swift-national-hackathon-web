@@ -98,12 +98,6 @@ export const organizers = {
     'คณะกรรมการตัดสินประกอบด้วยสมาชิกของ Swift Coding Club TH, Apple Certified Trainer, คณาจารย์จากสถาบันอุดมศึกษา และกรรมการรับเชิญ',
 }
 
-export const cta = {
-  heading: 'พร้อมเริ่มต้นการเดินทางของคุณแล้วหรือยัง?',
-  body: 'เปิดรับสมัคร 3 – 30 มิถุนายน 2569',
-  button: 'สมัครเข้าร่วม',
-}
-
 export const footer = {
   org: 'Swift Coding Club Thailand',
   copyright: '© 2026 Swift Coding Club Thailand. All rights reserved.',

@@ -46,6 +46,8 @@
 @theme {
   --color-swift-orange: #f05138;
   --color-swift-gold: #fbb04d;
+  --color-swift-blue: #007aff; /* SwiftUI system blue */
+  --color-swift-blue-light: #64d2ff; /* SwiftUI light blue */
 
   --color-ink: #0b0b0c; /* page background */
   --color-surface: #161618; /* elevated cards */
@@ -105,6 +107,27 @@ body {
 .memoji {
   animation: memoji-in 0.8s cubic-bezier(0.22, 1.15, 0.36, 1) both;
   transform: rotate(var(--memoji-rot, 0deg));
+}
+
+/* ---- Hero title grow-in ---- */
+@keyframes title-grow {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.title-grow {
+  animation: title-grow 0.9s cubic-bezier(0.22, 1.15, 0.36, 1) 0.3s both;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-grow {
+    animation: none;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .memoji {
