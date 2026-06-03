@@ -8,13 +8,13 @@ export default function Hero() {
       id="top"
       className="relative overflow-hidden border-b border-line pt-24 pb-20 md:pt-28 md:pb-24"
     >
-      {/* SwiftUI-blue radial glow */}
+      {/* Royal-blue → navy radial glow, spanning the whole cover (matches poster) */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 h-[640px] w-[640px] -translate-x-1/2 rounded-full opacity-30 blur-3xl"
+        className="pointer-events-none absolute inset-0 opacity-60"
         style={{
           background:
-            'radial-gradient(circle, var(--color-swift-blue) 0%, var(--color-swift-blue-light) 35%, transparent 70%)',
+            'radial-gradient(125% 95% at 50% 12%, var(--color-cover-blue) 0%, var(--color-cover-navy) 42%, transparent 78%)',
         }}
       />
       <div
