@@ -64,7 +64,12 @@ const SYMBOLS: Floater[] = [
 ]
 
 function FloatingSymbol({ f }: { f: Floater }) {
-  const ref = useReveal<HTMLImageElement>()
+  // Observe the wrap (which never moves), NOT the image — the image starts
+  // translated off-screen (translateX ±180%) inside the overflow-hidden
+  // container, so observing it would never intersect the viewport and the
+  // slide-in would never fire. `.is-visible` lands on the wrap; the CSS
+  // (`.float-wrap.is-visible .float-emoji` in index.css) drives the image in.
+  const ref = useReveal<HTMLSpanElement>()
 
   const wrapStyle: CSSProperties = {
     top: `${f.top}%`,
@@ -84,9 +89,8 @@ function FloatingSymbol({ f }: { f: Floater }) {
   } as CSSProperties
 
   return (
-    <span className="float-wrap" style={wrapStyle} aria-hidden>
+    <span ref={ref} className="float-wrap" style={wrapStyle} aria-hidden>
       <img
-        ref={ref}
         src={f.asset}
         alt=""
         draggable={false}

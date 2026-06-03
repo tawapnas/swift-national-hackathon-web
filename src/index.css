@@ -209,7 +209,9 @@ body {
     will-change: transform, opacity;
   }
 
-  .float-emoji.is-visible {
+  /* `.is-visible` is set on the wrap (see ScrollEmojis.tsx) — the image can't
+     observe itself because it starts off-screen. */
+  .float-wrap.is-visible .float-emoji {
     opacity: var(--peak-opacity, 0.85);
     transform: translateX(0) rotate(var(--rot, 0deg)) scale(1);
   }
