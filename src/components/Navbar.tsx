@@ -38,9 +38,6 @@ export default function Navbar() {
           <div className="flex w-[min(92vw,72rem)] items-center justify-between gap-6 font-sans">
             <a href="#top" className="flex items-center gap-3">
               <img src="/logo.svg" alt={site.org} className="h-5 w-auto md:h-6" />
-              <span className="hidden border-l border-white/20 pl-3 text-xs text-white/70 sm:inline">
-                {site.shortTitle}
-              </span>
             </a>
 
             {/* Desktop links */}
