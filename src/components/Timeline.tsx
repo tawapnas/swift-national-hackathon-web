@@ -5,11 +5,11 @@ export default function Timeline() {
   return (
     <Section id="timeline" heading={timeline.heading}>
       <ol className="relative ml-2 border-l border-line">
-        {timeline.milestones.map((m, i) => (
+        {timeline.milestones.map((m) => (
           <li key={m.date} className="relative mb-9 pl-8 last:mb-0">
             <span
               className={`absolute -left-[7px] top-1.5 h-3.5 w-3.5 rounded-full border-2 ${
-                i === timeline.milestones.length - 1
+                m.current
                   ? 'border-swift-orange bg-swift-orange'
                   : 'border-swift-orange bg-ink'
               }`}
