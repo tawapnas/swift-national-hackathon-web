@@ -13,8 +13,8 @@ export const site = {
 export const nav = [
   { id: 'about', label: 'รู้จักการแข่งขัน' },
   { id: 'format', label: 'รูปแบบ' },
-  { id: 'learn', label: 'สื่อการเรียนรู้' },
   { id: 'timeline', label: 'กำหนดการ' },
+  { id: 'learn', label: 'สื่อการเรียนรู้' },
 ]
 
 export const hero = {
@@ -58,7 +58,7 @@ export const format = {
       title: 'รอบคัดเลือกระดับภูมิภาค',
       mode: 'ออนไลน์ทั่วประเทศ',
       points: [
-        'พัฒนา App Playground (.swiftpm) ด้วย Swift Playgrounds 4.6 ขึ้นไป บน iPad หรือ MacBook',
+        'พัฒนา App Playground (.swiftpm) ด้วย Swift Playgrounds 4.6 ขึ้นไป บน iPad หรือ Mac',
         'แอปต้องสาธิตได้ภายใน 3 นาที ใช้งานแบบออฟไลน์ และไม่เคยส่งประกวดที่ใดมาก่อน',
         'ส่งผลงานเป็นไฟล์ .swiftpm (ZIP ไม่เกิน 25 MB) พร้อมเอกสารข้อเสนอผลงาน',
       ],
