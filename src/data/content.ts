@@ -87,6 +87,22 @@ export const learn = {
     description:
       'คอร์สวิดีโอกว่า 20 ชั่วโมง สอนพัฒนาแอป iOS ด้วย Swift บน iPad ตั้งแต่พื้นฐานจนสร้างแอปได้จริง เรียนตามไปทีละขั้นได้ด้วยตัวเอง',
   },
+  tool: {
+    icon: '/swift-playgrounds-icon.001.png',
+    name: 'Swift Playgrounds',
+    description:
+      'แอปฟรีจาก Apple สำหรับสร้างแอป iOS ด้วยภาษา Swift ดาวน์โหลดเพื่อเริ่มลงมือทำตามคอร์สได้เลย',
+    downloads: [
+      {
+        label: 'ดาวน์โหลดบน iPad',
+        href: 'https://apps.apple.com/us/app/swift-playgrounds/id908519492',
+      },
+      {
+        label: 'ดาวน์โหลดบน Mac',
+        href: 'https://apps.apple.com/us/app/swift-playgrounds/id1496833156?mt=12',
+      },
+    ],
+  },
 }
 
 export const eligibility = {
