@@ -93,7 +93,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <h1 className="title-grow relative z-10 mx-auto whitespace-pre-line bg-gradient-to-b from-white to-white/70 bg-clip-text text-4xl font-extrabold leading-[1.1] tracking-tight text-transparent sm:text-5xl md:text-6xl">
+        <h1 className="title-grow relative z-10 mx-auto whitespace-pre-line text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl">
           {hero.heading}
         </h1>
 

@@ -124,30 +124,60 @@ body {
   transform: rotate(var(--memoji-rot, 0deg));
 }
 
-/* ---- Hero title grow-in ---- */
-@keyframes title-grow {
-  from {
+/* ---- Hero title bloom-in (WWDC-style "growing" light) ----
+   The title is gradient bg-clip-text: a wide left-to-right ramp from a dim
+   grey into bright white with a warm gold edge. We start scaled-down with the
+   ramp parked so only the dim end shows and no glow, then grow the scale,
+   sweep the bright band across the glyphs, and bloom a white + gold aura as it
+   settles — so the light appears to grow through the text. drop-shadow (not
+   text-shadow) because the glyph fill is transparent. */
+@keyframes title-bloom {
+  0% {
     opacity: 0;
-    transform: scale(0.7);
+    transform: scale(0.78);
+    background-position: 100% 0;
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
   }
 
-  to {
+  55% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
+  }
+
+  100% {
     opacity: 1;
     transform: scale(1);
+    background-position: 0 0;
+    filter: drop-shadow(0 0 26px rgba(255, 255, 255, 0.5))
+      drop-shadow(0 0 64px rgba(251, 176, 77, 0.28));
   }
 }
 
 .title-grow {
-  animation: title-grow 0.9s cubic-bezier(0.22, 1.15, 0.36, 1) 0.3s both;
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0.55) 30%,
+    rgba(255, 255, 255, 0.96) 62%,
+    #ffffff 82%,
+    var(--color-swift-gold) 100%
+  );
+  background-size: 220% 100%;
+  background-position: 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   transform-origin: center;
-  /* Static white aura. Uses drop-shadow because the title is gradient
-     bg-clip-text (text-shadow would not render on transparent glyphs). */
-  filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.45));
+  animation: title-bloom 1.5s cubic-bezier(0.2, 0.7, 0.25, 1) 0.3s both;
+  /* Resting aura once the bloom has settled. */
+  filter: drop-shadow(0 0 26px rgba(255, 255, 255, 0.5))
+    drop-shadow(0 0 64px rgba(251, 176, 77, 0.28));
 }
 
 @media (prefers-reduced-motion: reduce) {
   .title-grow {
     animation: none;
+    background-position: 0 0;
   }
 }
 
