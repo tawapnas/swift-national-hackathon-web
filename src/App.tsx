@@ -21,8 +21,8 @@ export default function App() {
         <About />
         <Format />
         <Eligibility />
-        <Learn />
         <Timeline />
+        <Learn />
         <Organizers />
       </main>
       <Footer />
