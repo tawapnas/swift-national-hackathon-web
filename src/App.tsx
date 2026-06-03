@@ -7,7 +7,6 @@ import Format from './components/Format'
 import Eligibility from './components/Eligibility'
 import Timeline from './components/Timeline'
 import Organizers from './components/Organizers'
-import CTABanner from './components/CTABanner'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -23,7 +22,6 @@ export default function App() {
         <Eligibility />
         <Timeline />
         <Organizers />
-        <CTABanner />
       </main>
       <Footer />
     </>

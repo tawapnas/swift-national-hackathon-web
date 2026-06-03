@@ -8,13 +8,13 @@ export default function Hero() {
       id="top"
       className="relative overflow-hidden border-b border-line pt-24 pb-20 md:pt-28 md:pb-24"
     >
-      {/* Orange radial glow */}
+      {/* SwiftUI-blue radial glow */}
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-[640px] w-[640px] -translate-x-1/2 rounded-full opacity-30 blur-3xl"
         style={{
           background:
-            'radial-gradient(circle, var(--color-swift-orange) 0%, var(--color-swift-gold) 35%, transparent 70%)',
+            'radial-gradient(circle, var(--color-swift-blue) 0%, var(--color-swift-blue-light) 35%, transparent 70%)',
         }}
       />
       <div
@@ -60,7 +60,7 @@ export default function Hero() {
           ))}
         </div>
 
-        <h1 className="relative z-10 mx-auto whitespace-pre-line bg-gradient-to-b from-white to-white/70 bg-clip-text text-4xl font-extrabold leading-[1.1] tracking-tight text-transparent sm:text-5xl md:text-6xl">
+        <h1 className="title-grow relative z-10 mx-auto whitespace-pre-line bg-gradient-to-b from-white to-white/70 bg-clip-text text-4xl font-extrabold leading-[1.1] tracking-tight text-transparent sm:text-5xl md:text-6xl">
           {hero.heading}
         </h1>
 
