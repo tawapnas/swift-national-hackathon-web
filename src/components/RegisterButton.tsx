@@ -30,8 +30,9 @@ export default function RegisterButton({
   size = 'md',
   className = '',
 }: RegisterButtonProps) {
-  // TODO: wire up registration form — intentionally a no-op for now.
-  const handleClick = () => {}
+  const handleClick = () => {
+    window.open('https://forms.gle/5qybqzuvbX8SWMrw6', '_blank', 'noopener,noreferrer')
+  }
 
   return (
     <button
