@@ -199,34 +199,24 @@ body {
 
 
 /* ---- Liquid-glass navbar surface ----
-   liquid-glass-react puts the pill's blur (backdrop-filter) AND its refraction
-   (an SVG `filter: url(...)`) on the same `.glass__warp` span. Chrome refuses
-   to render `backdrop-filter` on any element that also has `filter`, so in
-   Chrome the warp's blur was dropped and the pill looked merely translucent —
-   while Safari still showed it. Fix: drive the entire glass look from `.glass`
-   (which has no filter) with a guaranteed backdrop blur + frosted tint +
-   specular edge, and fully neutralize the SVG-filtered warp. Result: identical,
-   real blurred liquid glass in both Chrome and Safari. */
-.nav-liquid-glass .glass {
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  backdrop-filter: blur(18px) saturate(180%);
+   A frosted-glass pill built on plain backdrop-filter. It must NOT have any
+   ancestor with `transform` (or filter/perspective/will-change): Chrome treats
+   such an ancestor as the backdrop root and then has nothing behind the pill to
+   blur. The navbar markup keeps the header/pill transform-free, so this blurs
+   in Chrome and Safari alike. (Sets no border-radius — Tailwind's rounded-*
+   utilities shape the pill.) */
+.nav-glass {
   background-image: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.16),
-    rgba(255, 255, 255, 0.05) 50%,
-    rgba(255, 255, 255, 0.09)
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.07)
   );
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.1),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-    0 16px 50px rgba(0, 0, 0, 0.45) !important;
-}
-.nav-liquid-glass .glass__warp {
-  /* The Chrome blur-killer: an SVG filter co-located with backdrop-filter.
-     Disable the warp entirely so `.glass` is the single, deterministic glass
-     layer that composites the same way in every browser. */
-  filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 16px 50px rgba(0, 0, 0, 0.45);
 }
