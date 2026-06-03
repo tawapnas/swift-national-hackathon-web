@@ -26,7 +26,7 @@ function renderParagraph(text: string) {
 
 export default function About() {
   return (
-    <Section id="about" heading={about.heading}>
+    <Section id="about" heading={about.heading} icon="/sf/lightbulb.fill.svg">
       <div className="max-w-3xl space-y-5 text-lg leading-relaxed text-muted">
         {about.body.map((paragraph) => (
           <p key={paragraph}>{renderParagraph(paragraph)}</p>

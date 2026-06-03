@@ -9,7 +9,7 @@ const btnBase =
 
 export default function Learn() {
   return (
-    <Section id="learn" heading={learn.heading} lead={learn.lead}>
+    <Section id="learn" heading={learn.heading} lead={learn.lead} icon="/sf/book.fill.svg">
       <div className="max-w-3xl">
         <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl">
           <div className="relative aspect-video">
