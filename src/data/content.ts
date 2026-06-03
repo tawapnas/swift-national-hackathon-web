@@ -82,8 +82,9 @@ export const eligibility = {
 
 export const timeline = {
   heading: 'กำหนดการ',
+  // Set `current: true` on the milestone to highlight as the current event.
   milestones: [
-    { date: '3 – 30 มิถุนายน', title: 'เปิดรับสมัครรอบภูมิภาค' },
+    { date: '3 – 30 มิถุนายน', title: 'เปิดรับสมัครรอบภูมิภาค', current: true },
     { date: '4 กรกฎาคม', title: 'ปฐมนิเทศและสัมมนาออนไลน์เตรียมความพร้อม' },
     { date: '16 สิงหาคม', title: 'ปิดรับส่งผลงานรอบภูมิภาค' },
     { date: '31 สิงหาคม', title: 'ประกาศผลทีมที่ผ่านเข้ารอบระดับประเทศ' },
