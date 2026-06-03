@@ -3,25 +3,26 @@
 // Intelligence / Local LLM / Foundation Models — that is a reveal-later theme.
 
 export const site = {
-  title: 'Swift Coding Club Thailand National Hackathon 2026',
-  shortTitle: 'National Hackathon 2026',
+  title: 'Young iOS Developer Hackathon 2026',
+  shortTitle: 'YiDH26',
   org: 'Swift Coding Club Thailand',
   orgShort: 'SCCTH',
-  tagline: 'การแข่งขันพัฒนาแอปพลิเคชัน iOS ระดับประเทศ ด้วยภาษา Swift',
+  tagline: 'การแข่งขันพัฒนาแอปพลิเคชัน iOS ระดับประเทศด้วยภาษา Swift',
 }
 
 export const nav = [
   { id: 'about', label: 'รู้จักการแข่งขัน' },
   { id: 'format', label: 'รูปแบบ' },
   { id: 'timeline', label: 'กำหนดการ' },
+  { id: 'learn', label: 'สื่อการเรียนรู้' },
 ]
 
 export const hero = {
   // Memoji shown above the title.
   memojis: ['/memojis.001.png', '/memojis.002.png', '/memojis.003.png'],
-  heading: 'Swift Coding Club Thailand\nNational Hackathon 2026',
+  heading: 'Young iOS Developer\nHackathon 2026',
   subheading:
-    'เวทีระดับประเทศที่เปิดโอกาสให้นักเรียนได้เปลี่ยนไอเดียให้กลายเป็นแอป iOS จริง ด้วยภาษา Swift',
+    'เวทีระดับประเทศที่เปิดโอกาสให้นักเรียนได้เปลี่ยนไอเดียให้กลายเป็นแอป iOS จริง\nด้วยภาษา Swift',
   primaryCta: 'สมัครเข้าร่วม',
   secondaryCta: 'ดูรายละเอียด',
   facts: [] as { icon: string; label: string }[],
@@ -42,24 +43,23 @@ export const gallery = {
 export const about = {
   heading: 'รู้จักการแข่งขัน',
   body: [
-    'การแข่งขันพัฒนาแอป iOS ระดับประเทศ สำหรับนักเรียนมัธยมปลายและอาชีวศึกษาที่อยากลงมือสร้างผลงานจริงด้วยภาษา Swift',
-    'ผู้เข้าแข่งขันจะได้พัฒนา App Playground บน iPad ด้วย Swift Playgrounds เปลี่ยนไอเดียให้กลายเป็นแอปที่ใช้งานได้จริง',
+    'การแข่งขันพัฒนาแอป iOS ระดับประเทศ สำหรับนักเรียนมัธยมปลายและอาชีวศึกษาที่อยากลงมือสร้างผลงานจริงด้วยภาษา Swift และเทคโนโลยีต่าง ๆ ของ Apple',
+    'ผู้เข้าแข่งขันจะได้พัฒนา App Playground ด้วย Swift Playgrounds เปลี่ยนไอเดียให้กลายเป็นแอปที่ใช้งานได้จริง',
     'ไม่จำเป็นต้องมีประสบการณ์มาก่อน เพราะมีสื่อการเรียนรู้และสัมมนาเตรียมความพร้อมให้ พร้อมฝึกทักษะการทำงานเป็นทีมและการนำเสนอผลงาน',
   ],
 }
 
 export const format = {
   heading: 'รูปแบบการแข่งขัน',
-  lead: 'การแข่งขันแบ่งออกเป็น 2 รอบ — รอบคัดเลือกระดับภูมิภาคแบบออนไลน์ และรอบชิงชนะเลิศระดับประเทศแบบ Onsite ต่อเนื่อง 3 วัน',
+  lead: 'การแข่งขันแบ่งออกเป็น 2 รอบ คือ รอบคัดเลือกระดับภูมิภาคแบบออนไลน์ และรอบชิงชนะเลิศระดับประเทศ',
   rounds: [
     {
       tag: 'รอบที่ 1',
       title: 'รอบคัดเลือกระดับภูมิภาค',
       mode: 'ออนไลน์ทั่วประเทศ',
       points: [
-        'พัฒนา App Playground (.swiftpm) ด้วย Swift Playgrounds 4.6 ขึ้นไป บน iPad หรือ MacBook',
-        'แอปต้องสาธิตได้ภายใน 3 นาที ใช้งานแบบออฟไลน์ และไม่เคยส่งประกวดที่ใดมาก่อน',
-        'ส่งผลงานเป็นไฟล์ .swiftpm (ZIP ไม่เกิน 25 MB) พร้อมเอกสารข้อเสนอผลงาน',
+        'พัฒนา App Playground (.swiftpm) ด้วย Swift Playgrounds 4.6 ขึ้นไป บน iPad หรือ Mac',
+        'ติดตามกฎกติกาและรายละเอียดเพิ่มเติมได้ในช่วงสัมมนาออนไลน์เตรียมความพร้อม',
       ],
     },
     {
@@ -67,7 +67,7 @@ export const format = {
       title: 'รอบชิงชนะเลิศระดับประเทศ',
       mode: 'วิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ กรุงเทพฯ',
       points: [
-        'ทีมที่ผ่านเข้ารอบได้รับเครื่อง M-series iPad ทีมละ 1 เครื่อง (เครื่องยืมระหว่างกิจกรรม)',
+        'ทีมที่ผ่านเข้ารอบจะได้รับ iPad ทีมละ 1 เครื่อง (เครื่องยืมระหว่างกิจกรรม)',
         'มี Coaching Clinic คอยให้คำปรึกษาตลอดการแข่งขัน',
         'นำเสนอผลงานต่อคณะกรรมการในวันสุดท้าย',
       ],
@@ -75,15 +75,45 @@ export const format = {
   ],
 }
 
+export const learn = {
+  heading: 'สื่อการเรียนรู้',
+  lead: 'ไม่เคยเขียนโค้ดมาก่อนก็เริ่มได้ เรารวบรวมสื่อเตรียมความพร้อมให้เริ่มต้นพัฒนาแอป iOS ด้วย Swift บน iPad ได้ตั้งแต่วันนี้',
+  video: {
+    // 20-hour course: build iOS apps on iPad with Swift Playgrounds.
+    id: 'jdaO885330I',
+    playlistId: 'PLtIctfLI7-d4-X7ZHaiu6NGEBjaFhaIj5',
+    title: 'คอร์สพัฒนาแอป iOS บน iPad',
+    description:
+      'คอร์สวิดีโอกว่า 20 ชั่วโมง สอนพัฒนาแอป iOS ด้วย Swift บน iPad ตั้งแต่พื้นฐานจนสร้างแอปได้จริง เรียนตามไปทีละขั้นได้ด้วยตัวเอง',
+  },
+  tool: {
+    icon: '/swift-playgrounds-icon.001.png',
+    name: 'Swift Playgrounds',
+    description:
+      'แอปฟรีจาก Apple สำหรับสร้างแอป iOS ด้วยภาษา Swift ดาวน์โหลดเพื่อเริ่มลงมือทำตามคอร์สได้เลย',
+    downloads: [
+      {
+        label: 'ดาวน์โหลดบน iPad',
+        href: 'https://apps.apple.com/us/app/swift-playgrounds/id908519492',
+      },
+      {
+        label: 'ดาวน์โหลดบน Mac',
+        href: 'https://apps.apple.com/us/app/swift-playgrounds/id1496833156?mt=12',
+      },
+    ],
+  },
+}
+
 export const eligibility = {
   heading: 'คุณสมบัติผู้สมัคร',
-  body: 'การแข่งขันเปิดรับนักเรียนระดับมัธยมศึกษาตอนปลาย (ม.4 – ม.6) และอาชีวศึกษา (ปวช. 1 – 3) โดยรวมทีมขนาด 3 คนจากสถานศึกษาเดียวกัน พร้อมอาจารย์ที่ปรึกษาประจำทีม 1 ท่าน',
+  body: 'เปิดรับสมัครผู้เข้าแข่งขันระดับมัธยมศึกษาตอนปลาย (ม.4 – ม.6) และอาชีวศึกษา (ปวช. 1 – 3) โดยรวมทีมสมาชิก 3 คนจากสถาบันเดียวกัน และต้องมีอาจารย์ที่ปรึกษาดูแลทีม 1 ท่าน',
 }
 
 export const timeline = {
   heading: 'กำหนดการ',
+  // Set `current: true` on the milestone to highlight as the current event.
   milestones: [
-    { date: '3 – 30 มิถุนายน', title: 'เปิดรับสมัครรอบภูมิภาค' },
+    { date: '3 – 30 มิถุนายน', title: 'เปิดรับสมัครรอบภูมิภาค', current: true },
     { date: '4 กรกฎาคม', title: 'ปฐมนิเทศและสัมมนาออนไลน์เตรียมความพร้อม' },
     { date: '16 สิงหาคม', title: 'ปิดรับส่งผลงานรอบภูมิภาค' },
     { date: '31 สิงหาคม', title: 'ประกาศผลทีมที่ผ่านเข้ารอบระดับประเทศ' },
@@ -93,15 +123,9 @@ export const timeline = {
 
 export const organizers = {
   heading: 'ผู้จัดการแข่งขัน',
-  body: 'ดำเนินโครงการโดย Swift Coding Club Thailand (SCCTH) ร่วมกับวิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ (COSCI SWU) ในฐานะสถานที่จัดงานและนิสิตผู้ช่วยสอน',
+  body: 'ดำเนินโครงการโดย Swift Coding Club Thailand ร่วมกับวิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ ในฐานะสถานที่จัดงานและนิสิตผู้ช่วยสอน',
   judges:
     'คณะกรรมการตัดสินประกอบด้วยสมาชิกของ Swift Coding Club TH, Apple Certified Trainer, คณาจารย์จากสถาบันอุดมศึกษา และกรรมการรับเชิญ',
-}
-
-export const cta = {
-  heading: 'พร้อมเริ่มต้นการเดินทางของคุณแล้วหรือยัง?',
-  body: 'เปิดรับสมัคร 3 – 30 มิถุนายน 2569',
-  button: 'สมัครเข้าร่วม',
 }
 
 export const footer = {
