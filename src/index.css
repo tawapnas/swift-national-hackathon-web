@@ -48,6 +48,8 @@
   --color-swift-gold: #fbb04d;
   --color-swift-blue: #007aff; /* SwiftUI system blue */
   --color-swift-blue-light: #64d2ff; /* SwiftUI light blue */
+  --color-cover-blue: #2c5fc9; /* poster royal-blue glow */
+  --color-cover-navy: #0b1733; /* poster deep navy */
 
   --color-ink: #0b0b0c; /* page background */
   --color-surface: #161618; /* elevated cards */
