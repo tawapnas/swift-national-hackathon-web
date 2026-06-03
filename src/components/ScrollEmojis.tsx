@@ -24,16 +24,16 @@ type Floater = {
 
 // ---- Define your emojis here ----
 const EMOJIS: Floater[] = [
-  { emoji: '🚀', side: 'left', top: 14, size: 3.5, rot: -12 },
-  { emoji: '💻', side: 'right', top: 22, size: 3, rot: 10 },
-  { emoji: '⚡️', side: 'left', top: 32, size: 2.6, rot: 8 },
-  { emoji: '🎯', side: 'right', top: 40, size: 3, rot: -8 },
-  { emoji: '🧑‍💻', side: 'left', top: 50, size: 3.2, rot: 6 },
-  { emoji: '🏆', side: 'right', top: 58, size: 2.8, rot: 12 },
-  { emoji: '💡', side: 'left', top: 66, size: 2.6, rot: -10 },
-  { emoji: '🎉', side: 'right', top: 74, size: 3.2, rot: 8 },
-  { emoji: '✨', side: 'left', top: 82, size: 2.4, rot: 0 },
-  { emoji: '📱', side: 'right', top: 90, size: 2.8, rot: -10 },
+  // { emoji: '🚀', side: 'left', top: 14, size: 3.5, rot: -12 },
+  // { emoji: '💻', side: 'right', top: 22, size: 3, rot: 10 },
+  // { emoji: '⚡️', side: 'left', top: 32, size: 2.6, rot: 8 },
+  // { emoji: '🎯', side: 'right', top: 40, size: 3, rot: -8 },
+  // { emoji: '🧑‍💻', side: 'left', top: 50, size: 3.2, rot: 6 },
+  // { emoji: '🏆', side: 'right', top: 58, size: 2.8, rot: 12 },
+  // { emoji: '💡', side: 'left', top: 66, size: 2.6, rot: -10 },
+  // { emoji: '🎉', side: 'right', top: 74, size: 3.2, rot: 8 },
+  // { emoji: '✨', side: 'left', top: 82, size: 2.4, rot: 0 },
+  // { emoji: '📱', side: 'right', top: 90, size: 2.8, rot: -10 },
 ]
 
 function FloatingEmoji({ f }: { f: Floater }) {

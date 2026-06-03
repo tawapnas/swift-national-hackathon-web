@@ -34,9 +34,8 @@ export default function Hero() {
           {hero.memojis.map((src, i) => (
             <span
               key={src}
-              className={`relative ${i === 1 ? 'z-20' : 'z-10'} ${
-                i > 0 ? '-ml-10 sm:-ml-16 md:-ml-20' : ''
-              }`}
+              className={`relative ${i === 1 ? 'z-20' : 'z-10'} ${i > 0 ? '-ml-10 sm:-ml-16 md:-ml-20' : ''
+                }`}
               style={{ filter: 'drop-shadow(0 14px 28px rgba(0,0,0,0.5))' }}
             >
               <img
@@ -44,11 +43,10 @@ export default function Hero() {
                 alt=""
                 aria-hidden
                 draggable={false}
-                className={`memoji block select-none object-contain ${
-                  i === 1
+                className={`memoji block select-none object-contain ${i === 1
                     ? 'h-44 w-44 sm:h-60 sm:w-60 md:h-72 md:w-72'
                     : 'h-36 w-36 sm:h-48 sm:w-48 md:h-56 md:w-56'
-                }`}
+                  }`}
                 style={
                   {
                     '--memoji-rot': `${[-10, 0, 10][i] ?? 0}deg`,
@@ -65,7 +63,7 @@ export default function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">
-          {hero.subheading}
+          <span className="whitespace-pre-line">{hero.subheading}</span>
         </p>
 
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
