@@ -36,19 +36,19 @@ type Floater = {
 //   Hero · Gallery · About · Format · Eligibility · Timeline · Learn · Organizers
 const SYMBOLS: Floater[] = [
   // Hero — creativity / turning ideas into apps
-  { asset: '/sf/sparkles.svg', side: 'left', top: 9, size: 3, rot: -10 },
+  // { asset: '/sf/sparkles.svg', side: 'left', top: 9, size: 3, rot: -10 }, // TODO: add asset
   { asset: '/sf/swift.svg', side: 'right', top: 15, size: 3.2, rot: 10 },
 
   // Gallery — moments from last year
-  { asset: '/sf/camera.fill.svg', side: 'left', top: 25, size: 2.8, rot: 8 },
+  // { asset: '/sf/camera.fill.svg', side: 'left', top: 25, size: 2.8, rot: 8 }, // TODO: add asset
 
   // About — the idea behind the contest / Apple technologies
-  { asset: '/sf/lightbulb.max.fill.svg', side: 'right', top: 34, size: 3, rot: -8 },
-  { asset: '/sf/apple.logo.svg', side: 'left', top: 42, size: 2.6, rot: 6 },
+  { asset: '/sf/lightbulb.fill.svg', side: 'right', top: 34, size: 3, rot: -8 },
+  // { asset: '/sf/apple.logo.svg', side: 'left', top: 42, size: 2.6, rot: 6 }, // TODO: add asset
 
   // Format — Round 1 online regional, Round 2 national final
-  { asset: '/sf/laptopcomputer.svg', side: 'right', top: 50, size: 3, rot: 8 },
-  { asset: '/sf/flag.checkered.svg', side: 'left', top: 58, size: 2.8, rot: -10 },
+  // { asset: '/sf/laptopcomputer.svg', side: 'right', top: 50, size: 3, rot: 8 }, // TODO: add asset
+  // { asset: '/sf/flag.checkered.svg', side: 'left', top: 58, size: 2.8, rot: -10 }, // TODO: add asset
 
   // Eligibility — high-school & vocational students
   { asset: '/sf/graduationcap.fill.svg', side: 'right', top: 66, size: 3, rot: 10 },
@@ -60,7 +60,7 @@ const SYMBOLS: Floater[] = [
   { asset: '/sf/book.fill.svg', side: 'right', top: 82, size: 2.8, rot: -8 },
 
   // Organizers / closing — the prize, celebration
-  { asset: '/sf/trophy.fill.svg', side: 'left', top: 91, size: 3, rot: 6 },
+  // { asset: '/sf/trophy.fill.svg', side: 'left', top: 91, size: 3, rot: 6 }, // TODO: add asset
 ]
 
 function FloatingSymbol({ f }: { f: Floater }) {
