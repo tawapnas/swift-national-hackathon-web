@@ -5,6 +5,7 @@ import Gallery from './components/Gallery'
 import About from './components/About'
 import Format from './components/Format'
 import Eligibility from './components/Eligibility'
+import Learn from './components/Learn'
 import Timeline from './components/Timeline'
 import Organizers from './components/Organizers'
 import Footer from './components/Footer'
@@ -20,6 +21,7 @@ export default function App() {
         <About />
         <Format />
         <Eligibility />
+        <Learn />
         <Timeline />
         <Organizers />
       </main>

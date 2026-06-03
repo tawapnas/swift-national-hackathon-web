@@ -13,6 +13,7 @@ export const site = {
 export const nav = [
   { id: 'about', label: 'รู้จักการแข่งขัน' },
   { id: 'format', label: 'รูปแบบ' },
+  { id: 'learn', label: 'สื่อการเรียนรู้' },
   { id: 'timeline', label: 'กำหนดการ' },
 ]
 
@@ -73,6 +74,19 @@ export const format = {
       ],
     },
   ],
+}
+
+export const learn = {
+  heading: 'สื่อการเรียนรู้',
+  lead: 'ไม่เคยเขียนโค้ดมาก่อนก็เริ่มได้ เรารวบรวมสื่อเตรียมความพร้อมให้เริ่มต้นพัฒนาแอป iOS ด้วย Swift บน iPad ได้ตั้งแต่วันนี้',
+  video: {
+    // 20-hour course: build iOS apps on iPad with Swift Playgrounds.
+    id: 'jdaO885330I',
+    playlistId: 'PLtIctfLI7-d4-X7ZHaiu6NGEBjaFhaIj5',
+    title: 'คอร์สพัฒนาแอป iOS บน iPad',
+    description:
+      'คอร์สวิดีโอกว่า 20 ชั่วโมง สอนพัฒนาแอป iOS ด้วย Swift บน iPad ตั้งแต่พื้นฐานจนสร้างแอปได้จริง เรียนตามไปทีละขั้นได้ด้วยตัวเอง',
+  },
 }
 
 export const eligibility = {
