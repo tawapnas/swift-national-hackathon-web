@@ -7,12 +7,12 @@ export default function Format() {
       <div className="max-w-3xl space-y-12">
         {format.rounds.map((round, i) => (
           <div key={round.tag} className={i > 0 ? 'border-t border-line pt-12' : ''}>
-            <p className="text-sm font-semibold tracking-wide text-swift-orange uppercase">
+            <p className="text-base font-semibold tracking-wide text-swift-orange uppercase">
               {round.tag}
             </p>
-            <h3 className="mt-2 text-xl font-bold">{round.title}</h3>
-            <p className="mt-1 text-sm text-muted">{round.mode}</p>
-            <ul className="mt-4 list-disc space-y-2 pl-5 leading-relaxed text-muted marker:text-swift-orange">
+            <h3 className="mt-2 text-2xl font-bold">{round.title}</h3>
+            <p className="mt-1 text-base text-muted">{round.mode}</p>
+            <ul className="mt-4 list-disc space-y-2 pl-5 text-lg leading-relaxed text-muted marker:text-swift-orange">
               {round.points.map((point) => (
                 <li key={point}>{point}</li>
               ))}
