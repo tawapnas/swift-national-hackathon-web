@@ -1,6 +1,10 @@
 import { useReveal } from '../hooks/useReveal'
 import GlassIcon from './ui/GlassIcon'
 
+// Temporarily hide the liquid-glass SF-symbol badges beside section titles.
+// Flip to `true` to bring them back — all the `icon` wiring stays in place.
+const SHOW_SECTION_ICONS = false
+
 interface SectionProps {
   id?: string
   heading?: string
@@ -38,7 +42,9 @@ export default function Section({
           <header className={`max-w-3xl ${lead ? 'mb-12' : 'mb-6'}`}>
             <div className="flex items-center gap-4">
               <h2 className="text-3xl font-bold leading-tight md:text-4xl">{heading}</h2>
-              {icon && <GlassIcon asset={icon} className="flex-none" />}
+              {SHOW_SECTION_ICONS && icon && (
+                <GlassIcon asset={icon} className="flex-none" />
+              )}
             </div>
             {lead && (
               <p className="mt-5 text-lg leading-relaxed text-muted">{lead}</p>
