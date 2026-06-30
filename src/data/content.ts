@@ -117,7 +117,7 @@ export const timeline = {
   heading: 'กำหนดการ',
   // Set `current: true` on the milestone to highlight as the current event.
   milestones: [
-    { date: '4 – 30 มิถุนายน', title: 'เปิดรับสมัครรอบภูมิภาค', current: true },
+    { date: '4 มิถุนายน', title: 'เปิดรับสมัครรอบภูมิภาค', current: true },
     { date: '4 กรกฎาคม', title: 'ปฐมนิเทศและสัมมนาออนไลน์เตรียมความพร้อม' },
     { date: '16 สิงหาคม', title: 'ปิดรับส่งผลงานรอบภูมิภาค' },
     { date: '31 สิงหาคม', title: 'ประกาศผลทีมที่ผ่านเข้ารอบระดับประเทศ' },
@@ -130,6 +130,19 @@ export const organizers = {
   body: 'ดำเนินโครงการโดย Swift Coding Club Thailand ร่วมกับวิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ ในฐานะสถานที่จัดงานและนิสิตผู้ช่วยสอน',
   judges:
     'คณะกรรมการตัดสินประกอบด้วยสมาชิกของ Swift Coding Club TH, Apple Certified Trainer, คณาจารย์จากสถาบันอุดมศึกษา และกรรมการรับเชิญ',
+  // Organizer + venue-partner logos (white/light lockups for the dark theme).
+  logos: [
+    {
+      src: '/logo.svg',
+      name: 'Swift Coding Club Thailand',
+      className: 'h-10 w-auto md:h-12',
+    },
+    {
+      src: '/SWU_College_Social_Communication_Innovation_TH_White.png',
+      name: 'วิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ',
+      className: 'h-16 w-auto md:h-20',
+    },
+  ],
 }
 
 export const footer = {
@@ -146,5 +159,24 @@ export const footer = {
       href: 'mailto:staff@swiftcodingclubth.com',
       icon: '/envelope.fill.svg',
     },
+  ],
+}
+
+// Teams registered for the regional qualifying round, grouped by Thai region.
+// `items` order is render/legend order; the component derives the total and the
+// max for choropleth intensity, so just keep the counts up to date here.
+export const regions = {
+  heading: 'ทีมที่ลงทะเบียนแล้วทั่วประเทศ',
+  lead: 'ภาพรวมจำนวนทีมที่สมัครเข้าร่วมการแข่งขันในแต่ละภูมิภาค',
+  totalLabel: 'ทีมจากทั่วประเทศ',
+  reach: '159 สถานศึกษา จาก 63 จังหวัด',
+  updatedAt: 'ข้อมูล ณ วันที่ 30 มิถุนายน 2569',
+  unit: 'ทีม',
+  items: [
+    { id: 'north', name: 'ภาคเหนือ', teams: 19 },
+    { id: 'isan', name: 'ภาคอีสาน', teams: 29 },
+    { id: 'central', name: 'ภาคกลาง', teams: 93 },
+    { id: 'east', name: 'ภาคตะวันออก', teams: 45 },
+    { id: 'south', name: 'ภาคใต้', teams: 19 },
   ],
 }
