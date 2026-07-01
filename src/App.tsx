@@ -1,6 +1,7 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Gallery from './components/Gallery'
+// import RegionsMap from './components/RegionsMap' // hidden for now
 import About from './components/About'
 import Format from './components/Format'
 import Eligibility from './components/Eligibility'
@@ -17,6 +18,7 @@ export default function App() {
       <main>
         <Hero />
         <Gallery />
+        {/* <RegionsMap /> hidden for now */}
         <About />
         <Format />
         <Eligibility />
