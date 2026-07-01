@@ -24,13 +24,15 @@ If `npm install` runs under x64 node, it installs x64-only native binaries (`@ro
 
 ## Architecture
 
-Single-page marketing site (no router). `src/App.tsx` composes one section component per page region, top to bottom. Each section is a presentational component that reads its copy from `src/data/content.ts`.
+Single-page marketing site (no router). `src/App.tsx` composes one section component per page region, top to bottom (`Hero`, `Gallery`, `About`, `Format`, `Eligibility`, `Timeline`, `Learn`, `Organizers`, plus `Navbar`/`Footer`). Each section is a presentational component that reads its copy from `src/data/content.ts`. `App.tsx` also renders `<Analytics />` (`@vercel/analytics/react`); the Meta Pixel snippet lives in `index.html`.
 
 - **`src/data/content.ts` is the single source of truth for all (Thai) copy.** Components contain layout/styling only — never hardcode display strings in components; add/edit them here. Section components import a named export (e.g. `import { themes } from '../data/content'`).
 - **`src/components/Section.tsx`** is the shared section shell enforcing the Apple-Swift-Student-Challenge rhythm (max-w container, large vertical padding, eyebrow + heading with orange underline, bottom divider). Most sections wrap their content in `<Section>`; pass `id` to make it a navbar scroll target.
 - **Navbar links are data-driven.** `nav` in `content.ts` maps `{ id, label }` to `#id` anchors. If you add/remove a section, the `id` you give its `<Section>` must match a `nav` entry (and vice-versa) or the anchor scrolls nowhere. Removed sections: their data export AND component file should both be deleted (the build fails on a dangling import, but leaves dead exports otherwise).
-- **`src/hooks/useReveal.ts`** is an IntersectionObserver hook that adds `is-visible` to drive the `.reveal` fade/slide-up defined in `index.css`. `Section` uses it automatically; standalone full-bleed sections (Hero, InvitationQuote, CTABanner) apply `reveal` + the hook themselves.
+- **`src/hooks/useReveal.ts`** is an IntersectionObserver hook that adds `is-visible` to drive the `.reveal` fade/slide-up defined in `index.css`. `Section` uses it automatically; standalone full-bleed sections (Hero, Gallery) apply `reveal` + the hook themselves.
 - **`RegisterButton.tsx`** is the only CTA. Its `onClick` is an intentional no-op (`// TODO: wire up registration form`) — registration is not yet built.
+- **`src/components/ui/`** (`GlassIcon`, `image-auto-slider`) are generic, reusable primitives that deliberately break the section conventions: they take props instead of importing from `content.ts`, and carry their own self-contained inline `<style>`. Don't refactor them to read from `content.ts` — the section component (e.g. `Gallery`) is what pulls copy/data from `content.ts` and passes it down as props.
+- **Path alias `@/` → `src/`** is configured in both `vite.config.ts` (`resolve.alias`) and `tsconfig.app.json` (`paths`). Both must stay in sync. Section components use relative imports (`../data/content`); `@/` is used for the `ui/` primitives (e.g. `@/components/ui/image-auto-slider`).
 
 ## Styling
 

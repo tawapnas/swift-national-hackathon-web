@@ -132,6 +132,168 @@ export const organizers = {
     'คณะกรรมการตัดสินประกอบด้วยสมาชิกของ Swift Coding Club TH, Apple Certified Trainer, คณาจารย์จากสถาบันอุดมศึกษา และกรรมการรับเชิญ',
 }
 
+// Team Portal copy. Hackathon-detail and submission-essay text are placeholders
+// until the organizers finalize them (marked with "(รอเนื้อหา)").
+export const portal = {
+  // Shared page chrome (top bar).
+  shell: {
+    brand: 'Team Portal',
+    backToSite: 'กลับสู่หน้าหลัก',
+    signOut: 'ออกจากระบบ',
+  },
+
+  // Sign-in screen (Phase 2 — Google sign-in).
+  signIn: {
+    heading: 'เข้าสู่ระบบทีม',
+    body: 'เข้าสู่ระบบด้วยบัญชี Google ที่ใช้สมัครเข้าร่วมการแข่งขัน เพื่อจัดการข้อมูลทีมและส่งผลงาน',
+    cta: 'เข้าสู่ระบบด้วย Google',
+  },
+
+  // Temporary preview landing (Phase 1 only — removed once auth is wired).
+  preview: {
+    heading: 'ตัวอย่างหน้าจอ (พรีวิว)',
+    body: 'หน้านี้ใช้สำหรับดูตัวอย่างหน้าจอระหว่างพัฒนา โดยยังไม่ต้องเข้าสู่ระบบ',
+    toRegister: 'ดูฟอร์มลงทะเบียนทีม',
+    toTeam: 'ดูหน้าพอร์ทัลทีม',
+  },
+
+  // Registration form. A team = 1 leader + 2 members (3 students total).
+  registration: {
+    heading: 'ลงทะเบียนทีม',
+    lead: 'กรอกข้อมูลทีมให้ครบถ้วนเพื่อเริ่มเข้าร่วมการแข่งขัน',
+    selectPlaceholder: 'เลือก',
+    // Choice options reused across selects/checkboxes/radios.
+    options: {
+      prefix: ['นาย', 'นางสาว'],
+      level: ['ม.4', 'ม.5', 'ม.6', 'ปวช.1', 'ปวช.2', 'ปวช.3'],
+      devices: ['iPad', 'Mac', 'iPhone', 'ไม่มี'],
+      yesNo: ['เคย', 'ไม่เคย'],
+      playgrounds: ['รู้จัก', 'ไม่รู้จัก'],
+      referral: [
+        'Swift Coding Club TH Facebook',
+        'Swift Coding Club TH Instagram',
+        'แพลตฟอร์ม NDLP',
+        'อื่น ๆ',
+      ],
+      referralOther: 'อื่น ๆ',
+    },
+    team: {
+      heading: 'ข้อมูลทีม',
+      teamName: 'ชื่อทีม',
+      schoolName: 'ชื่อสถานศึกษา',
+      province: 'จังหวัดของสถานศึกษา',
+      provinceHint: 'กรอกชื่อจังหวัดเต็ม ไม่ต้องย่อ',
+    },
+    // Per-person field labels (leader + members share these).
+    person: {
+      prefix: 'คำนำหน้า',
+      nameTh: 'ชื่อ-นามสกุล (ภาษาไทย)',
+      nameEn: 'ชื่อ-นามสกุล (ภาษาอังกฤษ)',
+      level: 'ระดับชั้น',
+      email: 'อีเมล',
+      phone: 'เบอร์โทร',
+      lineId: 'LINE ID',
+      devices: 'อุปกรณ์ Apple ที่มี',
+    },
+    leaderHeading: 'ข้อมูลหัวหน้าทีม',
+    memberHeading: 'สมาชิกคนที่', // followed by the member number
+    advisorHeading: 'ข้อมูลอาจารย์ที่ปรึกษา',
+    // PDPA consent (required to submit).
+    pdpa: {
+      heading: 'การเก็บรวบรวมและใช้ข้อมูลส่วนบุคคล',
+      body: [
+        'ในการสมัครเข้าร่วมกิจกรรม ข้าพเจ้ายินยอมให้ผู้จัดงานเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลที่ให้ไว้ในแบบฟอร์มนี้ เพื่อวัตถุประสงค์ในการดำเนินการรับสมัคร การจัดการแข่งขัน และการติดต่อสื่อสารที่เกี่ยวข้องกับกิจกรรม Young iOS Developer Hackathon 2026 (YiDH 26)',
+        'ในบางกรณี ผู้จัดงานอาจมีความจำเป็นต้องเปิดเผยหรือส่งต่อข้อมูลของท่านให้แก่หน่วยงานหรือพันธมิตรที่เกี่ยวข้องกับการจัดกิจกรรม (เช่น ผู้ร่วมจัดงาน คณะกรรมการตัดสิน หรือผู้สนับสนุน) เท่าที่จำเป็นเพื่อการดำเนินการรับสมัครและการแข่งขันเท่านั้น โดยจะไม่นำข้อมูลไปจำหน่าย หรือใช้เพื่อวัตถุประสงค์อื่นใดนอกเหนือจากกิจกรรมนี้)',
+      ],
+      consent: 'ข้าพเจ้าได้อ่านและยินยอมให้เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลตามเงื่อนไขข้างต้น',
+    },
+    // Team-overall survey (answered once per team).
+    survey: {
+      heading: 'ข้อมูลเพิ่มเติม',
+      note: 'ให้ตอบในภาพรวมของทีม ไม่จำเป็นต้องมีทุกคนก็ได้',
+      hasProgrammed: 'เคยเขียนโปรแกรมมาก่อนหรือไม่',
+      programmingLanguages: 'หากเคย ให้ระบุภาษาที่เคยเขียน',
+      heardOfSwift: 'เคยได้ยินภาษา Swift มาก่อนหรือไม่',
+      knowsSwiftPlaygrounds: 'รู้จักและเคยลองใช้งานโปรแกรม Swift Playgrounds หรือไม่',
+      referral: 'ได้ยินกิจกรรมนี้มาจากช่องทางใด',
+      referralOtherLabel: 'โปรดระบุช่องทาง',
+    },
+    submit: 'บันทึกข้อมูลทีม',
+    requiredNote: 'กรุณากรอกข้อมูลให้ครบทุกช่อง',
+  },
+
+  // Portal section 1 — team info (read-only, from Firestore).
+  teamInfo: {
+    heading: 'ข้อมูลทีม',
+    teamNameLabel: 'ชื่อทีม',
+    schoolLabel: 'สถานศึกษา',
+    provinceLabel: 'จังหวัด',
+    leaderHeading: 'หัวหน้าทีม',
+    membersHeading: 'สมาชิก',
+    advisorHeading: 'อาจารย์ที่ปรึกษา',
+    levelLabel: 'ระดับชั้น',
+  },
+
+  // Portal section 2 — hackathon detail. Project brief (โจทย์) is still a
+  // placeholder; the submission requirements below are final.
+  detail: {
+    heading: 'รายละเอียดโจทย์',
+    body: ['(รอเนื้อหา — รายละเอียดโจทย์จะประกาศให้ทราบในภายหลัง)'],
+    rulesHeading: 'ข้อกำหนดการส่งผลงาน',
+    rules: [
+      'พัฒนาแอปด้วย Swift Playgrounds 4.6 ขึ้นไป บน iPad หรือ MacBook',
+      'แอปพลิเคชันต้องสามารถสาธิตได้ภายใน 3 นาที ใช้งานแบบออฟไลน์ และไม่เคยส่งเข้าแข่งขันหรือนำเสนอที่ใดมาก่อน',
+      'ส่งผลงานเป็นไฟล์ .swiftpm บีบอัดเป็น ZIP (ไม่เกิน 25 MB) พร้อมเอกสารข้อเสนอ (Written Proposal) ตามรูปแบบที่ผู้จัดเตรียมไว้',
+    ],
+  },
+
+  // Portal section 3 — submission form.
+  submission: {
+    heading: 'ส่งผลงาน',
+    lead: 'ตอบคำถามข้อเสนอ (Written Proposal) และแนบไฟล์ผลงานของทีม เมื่อส่งแล้วจะไม่สามารถแก้ไขหรือส่งใหม่ได้',
+    // Written Proposal questions (SSC-style). `id` keys map to Firestore.
+    questions: [
+      {
+        id: 'inspiration',
+        label:
+          'เล่าเกี่ยวกับผลงานของทีม อะไรคือแรงบันดาลใจในการสร้าง และแอปต้องการแก้ปัญหาหรือมอบประสบการณ์แบบใดให้ผู้ใช้',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 1500,
+      },
+      {
+        id: 'technical',
+        label:
+          'อธิบายแง่มุมทางเทคนิคของผลงาน แนวทางการพัฒนา ภาษา Swift รวมถึงเฟรมเวิร์กและฟีเจอร์ของ Apple ที่นำมาใช้ และความท้าทายที่พบพร้อมวิธีแก้',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 1500,
+      },
+      {
+        id: 'toolsDisclosure',
+        label:
+          'ในการพัฒนาผลงาน ทีมได้ใช้เครื่องมือหรือแหล่งช่วยเหลือภายนอกใดบ้าง (เช่น ไลบรารี โค้ดสำเร็จรูป หรือผู้ช่วยพัฒนา) โปรดระบุและอธิบายการใช้งาน',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 800,
+      },
+    ],
+    fileLabel: 'แนบไฟล์ผลงาน .swiftpm (บีบอัดเป็น ZIP ขนาดไม่เกิน 25 MB)',
+    fileChoose: 'เลือกไฟล์',
+    fileNone: 'ยังไม่ได้เลือกไฟล์',
+    submit: 'ส่งผลงาน',
+    submitting: 'กำลังส่ง...',
+    confirm: {
+      title: 'ยืนยันการส่งผลงาน',
+      body: 'เมื่อส่งผลงานแล้วจะไม่สามารถแก้ไขหรือส่งใหม่ได้ ต้องการดำเนินการต่อหรือไม่?',
+      confirm: 'ยืนยันส่งผลงาน',
+      cancel: 'ยกเลิก',
+    },
+    locked: {
+      notice: 'ทีมของคุณส่งผลงานเรียบร้อยแล้ว',
+      submittedFileLabel: 'ไฟล์ที่ส่ง',
+      answersHeading: 'คำตอบของคุณ',
+    },
+  },
+} as const
+
 export const footer = {
   org: 'Swift Coding Club Thailand',
   copyright: '© 2026 Swift Coding Club Thailand. All rights reserved.',

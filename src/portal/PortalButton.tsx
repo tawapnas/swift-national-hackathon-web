@@ -1,17 +1,21 @@
-import { useNavigate } from 'react-router-dom'
+// In-portal button sharing RegisterButton's visual language, but driven by an
+// onClick/type/disabled (RegisterButton itself always navigates to /portal).
 
 type Variant = 'solid' | 'outline'
 type Size = 'sm' | 'md' | 'lg'
 
-interface RegisterButtonProps {
+interface PortalButtonProps {
   children: React.ReactNode
+  onClick?: () => void
+  type?: 'button' | 'submit'
   variant?: Variant
   size?: Size
+  disabled?: boolean
   className?: string
 }
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 active:scale-[0.98] cursor-pointer'
+  'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 active:scale-[0.98] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100'
 
 const variants: Record<Variant, string> = {
   solid:
@@ -26,21 +30,20 @@ const sizes: Record<Size, string> = {
   lg: 'px-8 py-3.5 text-lg',
 }
 
-export default function RegisterButton({
+export default function PortalButton({
   children,
+  onClick,
+  type = 'button',
   variant = 'solid',
   size = 'md',
+  disabled = false,
   className = '',
-}: RegisterButtonProps) {
-  const navigate = useNavigate()
-  const handleClick = () => {
-    navigate('/portal')
-  }
-
+}: PortalButtonProps) {
   return (
     <button
-      type="button"
-      onClick={handleClick}
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
       className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
     >
       {children}
