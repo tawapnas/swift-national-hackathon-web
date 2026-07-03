@@ -26,5 +26,9 @@ dist-ssr
 firestore.rules
 storage.rules
 
+# Registration data exports (PII) + local migration tooling
+*.csv
+scripts/
+
 # Claude Code
 .claude/

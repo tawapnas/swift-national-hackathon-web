@@ -47,8 +47,10 @@ export default function RegisterButton({
       await auth.authStateReady()
       if (!auth.currentUser) await signInWithGoogle()
       navigate('/portal')
-    } catch {
-      // Popup closed/blocked or sign-in failed — stay on the page.
+    } catch (err) {
+      // Popup closed/blocked or sign-in failed (e.g. auth/unauthorized-domain
+      // on a host missing from Firebase's authorized domains) — stay on the page.
+      console.error('sign-in failed:', err)
     } finally {
       setBusy(false)
     }
