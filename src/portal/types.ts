@@ -41,8 +41,13 @@ export interface TeamSurvey {
 export interface Submission {
   // Keys match the question ids in content.ts portal.submission.questions.
   essays: Record<string, string>
+  // Which environment the judges should run the app on — one of
+  // content.ts portal.submission.runEnvironment.options.
+  runEnvironment: string
   fileUrl: string
   fileName: string
+  // Terms & conditions accepted at submit time (required true, like pdpaConsent).
+  termsAccepted: boolean
   // Firestore serverTimestamp() is a FieldValue on write; on read it's a Timestamp.
   // Typed loosely here so the same shape works for both. Phase 1 uses an ISO string.
   submittedAt: unknown

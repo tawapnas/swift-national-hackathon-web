@@ -3,7 +3,7 @@ import { portal, site } from '../data/content'
 
 interface PortalShellProps {
   children: React.ReactNode
-  // Sign-out handler. When absent, the top bar shows a back-to-site link.
+  // Sign-out handler. When absent, only the home link shows.
   onSignOut?: () => void
 }
 
@@ -32,8 +32,11 @@ export default function PortalShell({ children, onSignOut }: PortalShellProps) {
           </Link>
           {/* h-9 matches the main navbar's sm RegisterButton height so both
               pills render at the same overall height. */}
-          <div className="flex h-9 items-center gap-4 text-sm">
-            {onSignOut ? (
+          <div className="flex h-9 items-center gap-5 text-sm">
+            <Link to="/" className="text-white/75 transition-colors hover:text-white">
+              {portal.shell.home}
+            </Link>
+            {onSignOut && (
               <button
                 type="button"
                 onClick={onSignOut}
@@ -41,10 +44,6 @@ export default function PortalShell({ children, onSignOut }: PortalShellProps) {
               >
                 {portal.shell.signOut}
               </button>
-            ) : (
-              <Link to="/" className="text-white/75 transition-colors hover:text-white">
-                {portal.shell.backToSite}
-              </Link>
             )}
           </div>
         </nav>

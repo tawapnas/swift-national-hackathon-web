@@ -30,6 +30,7 @@ export async function createTeam(
 export async function submitProject(
   email: string,
   essays: Record<string, string>,
+  runEnvironment: string,
   file: File,
 ): Promise<Submission> {
   const fileRef = ref(storage, `submissions/${email.toLowerCase()}/${file.name}`)
@@ -37,8 +38,11 @@ export async function submitProject(
   const fileUrl = await getDownloadURL(fileRef)
   const submission: Submission = {
     essays,
+    runEnvironment,
     fileUrl,
     fileName: file.name,
+    // The submit UI requires the terms checkbox, so acceptance is always true here.
+    termsAccepted: true,
     submittedAt: serverTimestamp(),
     locked: true,
   }

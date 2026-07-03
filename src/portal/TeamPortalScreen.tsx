@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { portal } from '../data/content'
 import type { Submission, Team } from './types'
 import { submitProject } from './api'
 import PortalShell from './PortalShell'
@@ -21,21 +22,27 @@ export default function TeamPortalScreen({ team, onSignOut }: TeamPortalScreenPr
 
   const handleSubmit = async ({
     essays,
+    runEnvironment,
     file,
   }: {
     essays: Record<string, string>
+    runEnvironment: string
     file: File
   }) => {
-    setSubmission(await submitProject(team.email, essays, file))
+    setSubmission(await submitProject(team.email, essays, runEnvironment, file))
   }
 
   return (
     <PortalShell onSignOut={onSignOut}>
       <header>
-        <h1 className="text-3xl font-bold md:text-4xl">{team.teamName}</h1>
-        <p className="mt-2 text-muted">
-          {team.schoolName} · {team.province}
-        </p>
+        <h1 className="text-3xl font-bold md:text-4xl">
+          {portal.welcome.heading} {team.teamName}
+        </h1>
+        <div className="mt-4 space-y-4 text-pretty text-lg leading-relaxed text-muted">
+          {portal.welcome.body.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
       </header>
 
       <div className="mt-10">

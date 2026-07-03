@@ -10,17 +10,23 @@ const MAX_FILE_BYTES = 25 * 1024 * 1024
 interface SubmissionSectionProps {
   // When present, the team has already submitted — render the locked summary.
   submission?: Submission
-  // Performs the actual submit (Phase 1: mock; Phase 2: Storage upload + Firestore).
-  onSubmit: (data: { essays: Record<string, string>; file: File }) => Promise<void>
+  // Performs the actual submit (Storage upload + Firestore).
+  onSubmit: (data: {
+    essays: Record<string, string>
+    runEnvironment: string
+    file: File
+  }) => Promise<void>
 }
 
 /** Section 3 — single, final, confirmed submission. Locks after submitting. */
 export default function SubmissionSection({ submission, onSubmit }: SubmissionSectionProps) {
   const s = portal.submission
 
-  // Form state (one entry per essay question + the attached file).
+  // Form state (one entry per essay question + run environment + the attached file).
   const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [runEnvironment, setRunEnvironment] = useState('')
   const [file, setFile] = useState<File | null>(null)
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -37,11 +43,16 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
       if ('optional' in q && q.optional) continue
       if (!(answers[q.id] ?? '').trim()) return 'กรุณาตอบคำถามให้ครบทุกข้อ'
     }
+    if (!runEnvironment) return 'กรุณาตอบคำถามให้ครบทุกข้อ'
     if (!file) return 'กรุณาแนบไฟล์โปรเจกต์'
     if (!file.name.toLowerCase().endsWith('.zip')) return 'รองรับเฉพาะไฟล์ .zip เท่านั้น'
     if (file.size > MAX_FILE_BYTES) return 'ไฟล์มีขนาดเกิน 25 MB'
+    if (!termsAccepted) return s.termsRequired
     return null
   }
+
+  // Drives the submit button: disabled until every required field passes.
+  const formReady = validate() === null
 
   const handleSubmitClick = () => {
     const err = validate()
@@ -59,7 +70,7 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
     try {
       const essays: Record<string, string> = {}
       for (const q of s.questions) essays[q.id] = (answers[q.id] ?? '').trim()
-      await onSubmit({ essays, file })
+      await onSubmit({ essays, runEnvironment, file })
       setConfirmOpen(false)
     } catch {
       setError('ส่งผลงานไม่สำเร็จ กรุณาลองใหม่อีกครั้ง')
@@ -96,6 +107,28 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
         ))}
 
         <div>
+          <span className="block font-medium">{s.runEnvironment.label}</span>
+          <div className="mt-3 space-y-2">
+            {s.runEnvironment.options.map((opt) => {
+              const active = runEnvironment === opt
+              return (
+                // Checkbox visuals, single-select semantics: picking one
+                // clears the other; re-clicking unticks it.
+                <label key={opt} className="flex cursor-pointer items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={active}
+                    onChange={() => setRunEnvironment(active ? '' : opt)}
+                    className="mt-1 h-5 w-5 flex-none accent-swift-orange"
+                  />
+                  <span className={active ? 'text-fg' : 'text-muted'}>{opt}</span>
+                </label>
+              )
+            })}
+          </div>
+        </div>
+
+        <div>
           <label className="block font-medium">{s.fileLabel}</label>
           <p className="mt-1 text-sm text-swift-gold">⚠︎ {s.fileWarning}</p>
           <label className="mt-3 inline-flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-surface-2 px-4 py-3 transition-colors hover:border-swift-orange">
@@ -115,9 +148,22 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
           </label>
         </div>
 
+        {/* Same 3rem/3rem divider rhythm as between PortalSections. */}
+        <div className="!mt-12 border-t border-line pt-12">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+              className="mt-1 h-5 w-5 flex-none accent-swift-orange"
+            />
+            <span className="text-pretty font-medium">{s.terms}</span>
+          </label>
+        </div>
+
         {error && <p className="text-sm text-swift-orange">{error}</p>}
 
-        <PortalButton type="button" onClick={handleSubmitClick} disabled={submitting}>
+        <PortalButton type="button" onClick={handleSubmitClick} disabled={submitting || !formReady}>
           {submitting ? s.submitting : s.submit}
         </PortalButton>
       </div>
@@ -157,6 +203,12 @@ function LockedSummary({ submission }: { submission: Submission }) {
             </p>
           </div>
         ))}
+        {submission.runEnvironment && (
+          <div className="py-4">
+            <p className="font-medium">{s.runEnvironment.label}</p>
+            <p className="mt-2 leading-relaxed text-muted">{submission.runEnvironment}</p>
+          </div>
+        )}
       </div>
 
       <h3 className="mt-8 mb-2 text-sm font-semibold uppercase tracking-wide text-swift-orange">

@@ -11,6 +11,7 @@ export default function TeamInfoSection({ team, first }: { team: Team; first?: b
   return (
     <PortalSection heading={t.heading} first={first}>
       <dl className="grid gap-4 sm:grid-cols-2">
+        <Field label={t.teamNameLabel} value={team.teamName} />
         <Field label={t.schoolLabel} value={team.schoolName} />
         <Field label={t.provinceLabel} value={team.province} />
       </dl>
