@@ -34,6 +34,7 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
 
   const validate = (): string | null => {
     for (const q of s.questions) {
+      if ('optional' in q && q.optional) continue
       if (!(answers[q.id] ?? '').trim()) return 'กรุณาตอบคำถามให้ครบทุกข้อ'
     }
     if (!file) return 'กรุณาแนบไฟล์โปรเจกต์'
@@ -70,13 +71,14 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
 
   return (
     <PortalSection heading={s.heading}>
-      <p className="leading-relaxed text-muted">{s.lead}</p>
-
-      <div className="mt-6 space-y-6">
+      <div className="space-y-6">
         {s.questions.map((q) => (
           <div key={q.id}>
             <label className="block font-medium" htmlFor={`essay-${q.id}`}>
-              {q.label}
+              {q.label}{' '}
+              {'optional' in q && q.optional && (
+                <span className="font-normal text-muted">{s.optionalTag}</span>
+              )}
             </label>
             <textarea
               id={`essay-${q.id}`}
