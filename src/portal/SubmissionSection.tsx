@@ -87,7 +87,7 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
               onChange={(e) => setAnswer(q.id, e.target.value)}
               rows={5}
               placeholder={q.placeholder}
-              className="mt-2 w-full resize-y rounded-xl border border-line bg-surface-2 px-4 py-3 text-fg outline-none transition-colors placeholder:text-muted/60 focus:border-swift-orange"
+              className="mt-2 w-full resize-y rounded-xl border border-line bg-surface-2 px-4 py-3 text-fg outline-none transition-colors placeholder:text-muted/60 focus:border-white"
             />
             <div className="mt-1 text-right text-xs text-muted">
               {(answers[q.id] ?? '').length}/{q.maxLength}
@@ -97,7 +97,8 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
 
         <div>
           <label className="block font-medium">{s.fileLabel}</label>
-          <label className="mt-2 inline-flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-surface-2 px-4 py-3 transition-colors hover:border-swift-orange">
+          <p className="mt-1 text-sm text-swift-gold">⚠︎ {s.fileWarning}</p>
+          <label className="mt-3 inline-flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-surface-2 px-4 py-3 transition-colors hover:border-swift-orange">
             <span className="rounded-full bg-swift-orange/15 px-3 py-1 text-sm font-medium text-swift-orange">
               {s.fileChoose}
             </span>

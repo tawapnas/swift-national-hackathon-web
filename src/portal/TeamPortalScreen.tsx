@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Submission, Team } from './types'
-import { mockSubmission } from './mockData' // TEMP (Phase 1): preview-toggle sample
+import { submitProject } from './api'
 import PortalShell from './PortalShell'
 import TeamInfoSection from './TeamInfoSection'
 import HackathonDetailSection from './HackathonDetailSection'
@@ -8,20 +8,17 @@ import SubmissionSection from './SubmissionSection'
 
 interface TeamPortalScreenProps {
   team: Team
+  onSignOut: () => void
 }
 
 /**
  * The team portal: team info + hackathon detail + submission, top to bottom.
- *
- * PHASE 1 (preview): submission is mocked in local state — clicking submit
- * flips to the locked view but nothing persists. In Phase 2 this is replaced by
- * api.submitProject (Storage upload + Firestore transaction) and the team's real
- * submission state from Firestore.
+ * Submitting uploads the ZIP to Storage and locks the submission onto the
+ * team's Firestore doc; the local state flips to the locked view immediately.
  */
-export default function TeamPortalScreen({ team }: TeamPortalScreenProps) {
+export default function TeamPortalScreen({ team, onSignOut }: TeamPortalScreenProps) {
   const [submission, setSubmission] = useState<Submission | undefined>(team.submission)
 
-  // PHASE 1 mock submit — builds a local Submission so the locked view renders.
   const handleSubmit = async ({
     essays,
     file,
@@ -29,26 +26,11 @@ export default function TeamPortalScreen({ team }: TeamPortalScreenProps) {
     essays: Record<string, string>
     file: File
   }) => {
-    setSubmission({
-      essays,
-      fileUrl: URL.createObjectURL(file),
-      fileName: file.name,
-      submittedAt: new Date().toISOString(),
-      locked: true,
-    })
+    setSubmission(await submitProject(team.email, essays, file))
   }
 
   return (
-    <PortalShell email={team.email}>
-      {/* TEMP (Phase 1 preview): toggle submitted/unsubmitted to preview both. */}
-      <button
-        type="button"
-        onClick={() => setSubmission((cur) => (cur ? undefined : mockSubmission))}
-        className="mb-6 rounded-full border border-dashed border-line px-3 py-1 text-xs text-muted hover:border-swift-orange hover:text-swift-orange"
-      >
-        (พรีวิว) สลับสถานะส่งผลงาน: {submission ? 'ส่งแล้ว' : 'ยังไม่ส่ง'}
-      </button>
-
+    <PortalShell onSignOut={onSignOut}>
       <header>
         <h1 className="text-3xl font-bold md:text-4xl">{team.teamName}</h1>
         <p className="mt-2 text-muted">

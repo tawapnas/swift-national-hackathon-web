@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { portal } from '../data/content'
-import type { Advisor, Leader, Person } from './types'
+import type { Advisor, Leader, Person, Team } from './types'
+import { createTeam } from './api'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
 import PortalSection from './PortalSection'
@@ -10,8 +10,11 @@ const r = portal.registration
 const o = r.options
 
 interface RegistrationScreenProps {
-  // The signed-in google email (locked, becomes the leader email). Phase 1 mock.
-  email?: string
+  // The signed-in google email (locked, becomes the leader email and doc id).
+  email: string
+  // Called with the created team so PortalPage can switch to the portal view.
+  onRegistered: (team: Team) => void
+  onSignOut: () => void
 }
 
 const emptyMember = (): Person => ({
@@ -34,17 +37,15 @@ interface SurveyState {
 
 /**
  * Team registration form: team info + leader + 2 members + a team-overall survey.
- * The leader email is locked to the signed-in account.
- *
- * PHASE 1 (preview): submit only validates then routes to /portal/team — nothing
- * persists. Phase 2 replaces the submit handler with api.createTeam(...), mapping
- * the survey เคย/ไม่เคย + รู้จัก/ไม่รู้จัก values to the booleans in TeamSurvey.
+ * The leader email is locked to the signed-in account. Submit persists the team
+ * to Firestore (api.createTeam), mapping the survey เคย/ไม่เคย + รู้จัก/ไม่รู้จัก
+ * values to the booleans in TeamSurvey.
  */
 export default function RegistrationScreen({
-  email = 'team.lead@example.com',
+  email,
+  onRegistered,
+  onSignOut,
 }: RegistrationScreenProps) {
-  const navigate = useNavigate()
-
   const [teamName, setTeamName] = useState('')
   const [schoolName, setSchoolName] = useState('')
   const [province, setProvince] = useState('')
@@ -76,6 +77,7 @@ export default function RegistrationScreen({
   })
   const [pdpaConsent, setPdpaConsent] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
   const patchLeader = (patch: Partial<Leader>) => setLeader((l) => ({ ...l, ...patch }))
   const patchMember = (i: number, patch: Partial<Person>) =>
@@ -104,7 +106,7 @@ export default function RegistrationScreen({
   const advisorComplete = (a: Advisor) =>
     a.prefix && a.nameTh.trim() && a.nameEn.trim() && a.email.trim() && a.phone.trim()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const valid =
       teamName.trim() &&
@@ -127,12 +129,37 @@ export default function RegistrationScreen({
       return
     }
     setError(null)
-    // PHASE 1: skip persistence, go straight to the portal preview.
-    navigate('/portal/team')
+    setSubmitting(true)
+    const team: Omit<Team, 'createdAt' | 'submission' | 'isQualifyingFinalRound'> = {
+      email,
+      teamName: teamName.trim(),
+      schoolName: schoolName.trim(),
+      province: province.trim(),
+      leader,
+      members,
+      advisor,
+      survey: {
+        hasProgrammed: survey.hasProgrammed === o.yesNo[0],
+        programmingLanguages:
+          survey.hasProgrammed === o.yesNo[0] ? survey.programmingLanguages.trim() : '',
+        heardOfSwift: survey.heardOfSwift === o.yesNo[0],
+        knowsSwiftPlaygrounds: survey.knowsSwiftPlaygrounds === o.playgrounds[0],
+        referral:
+          survey.referral === o.referralOther ? survey.referralOther.trim() : survey.referral,
+      },
+      pdpaConsent: true,
+    }
+    try {
+      await createTeam(team)
+      onRegistered({ ...team, isQualifyingFinalRound: null, createdAt: new Date().toISOString() })
+    } catch {
+      setError(r.submitError)
+      setSubmitting(false)
+    }
   }
 
   return (
-    <PortalShell email={email}>
+    <PortalShell onSignOut={onSignOut}>
       <h1 className="text-3xl font-bold md:text-4xl">{r.heading}</h1>
       <p className="mt-2 leading-relaxed text-muted">{r.lead}</p>
 
@@ -256,7 +283,9 @@ export default function RegistrationScreen({
 
         {/* PDPA consent */}
         <PortalSection heading={r.pdpa.heading}>
-          <div className="space-y-3 leading-relaxed text-muted">
+          {/* text-pretty rebalances line breaks so the last line never ends up
+              as a single orphan word. */}
+          <div className="space-y-3 text-pretty leading-relaxed text-muted">
             {r.pdpa.body.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -274,7 +303,9 @@ export default function RegistrationScreen({
 
         <div className="mt-12">
           {error && <p className="mb-4 text-sm text-swift-orange">{error}</p>}
-          <PortalButton type="submit">{r.submit}</PortalButton>
+          <PortalButton type="submit" disabled={submitting}>
+            {submitting ? r.submitting : r.submit}
+          </PortalButton>
         </div>
       </form>
     </PortalShell>
@@ -322,7 +353,7 @@ function PersonFields({
 }
 
 const inputClass =
-  'mt-2 w-full rounded-xl border border-line bg-surface-2 px-4 py-3 text-fg outline-none transition-colors placeholder:text-muted/60 focus:border-swift-orange disabled:opacity-60'
+  'mt-2 w-full rounded-xl border border-line bg-surface-2 px-4 py-3 text-fg outline-none transition-colors placeholder:text-muted/60 focus:border-white disabled:opacity-60'
 
 function TextField({
   label,

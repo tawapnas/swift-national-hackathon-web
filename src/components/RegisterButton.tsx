@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 type Variant = 'solid' | 'outline'
@@ -11,7 +12,7 @@ interface RegisterButtonProps {
 }
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 active:scale-[0.98] cursor-pointer'
+  'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 active:scale-[0.98] cursor-pointer disabled:cursor-wait disabled:opacity-60'
 
 const variants: Record<Variant, string> = {
   solid:
@@ -33,14 +34,31 @@ export default function RegisterButton({
   className = '',
 }: RegisterButtonProps) {
   const navigate = useNavigate()
-  const handleClick = () => {
-    navigate('/portal')
+  const [busy, setBusy] = useState(false)
+
+  // Signs in with Google right here (the popup opens from the click, so it
+  // isn't blocked), then enters the portal. Firebase is dynamically imported
+  // to keep it out of the marketing-site bundle.
+  const handleClick = async () => {
+    if (busy) return
+    setBusy(true)
+    try {
+      const { auth, signInWithGoogle } = await import('../portal/firebase')
+      await auth.authStateReady()
+      if (!auth.currentUser) await signInWithGoogle()
+      navigate('/portal')
+    } catch {
+      // Popup closed/blocked or sign-in failed — stay on the page.
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
     <button
       type="button"
       onClick={handleClick}
+      disabled={busy}
       className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
     >
       {children}

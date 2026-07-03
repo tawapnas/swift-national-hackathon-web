@@ -59,6 +59,9 @@ export interface Team {
   advisor: Advisor
   survey: TeamSurvey
   pdpaConsent: boolean // PDPA consent given at registration (required true)
+  // ผ่านเข้ารอบชิงชนะเลิศระดับประเทศหรือไม่ — null until the organizers decide
+  // (set to true/false via the Firebase console / Admin SDK, never by the app).
+  isQualifyingFinalRound: boolean | null
   createdAt: unknown
   submission?: Submission
 }

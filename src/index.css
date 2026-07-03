@@ -92,8 +92,9 @@ body {
   background: color-mix(in srgb, var(--color-swift-orange) 35%, transparent);
 }
 
-/* Accessible focus ring in brand orange */
-:focus-visible {
+/* Accessible focus ring in brand orange. Form fields are excluded — they show
+   their own focus state (white border) instead. */
+:focus-visible:not(input, textarea, select) {
   outline: 2px solid var(--color-swift-orange);
   outline-offset: 2px;
   border-radius: 4px;
