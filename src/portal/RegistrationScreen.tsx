@@ -9,6 +9,14 @@ import PortalSection from './PortalSection'
 const r = portal.registration
 const o = r.options
 
+const isValidEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim())
+// 10 digits, allowing typed spaces/dashes (e.g. 089-070-0279).
+const isValidPhone = (s: string) => /^\d{10}$/.test(s.replace(/[\s-]/g, ''))
+
+// Inline field errors — only shown once the field has content.
+const emailError = (v: string) => (v.trim() && !isValidEmail(v) ? r.invalidEmail : undefined)
+const phoneError = (v: string) => (v.trim() && !isValidPhone(v) ? r.invalidPhone : undefined)
+
 interface RegistrationScreenProps {
   // The signed-in google email (locked, becomes the leader email and doc id).
   email: string
@@ -78,6 +86,8 @@ export default function RegistrationScreen({
   const [pdpaConsent, setPdpaConsent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  // Inline email/phone errors stay hidden until the first ลงทะเบียน tap.
+  const [showFieldErrors, setShowFieldErrors] = useState(false)
 
   const patchLeader = (patch: Partial<Leader>) => setLeader((l) => ({ ...l, ...patch }))
   const patchMember = (i: number, patch: Partial<Person>) =>
@@ -101,13 +111,19 @@ export default function RegistrationScreen({
   }
 
   const personComplete = (p: Person) =>
-    p.prefix && p.nameTh.trim() && p.nameEn.trim() && p.level && p.email.trim() && p.phone.trim()
+    p.prefix &&
+    p.nameTh.trim() &&
+    p.nameEn.trim() &&
+    p.level &&
+    isValidEmail(p.email) &&
+    isValidPhone(p.phone)
 
   const advisorComplete = (a: Advisor) =>
-    a.prefix && a.nameTh.trim() && a.nameEn.trim() && a.email.trim() && a.phone.trim()
+    a.prefix && a.nameTh.trim() && a.nameEn.trim() && isValidEmail(a.email) && isValidPhone(a.phone)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setShowFieldErrors(true)
     const valid =
       teamName.trim() &&
       schoolName.trim() &&
@@ -169,18 +185,23 @@ export default function RegistrationScreen({
           <div className="space-y-5">
             <TextField label={r.team.teamName} value={teamName} onChange={setTeamName} />
             <TextField label={r.team.schoolName} value={schoolName} onChange={setSchoolName} />
-            <TextField
+            <SelectField
               label={r.team.province}
               value={province}
+              options={o.provinces}
               onChange={setProvince}
-              hint={r.team.provinceHint}
             />
           </div>
         </PortalSection>
 
         {/* Leader */}
         <PortalSection heading={r.leaderHeading}>
-          <PersonFields person={leader} onPatch={patchLeader} emailLocked />
+          <PersonFields
+            person={leader}
+            onPatch={patchLeader}
+            emailLocked
+            showErrors={showFieldErrors}
+          />
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <TextField
               label={r.person.lineId}
@@ -199,7 +220,11 @@ export default function RegistrationScreen({
         {/* Members */}
         {members.map((m, i) => (
           <PortalSection key={i} heading={`${r.memberHeading} ${i + 1}`}>
-            <PersonFields person={m} onPatch={(patch) => patchMember(i, patch)} />
+            <PersonFields
+              person={m}
+              onPatch={(patch) => patchMember(i, patch)}
+              showErrors={showFieldErrors}
+            />
           </PortalSection>
         ))}
 
@@ -227,11 +252,13 @@ export default function RegistrationScreen({
               label={r.person.email}
               value={advisor.email}
               onChange={(v) => patchAdvisor({ email: v })}
+              error={showFieldErrors ? emailError(advisor.email) : undefined}
             />
             <TextField
               label={r.person.phone}
               value={advisor.phone}
               onChange={(v) => patchAdvisor({ phone: v })}
+              error={showFieldErrors ? phoneError(advisor.phone) : undefined}
             />
           </div>
         </PortalSection>
@@ -319,10 +346,13 @@ function PersonFields({
   person,
   onPatch,
   emailLocked = false,
+  showErrors = false,
 }: {
   person: Person
   onPatch: (patch: Partial<Person>) => void
   emailLocked?: boolean
+  // Inline validation is deferred until the first submit attempt.
+  showErrors?: boolean
 }) {
   const p = r.person
   return (
@@ -346,8 +376,14 @@ function PersonFields({
         value={person.email}
         onChange={(v) => onPatch({ email: v })}
         disabled={emailLocked}
+        error={emailLocked || !showErrors ? undefined : emailError(person.email)}
       />
-      <TextField label={p.phone} value={person.phone} onChange={(v) => onPatch({ phone: v })} />
+      <TextField
+        label={p.phone}
+        value={person.phone}
+        onChange={(v) => onPatch({ phone: v })}
+        error={showErrors ? phoneError(person.phone) : undefined}
+      />
     </div>
   )
 }
@@ -361,12 +397,15 @@ function TextField({
   onChange,
   hint,
   disabled = false,
+  error,
 }: {
   label: string
   value: string
   onChange: (value: string) => void
   hint?: string
   disabled?: boolean
+  // Inline validation message; also tints the border while present.
+  error?: string
 }) {
   return (
     <label className="block">
@@ -376,9 +415,13 @@ function TextField({
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
-        className={inputClass}
+        className={`${inputClass} ${error ? 'border-swift-orange' : ''}`}
       />
-      {hint && <span className="mt-1 block text-xs text-muted">{hint}</span>}
+      {error ? (
+        <span className="mt-1 block text-xs text-swift-orange">{error}</span>
+      ) : (
+        hint && <span className="mt-1 block text-xs text-muted">{hint}</span>
+      )}
     </label>
   )
 }
