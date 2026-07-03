@@ -37,7 +37,7 @@ export default function TeamInfoSection({ team, first }: { team: Team; first?: b
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="mt-8 mb-3 text-sm font-semibold uppercase tracking-wide text-swift-orange">
+    <h3 className="mt-8 mb-3 text-sm font-semibold uppercase tracking-wide text-fg">
       {children}
     </h3>
   )

@@ -4,6 +4,7 @@ import { portal } from '../data/content'
 import type { Advisor, Leader, Person } from './types'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
+import PortalSection from './PortalSection'
 
 const r = portal.registration
 const o = r.options
@@ -135,9 +136,9 @@ export default function RegistrationScreen({
       <h1 className="text-3xl font-bold md:text-4xl">{r.heading}</h1>
       <p className="mt-2 leading-relaxed text-muted">{r.lead}</p>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-8">
+      <form onSubmit={handleSubmit} className="mt-10">
         {/* Team info */}
-        <Card heading={r.team.heading}>
+        <PortalSection heading={r.team.heading} first>
           <div className="space-y-5">
             <TextField label={r.team.teamName} value={teamName} onChange={setTeamName} />
             <TextField label={r.team.schoolName} value={schoolName} onChange={setSchoolName} />
@@ -148,10 +149,10 @@ export default function RegistrationScreen({
               hint={r.team.provinceHint}
             />
           </div>
-        </Card>
+        </PortalSection>
 
         {/* Leader */}
-        <Card heading={r.leaderHeading}>
+        <PortalSection heading={r.leaderHeading}>
           <PersonFields person={leader} onPatch={patchLeader} emailLocked />
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <TextField
@@ -166,17 +167,17 @@ export default function RegistrationScreen({
             selected={leader.devices}
             onToggle={toggleDevice}
           />
-        </Card>
+        </PortalSection>
 
         {/* Members */}
         {members.map((m, i) => (
-          <Card key={i} heading={`${r.memberHeading} ${i + 1}`}>
+          <PortalSection key={i} heading={`${r.memberHeading} ${i + 1}`}>
             <PersonFields person={m} onPatch={(patch) => patchMember(i, patch)} />
-          </Card>
+          </PortalSection>
         ))}
 
         {/* Advisor */}
-        <Card heading={r.advisorHeading}>
+        <PortalSection heading={r.advisorHeading}>
           <div className="grid gap-4 sm:grid-cols-2">
             <SelectField
               label={r.person.prefix}
@@ -206,10 +207,10 @@ export default function RegistrationScreen({
               onChange={(v) => patchAdvisor({ phone: v })}
             />
           </div>
-        </Card>
+        </PortalSection>
 
         {/* Team-overall survey */}
-        <Card heading={r.survey.heading}>
+        <PortalSection heading={r.survey.heading}>
           <p className="-mt-3 mb-5 text-sm text-muted">{r.survey.note}</p>
           <div className="space-y-6">
             <RadioGroup
@@ -251,10 +252,10 @@ export default function RegistrationScreen({
               />
             )}
           </div>
-        </Card>
+        </PortalSection>
 
         {/* PDPA consent */}
-        <Card heading={r.pdpa.heading}>
+        <PortalSection heading={r.pdpa.heading}>
           <div className="space-y-3 leading-relaxed text-muted">
             {r.pdpa.body.map((p, i) => (
               <p key={i}>{p}</p>
@@ -269,26 +270,18 @@ export default function RegistrationScreen({
             />
             <span className="font-medium">{r.pdpa.consent}</span>
           </label>
-        </Card>
+        </PortalSection>
 
-        {error && <p className="text-sm text-swift-orange">{error}</p>}
-
-        <PortalButton type="submit">{r.submit}</PortalButton>
+        <div className="mt-12">
+          {error && <p className="mb-4 text-sm text-swift-orange">{error}</p>}
+          <PortalButton type="submit">{r.submit}</PortalButton>
+        </div>
       </form>
     </PortalShell>
   )
 }
 
 /* ---------- field building blocks ---------- */
-
-function Card({ heading, children }: { heading: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl border border-line bg-surface p-6 md:p-8">
-      <h2 className="mb-5 text-xl font-bold">{heading}</h2>
-      {children}
-    </div>
-  )
-}
 
 /** The six fields every person has (leader + members). */
 function PersonFields({
