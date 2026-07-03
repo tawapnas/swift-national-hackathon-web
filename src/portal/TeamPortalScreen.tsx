@@ -46,7 +46,7 @@ export default function TeamPortalScreen({ team, onSignOut }: TeamPortalScreenPr
       </header>
 
       <div className="mt-10">
-        <TeamInfoSection team={team} first />
+        <TeamInfoSection team={team} />
         <HackathonDetailSection />
         <SubmissionSection submission={submission} onSubmit={handleSubmit} />
       </div>
