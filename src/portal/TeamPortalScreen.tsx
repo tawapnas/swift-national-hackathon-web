@@ -38,7 +38,7 @@ export default function TeamPortalScreen({ team, onSignOut }: TeamPortalScreenPr
         <h1 className="text-3xl font-bold md:text-4xl">
           {portal.welcome.heading} {team.teamName}
         </h1>
-        <div className="mt-4 space-y-4 text-pretty text-lg leading-relaxed text-muted">
+        <div className="mt-4 space-y-4 text-pretty text-lg leading-relaxed text-fg">
           {portal.welcome.body.map((p, i) => (
             <p key={i}>{p}</p>
           ))}
