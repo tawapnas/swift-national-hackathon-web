@@ -23,7 +23,7 @@ export const hero = {
   heading: 'Young iOS Developer\nHackathon 2026',
   subheading:
     'เวทีแข่งขันพัฒนาแอปบนระบบ iOS ระดับประเทศ',
-  primaryCta: 'สมัครเข้าร่วม',
+  primaryCta: 'ส่งผลงาน',
   secondaryCta: 'ดูรายละเอียด',
   facts: [] as { icon: string; label: string }[],
 }
@@ -144,6 +144,295 @@ export const organizers = {
     },
   ],
 }
+
+// Team Portal copy. Hackathon-detail and submission-essay text are placeholders
+// until the organizers finalize them (marked with "(รอเนื้อหา)").
+export const portal = {
+  // Shared page chrome (top bar).
+  shell: {
+    home: 'หน้าหลัก',
+    signOut: 'ออกจากระบบ',
+  },
+
+  // Shared portal error states.
+  errors: {
+    load: 'โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    retry: 'ลองใหม่',
+  },
+
+  // Registration form. A team = 1 leader + 2 members (3 students total).
+  registration: {
+    heading: 'ลงทะเบียนทีม',
+    lead: 'กรอกข้อมูลทีมให้ครบถ้วนเพื่อเริ่มเข้าร่วมการแข่งขัน',
+    selectPlaceholder: 'เลือก',
+    // Choice options reused across selects/checkboxes/radios.
+    options: {
+      prefix: ['นาย', 'นางสาว'],
+      level: ['ม.4', 'ม.5', 'ม.6', 'ปวช.1', 'ปวช.2', 'ปวช.3'],
+      devices: ['iPad', 'Mac', 'iPhone', 'ไม่มี'],
+      yesNo: ['เคย', 'ไม่เคย'],
+      playgrounds: ['รู้จัก', 'ไม่รู้จัก'],
+      referral: [
+        'Swift Coding Club TH Facebook',
+        'Swift Coding Club TH Instagram',
+        'แพลตฟอร์ม NDLP',
+        'อื่น ๆ',
+      ],
+      referralOther: 'อื่น ๆ',
+      // All 77 provinces, Thai alphabetical order (leading vowels ignored,
+      // per standard Thai collation).
+      provinces: [
+        'กระบี่',
+        'กรุงเทพมหานคร',
+        'กาญจนบุรี',
+        'กาฬสินธุ์',
+        'กำแพงเพชร',
+        'ขอนแก่น',
+        'จันทบุรี',
+        'ฉะเชิงเทรา',
+        'ชลบุรี',
+        'ชัยนาท',
+        'ชัยภูมิ',
+        'ชุมพร',
+        'เชียงราย',
+        'เชียงใหม่',
+        'ตรัง',
+        'ตราด',
+        'ตาก',
+        'นครนายก',
+        'นครปฐม',
+        'นครพนม',
+        'นครราชสีมา',
+        'นครศรีธรรมราช',
+        'นครสวรรค์',
+        'นนทบุรี',
+        'นราธิวาส',
+        'น่าน',
+        'บึงกาฬ',
+        'บุรีรัมย์',
+        'ปทุมธานี',
+        'ประจวบคีรีขันธ์',
+        'ปราจีนบุรี',
+        'ปัตตานี',
+        'พระนครศรีอยุธยา',
+        'พะเยา',
+        'พังงา',
+        'พัทลุง',
+        'พิจิตร',
+        'พิษณุโลก',
+        'เพชรบุรี',
+        'เพชรบูรณ์',
+        'แพร่',
+        'ภูเก็ต',
+        'มหาสารคาม',
+        'มุกดาหาร',
+        'แม่ฮ่องสอน',
+        'ยโสธร',
+        'ยะลา',
+        'ร้อยเอ็ด',
+        'ระนอง',
+        'ระยอง',
+        'ราชบุรี',
+        'ลพบุรี',
+        'ลำปาง',
+        'ลำพูน',
+        'เลย',
+        'ศรีสะเกษ',
+        'สกลนคร',
+        'สงขลา',
+        'สตูล',
+        'สมุทรปราการ',
+        'สมุทรสงคราม',
+        'สมุทรสาคร',
+        'สระแก้ว',
+        'สระบุรี',
+        'สิงห์บุรี',
+        'สุโขทัย',
+        'สุพรรณบุรี',
+        'สุราษฎร์ธานี',
+        'สุรินทร์',
+        'หนองคาย',
+        'หนองบัวลำภู',
+        'อ่างทอง',
+        'อำนาจเจริญ',
+        'อุดรธานี',
+        'อุตรดิตถ์',
+        'อุทัยธานี',
+        'อุบลราชธานี',
+      ],
+    },
+    team: {
+      heading: 'ข้อมูลทีม',
+      teamName: 'ชื่อทีม',
+      schoolName: 'ชื่อสถานศึกษา',
+      province: 'จังหวัดของสถานศึกษา',
+    },
+    // Per-person field labels (leader + members share these).
+    person: {
+      prefix: 'คำนำหน้า',
+      nameTh: 'ชื่อ-นามสกุล (ภาษาไทย)',
+      nameEn: 'ชื่อ-นามสกุล (ภาษาอังกฤษ)',
+      level: 'ระดับชั้น',
+      email: 'อีเมล',
+      phone: 'เบอร์โทร',
+      lineId: 'LINE ID',
+      devices: 'อุปกรณ์ Apple ที่มี',
+    },
+    leaderHeading: 'ข้อมูลหัวหน้าทีม',
+    memberHeading: 'สมาชิกคนที่', // followed by the member number
+    advisorHeading: 'ข้อมูลอาจารย์ที่ปรึกษา',
+    // PDPA consent (required to submit).
+    pdpa: {
+      heading: 'การเก็บรวบรวมและใช้ข้อมูลส่วนบุคคล',
+      body: [
+        'ในการสมัครเข้าร่วมกิจกรรม ข้าพเจ้ายินยอมให้ผู้จัดงานเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลที่ให้ไว้ในแบบฟอร์มนี้ เพื่อวัตถุประสงค์ในการดำเนินการรับสมัคร การจัดการแข่งขัน และการติดต่อสื่อสารที่เกี่ยวข้องกับกิจกรรม Young iOS Developer Hackathon 2026 (YiDH 26)',
+        'ในบางกรณี ผู้จัดงานอาจมีความจำเป็นต้องเปิดเผยหรือส่งต่อข้อมูลของท่านให้แก่หน่วยงานหรือพันธมิตรที่เกี่ยวข้องกับการจัดกิจกรรม (เช่น ผู้ร่วมจัดงาน คณะกรรมการตัดสิน หรือผู้สนับสนุน) เท่าที่จำเป็นเพื่อการดำเนินการรับสมัครและการแข่งขันเท่านั้น โดยจะไม่นำข้อมูลไปจำหน่าย หรือใช้เพื่อวัตถุประสงค์อื่นใดนอกเหนือจากกิจกรรมนี้',
+      ],
+      consent: 'ข้าพเจ้าได้อ่านและยินยอมให้เก็บรวบรวมและใช้ข้อมูลส่วนบุคคลตามเงื่อนไขข้างต้น',
+    },
+    // Team-overall survey (answered once per team).
+    survey: {
+      heading: 'ข้อมูลเพิ่มเติม',
+      note: 'ให้ตอบในภาพรวมของทีม ไม่จำเป็นต้องมีทุกคนก็ได้',
+      hasProgrammed: 'เคยเขียนโปรแกรมมาก่อนหรือไม่',
+      programmingLanguages: 'หากเคย ให้ระบุภาษาที่เคยเขียน',
+      heardOfSwift: 'เคยได้ยินภาษา Swift มาก่อนหรือไม่',
+      knowsSwiftPlaygrounds: 'รู้จักและเคยลองใช้งานโปรแกรม Swift Playgrounds หรือไม่',
+      referral: 'ได้ยินกิจกรรมนี้มาจากช่องทางใด',
+      referralOtherLabel: 'โปรดระบุช่องทาง',
+    },
+    submit: 'ลงทะเบียน',
+    submitting: 'กำลังลงทะเบียน...',
+    requiredNote: 'กรุณากรอกข้อมูลให้ครบทุกช่อง',
+    submitError: 'ลงทะเบียนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    invalidEmail: 'รูปแบบอีเมลไม่ถูกต้อง',
+    invalidPhone: 'กรุณากรอกเบอร์โทรเป็นตัวเลข 10 หลัก',
+  },
+
+  // Full-screen confirmation shown right after a successful registration.
+  registrationSuccess: {
+    heading: 'ลงทะเบียนสำเร็จ',
+    body: 'ทีมของคุณลงทะเบียนเข้าร่วมการแข่งขันเรียบร้อยแล้ว เข้าสู่ Portal เพื่อดูรายละเอียดการแข่งขันและส่งผลงาน',
+    cta: 'ไปที่ Portal',
+  },
+
+  // Team portal greeting (top of the page).
+  welcome: {
+    heading: 'สวัสดีทีม', // followed by the team name
+    body: [
+      'ในฐานะของตัวแทน Swift Coding Club TH ขอยินดีต้อนรับเข้าสู่รอบที่หนึ่งของกิจกรรม Young iOS Developer Hackathon 2026 ในรอบนี้จะเป็นการคัดเลือกในแต่ละภูมิภาค โดยผลงานที่ถูกคัดเลือกในแต่ละภูมิภาค จะได้ไปแข่งขันต่อในรอบชิงชนะเลิศครับ',
+      'ในการส่งผลงานครั้งนี้ ทีมจะต้องเตรียมแอปพลิเคชัน และตอบคำถามที่กำหนด เพื่อให้กรรมการเข้าใจถึงไอเดีย เทคนิคที่ใช้ และผลกระทบเชิงบวกของผลงานที่ส่ง ขอให้ทุกทีมอ่านรายละเอียดด้านล่างนี้ให้ครบถ้วนก่อนเริ่มพัฒนาผลงานนะครับ',
+    ],
+  },
+
+  // Portal section 1 — team info (read-only, from Firestore).
+  teamInfo: {
+    heading: 'ข้อมูลทีม',
+    teamNameLabel: 'ชื่อทีม',
+    schoolLabel: 'สถานศึกษา',
+    provinceLabel: 'จังหวัด',
+    leaderTag: 'หัวหน้าทีม', // shown in parentheses after the leader's name
+    membersHeading: 'สมาชิก',
+    advisorHeading: 'อาจารย์ที่ปรึกษา',
+    levelLabel: 'ระดับชั้น',
+  },
+
+  // Portal section 2 — project brief + submission requirements (SSC-style).
+  detail: {
+    heading: 'รายละเอียดการส่งผลงาน',
+    body: 'สร้างแอปพลิเคชัน ที่เล่นจบได้ภายใน 3 นาที สามารถใส่ไอเดียสร้างสรรค์ได้เต็มที่ โดยทางกรรมการจะเปิดเล่นผลงานที่ส่งโดยไม่ได้อ่านรายละเอียดใดๆ ดังนั้นแอปจะต้องมี flow ที่ครบตั้งแต่ต้นจนจบ และสามารถเข้าใจได้ทันทีว่าคืออะไร และทำอะไรได้',
+    rulesHeading: 'ข้อกำหนดการส่งผลงาน:',
+    rules: [
+      'พัฒนาแอปด้วย Swift Playgrounds 4.6 ขึ้นไป บน iPad หรือ MacBook (บน Mac สามารถใช้ Xcode 26 ขึ้นไปได้เช่นกัน)',
+      'แอปต้องไม่พึ่งพาการเชื่อมต่ออินเทอร์เน็ต',
+      'เป็นแอปที่ไม่เคยส่งเข้าแข่งขันหรือนำเสนอที่ใดมาก่อน หากตรวจพบภายหลัง **ทีมจะถูกตัดสิทธิ์ทันที**',
+      'ส่งผลงานเป็นไฟล์ .swiftpm บีบอัดเป็น ZIP (ไม่เกิน 25 MB) พร้อมอธิบายผลงานและตอบคำถามที่ผู้จัดเตรียมไว้',
+      'ส่งได้ทีมละ 1 ผลงาน',
+      // **...** renders bold (see HackathonDetailSection).
+      'ปิดรับส่งผลงานรอบภูมิภาควันที่ **16 สิงหาคม 2569 เวลา 23:59 น.**',
+    ],
+  },
+
+  // Portal section 3 — submission form.
+  submission: {
+    heading: 'แนะนำผลงานของคุณ',
+    // Written Proposal questions (SSC-style). `id` keys map to Firestore.
+    questions: [
+      {
+        id: 'brief',
+        label:
+          'เล่าภาพรวมของผลงานที่ทำภายใน 1-2 ประโยค มีไว้เพื่อแก้ปัญหาอะไรบ้าง',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 250,
+      },
+      {
+        id: 'inspiration',
+        label:
+          'อะไรคือแรงบันดาลใจในการสร้างแอปนี้ และแอปต้องการแก้ปัญหาในด้านใด',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 1500,
+      },
+      {
+        id: 'technical',
+        label:
+          'อธิบายแง่มุมทางเทคนิคของการพัฒนาแอป รวมถึง Tools และ Frameworks ของ Apple ที่นำมาใช้ และระบุวิธีการใช้เครื่องมือ AI ในการพัฒนาหากมีการใช้งาน',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 1500,
+      },
+      {
+        id: 'ai',
+        label:
+          'ถ้าหากมีการใช้เครื่องมือ AI ในการพัฒนา อธิบายสิ่งที่ได้เรียนรู้จากการทำงานร่วมกับ AI',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 800,
+        optional: true,
+      },
+      {
+        id: 'contribution',
+        label:
+          'หากคุณเคยใช้ทักษะการเขียนโค้ดเพื่อช่วยเหลือชุมชนหรือสถานศึกษาของคุณ โปรดระบุรายละเอียดที่นี่',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 1500,
+        optional: true,
+      },
+      {
+        id: 'obstacle',
+        label:
+          'เจออุปสรรคอะไรระหว่างพัฒนาแอป และมีวิธีแก้ปัญหาอย่างไร',
+        placeholder: 'พิมพ์คำตอบของคุณที่นี่',
+        maxLength: 800,
+      }
+    ],
+    optionalTag: '(ไม่บังคับ)',
+    // Final question — which device the judges should test the app on.
+    runEnvironment: {
+      label: 'เลือกอุปกรณ์ที่ต้องการให้กรรมการใช้ทดสอบ',
+      options: ['iPad - Swift Playgrounds 4.6', 'MacBook - Xcode 26'],
+    },
+    fileLabel: 'แนบไฟล์ผลงาน .swiftpm (บีบอัดเป็น ZIP ขนาดไม่เกิน 25 MB)',
+    fileWarning:
+      'โปรดตรวจสอบก่อนส่งว่าไฟล์สามารถ Unzip กลับเป็น .swiftpm ได้อย่างสมบูรณ์ และเปิดใช้งานได้ปกติ',
+    fileChoose: 'เลือกไฟล์',
+    fileNone: 'ยังไม่ได้เลือกไฟล์',
+    // Terms & conditions (must be accepted to submit).
+    terms:
+      'ข้าพเจ้าและสมาชิกในทีมได้อ่านและเข้าใจกฎกติกาทั้งหมดแล้ว และยืนยันว่าผลงานนี้เป็นผลงานใหม่ที่ไม่เคยส่งเข้าประกวดหรือนำเสนอที่ใดมาก่อน ทั้งนี้ ข้าพเจ้ารับทราบว่าผลงานที่ไม่สามารถเปิดได้ระหว่างตัดสินจะไม่ถูกพิจารณา และการทุจริตทุกรูปแบบจะถูกตัดสิทธิ์ และอาจถูกระงับไม่ให้เข้าร่วมกิจกรรมของทาง Swift Coding Club TH ในอนาคต',
+    termsRequired: 'กรุณายืนยันการยอมรับกฎกติกาก่อนส่งผลงาน',
+    submit: 'ส่งผลงาน',
+    submitting: 'กำลังส่ง...',
+    confirm: {
+      title: 'ยืนยันการส่งผลงาน',
+      body: 'เมื่อส่งผลงานแล้วจะไม่สามารถแก้ไขหรือส่งใหม่ได้ ต้องการดำเนินการต่อหรือไม่?',
+      confirm: 'ยืนยันส่งผลงาน',
+      cancel: 'ยกเลิก',
+    },
+    locked: {
+      notice: 'ทีมของคุณส่งผลงานเรียบร้อยแล้ว',
+      submittedFileLabel: 'ไฟล์ที่ส่ง',
+      answersHeading: 'คำตอบของคุณ',
+    },
+  },
+} as const
 
 export const footer = {
   org: 'Swift Coding Club Thailand',

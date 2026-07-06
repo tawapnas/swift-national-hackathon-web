@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { nav, site } from '../data/content'
+import { hero, nav, site } from '../data/content'
 import RegisterButton from './RegisterButton'
 
 export default function Navbar() {
@@ -34,7 +34,7 @@ export default function Navbar() {
               {item.label}
             </a>
           ))}
-          <RegisterButton size="sm">สมัครเข้าร่วม</RegisterButton>
+          <RegisterButton size="sm">{hero.primaryCta}</RegisterButton>
         </div>
 
         {/* Mobile toggle */}
@@ -84,7 +84,7 @@ export default function Navbar() {
             </a>
           ))}
           <RegisterButton size="md" className="mt-3 w-full">
-            สมัครเข้าร่วม
+            {hero.primaryCta}
           </RegisterButton>
         </div>
       </div>

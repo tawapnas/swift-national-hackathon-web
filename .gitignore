@@ -22,5 +22,13 @@ dist-ssr
 # Build artifacts
 *.tsbuildinfo
 
+# Firebase security rules (kept local)
+firestore.rules
+storage.rules
+
+# Registration data exports (PII) + local migration tooling
+*.csv
+scripts/
+
 # Claude Code
 .claude/
