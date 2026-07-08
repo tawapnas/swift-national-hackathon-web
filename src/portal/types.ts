@@ -68,5 +68,8 @@ export interface Team {
   // (set to true/false via the Firebase console / Admin SDK, never by the app).
   isQualifyingFinalRound: boolean | null
   createdAt: unknown
+  // Updated to serverTimestamp() on every portal sign-in; null until the first
+  // login (Timestamp on read). See scripts/add-lastlogin.mjs for backfill.
+  lastLogin: unknown
   submission?: Submission
 }

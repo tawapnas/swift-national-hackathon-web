@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { portal } from '../data/content'
 import type { Team } from './types'
 import { useAuth } from './useAuth'
-import { getTeam } from './api'
+import { getTeam, updateLastLogin } from './api'
 import FullScreenLoader from './FullScreenLoader'
 import RegistrationScreen from './RegistrationScreen'
 import RegistrationSuccessScreen from './RegistrationSuccessScreen'
@@ -39,7 +39,11 @@ export default function PortalPage() {
     setLoadFailed(false)
     getTeam(email)
       .then((t) => {
-        if (!cancelled) setTeam(t)
+        if (cancelled) return
+        setTeam(t)
+        // Best-effort login stamp for existing teams; never blocks the portal.
+        // New registrations get their first stamp in createTeam().
+        if (t) updateLastLogin(email).catch(() => {})
       })
       .catch(() => {
         if (!cancelled) setLoadFailed(true)

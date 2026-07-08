@@ -146,7 +146,7 @@ export default function RegistrationScreen({
     }
     setError(null)
     setSubmitting(true)
-    const team: Omit<Team, 'createdAt' | 'submission' | 'isQualifyingFinalRound'> = {
+    const team: Omit<Team, 'createdAt' | 'submission' | 'isQualifyingFinalRound' | 'lastLogin'> = {
       email,
       teamName: teamName.trim(),
       schoolName: schoolName.trim(),
@@ -167,7 +167,12 @@ export default function RegistrationScreen({
     }
     try {
       await createTeam(team)
-      onRegistered({ ...team, isQualifyingFinalRound: null, createdAt: new Date().toISOString() })
+      onRegistered({
+        ...team,
+        isQualifyingFinalRound: null,
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+      })
     } catch {
       setError(r.submitError)
       setSubmitting(false)

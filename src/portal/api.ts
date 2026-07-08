@@ -16,14 +16,22 @@ export async function getTeam(email: string): Promise<Team | null> {
 }
 
 export async function createTeam(
-  team: Omit<Team, 'createdAt' | 'submission' | 'isQualifyingFinalRound'>,
+  team: Omit<Team, 'createdAt' | 'submission' | 'isQualifyingFinalRound' | 'lastLogin'>,
 ): Promise<void> {
   await setDoc(teamDoc(team.email), {
     ...team,
     email: team.email.toLowerCase(),
     isQualifyingFinalRound: null,
     createdAt: serverTimestamp(),
+    // Registration is itself a sign-in, so stamp the first login now.
+    lastLogin: serverTimestamp(),
   })
+}
+
+/** Records the current sign-in time on the team doc. Best-effort — a failure
+ *  here must not block portal access, so callers ignore rejections. */
+export async function updateLastLogin(email: string): Promise<void> {
+  await updateDoc(teamDoc(email), { lastLogin: serverTimestamp() })
 }
 
 /** Uploads the ZIP to Storage, then locks the submission onto the team doc. */
