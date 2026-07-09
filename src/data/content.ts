@@ -432,6 +432,105 @@ export const portal = {
       answersHeading: 'คำตอบของคุณ',
     },
   },
+
+  // Organizer dashboard (/organizer) — read-only. Access is gated by the
+  // organizers allowlist (firestore.rules); the copy below covers the sign-in
+  // gate, the access-denied screen, and the dashboard itself.
+  organizer: {
+    // Shown when no one is signed in.
+    signIn: {
+      heading: 'สำหรับผู้จัดงาน',
+      body: 'เข้าสู่ระบบด้วยบัญชี Google ของผู้จัดงานเพื่อดูข้อมูลทีมและผลงานที่ส่งเข้ามา',
+      cta: 'เข้าสู่ระบบด้วย Google',
+    },
+    // Signed in, but the email is not on the allowlist.
+    denied: {
+      heading: 'ไม่มีสิทธิ์เข้าถึง',
+      body: 'บัญชีนี้ไม่มีสิทธิ์เข้าถึงระบบผู้จัดงาน หากคุณเป็นผู้จัดงาน กรุณาติดต่อผู้ดูแลระบบเพื่อขอสิทธิ์',
+    },
+    heading: 'ระบบผู้จัดงาน',
+    lead: 'ตรวจสอบข้อมูลทีมและผลงานที่ส่งเข้ามา',
+    stats: {
+      totalTeams: 'ทีมทั้งหมด',
+      signedIn: 'เข้าสู่ระบบแล้ว',
+      submitted: 'ส่งผลงานแล้ว',
+      unit: 'ทีม',
+    },
+    searchPlaceholder: 'ค้นหาชื่อทีม / สถานศึกษา / จังหวัด',
+    filters: {
+      all: 'ทั้งหมด',
+      submitted: 'ส่งแล้ว',
+      notSubmitted: 'ยังไม่ส่ง',
+    },
+    badge: {
+      submitted: 'ส่งแล้ว',
+      notSubmitted: 'ยังไม่ส่ง',
+    },
+    list: {
+      empty: 'ไม่พบทีมที่ตรงกับเงื่อนไข',
+      loading: 'กำลังโหลด...',
+      resultsUnit: 'ทีม',
+    },
+    pagination: {
+      prev: 'ก่อนหน้า',
+      next: 'ถัดไป',
+      page: 'หน้า', // followed by the page number
+    },
+    csv: {
+      export: 'ส่งออก CSV',
+      exporting: 'กำลังส่งออก...',
+      filename: 'teams.csv',
+      // Column order for the exported CSV.
+      headers: [
+        'ชื่อทีม',
+        'สถานศึกษา',
+        'จังหวัด',
+        'หัวหน้าทีม',
+        'อีเมลหัวหน้าทีม',
+        'เบอร์โทรหัวหน้าทีม',
+        'สมาชิก',
+        'อาจารย์ที่ปรึกษา',
+        'อีเมลอาจารย์',
+        'ส่งผลงาน',
+        'เวลาที่ส่ง',
+        'ชื่อไฟล์',
+        'ลิงก์ไฟล์',
+      ],
+    },
+    detail: {
+      back: '← กลับ',
+      teamHeading: 'ข้อมูลทีม',
+      peopleHeading: 'สมาชิกทีม',
+      surveyHeading: 'ข้อมูลเพิ่มเติม',
+      submissionHeading: 'ผลงานที่ส่ง',
+      createdAtLabel: 'ลงทะเบียนเมื่อ',
+      lastLoginLabel: 'เข้าสู่ระบบล่าสุด',
+      finalistLabel: 'สถานะรอบชิงชนะเลิศ',
+      finalistYes: 'ผ่านเข้ารอบ',
+      finalistNo: 'ไม่ผ่านเข้ารอบ',
+      finalistPending: 'ยังไม่ประกาศผล',
+      leaderTag: 'หัวหน้าทีม',
+      advisorLabel: 'อาจารย์ที่ปรึกษา',
+      emailLabel: 'อีเมล',
+      phoneLabel: 'เบอร์โทร',
+      levelLabel: 'ระดับชั้น',
+      lineIdLabel: 'LINE ID',
+      devicesLabel: 'อุปกรณ์ Apple ที่มี',
+      surveyProgrammed: 'เคยเขียนโปรแกรม',
+      surveyLanguages: 'ภาษาที่เคยเขียน',
+      surveyHeardSwift: 'เคยได้ยินภาษา Swift',
+      surveyPlaygrounds: 'รู้จัก Swift Playgrounds',
+      surveyReferral: 'รู้จักกิจกรรมจาก',
+      yes: 'ใช่',
+      no: 'ไม่ใช่',
+      runEnvironmentLabel: 'อุปกรณ์ที่ใช้ทดสอบ',
+      submittedAtLabel: 'ส่งเมื่อ',
+      downloadLabel: 'ดาวน์โหลดไฟล์ผลงาน',
+      noSubmission: 'ทีมนี้ยังไม่ได้ส่งผลงาน',
+    },
+    error: 'โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    retry: 'ลองใหม่',
+  },
 } as const
 
 export const footer = {

@@ -7,6 +7,7 @@ import FullScreenLoader from './portal/FullScreenLoader'
 
 // Lazy so the marketing site never loads Firebase (and the portal bundle).
 const PortalPage = lazy(() => import('./portal/PortalPage'))
+const OrganizerPage = lazy(() => import('./portal/OrganizerPage'))
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -18,6 +19,14 @@ createRoot(document.getElementById('root')!).render(
           element={
             <Suspense fallback={<FullScreenLoader />}>
               <PortalPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/organizer"
+          element={
+            <Suspense fallback={<FullScreenLoader />}>
+              <OrganizerPage />
             </Suspense>
           }
         />
