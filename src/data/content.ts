@@ -23,7 +23,7 @@ export const hero = {
   heading: 'Young iOS Developer\nHackathon 2026',
   subheading:
     'เวทีแข่งขันพัฒนาแอปบนระบบ iOS ระดับประเทศ',
-  primaryCta: 'ส่งผลงาน',
+  primaryCta: 'เข้าร่วมการแข่งขัน',
   secondaryCta: 'ดูรายละเอียด',
   facts: [] as { icon: string; label: string }[],
 }
