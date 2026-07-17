@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { portal } from '../data/content'
 import type { Advisor, Leader, Person, Team } from './types'
 import { createTeam } from './api'
+import { sendWelcomeEmail } from './firebase'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
 import PortalSection from './PortalSection'
@@ -167,6 +168,9 @@ export default function RegistrationScreen({
     }
     try {
       await createTeam(team)
+      // Fire the welcome email best-effort — a failure here must not block or
+      // fail registration, which has already succeeded.
+      sendWelcomeEmail().catch(() => {})
       onRegistered({
         ...team,
         isQualifyingFinalRound: null,

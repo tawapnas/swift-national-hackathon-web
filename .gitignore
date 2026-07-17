@@ -22,6 +22,9 @@ dist-ssr
 # Build artifacts
 *.tsbuildinfo
 
+# Cloud Functions build output
+functions/lib
+
 # Firebase security rules (kept local)
 firestore.rules
 storage.rules
