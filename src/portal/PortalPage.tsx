@@ -6,15 +6,18 @@ import { useAuth } from './useAuth'
 import { getTeam, updateLastLogin } from './api'
 import FullScreenLoader from './FullScreenLoader'
 import RegistrationScreen from './RegistrationScreen'
+import RegistrationClosedScreen from './RegistrationClosedScreen'
 import RegistrationSuccessScreen from './RegistrationSuccessScreen'
 import TeamPortalScreen from './TeamPortalScreen'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
+import { REGISTRATION_CLOSED } from './config'
 
 /**
- * Self-guarding /portal entry: Firestore team lookup → registration (no team
- * yet) or the team portal. Sign-in happens on the site's ส่งผลงาน CTA before
- * arriving here; signed-out visits bounce back to the home page.
+ * Self-guarding /portal entry: Firestore team lookup → the team portal, or —
+ * with no team doc — registration (closed: see REGISTRATION_CLOSED). Sign-in
+ * happens on the site's เข้าร่วมการแข่งขัน CTA before arriving here;
+ * signed-out visits bounce back to the home page.
  */
 export default function PortalPage() {
   const { user, loading, signOut } = useAuth()
@@ -73,7 +76,9 @@ export default function PortalPage() {
   }
 
   if (!team) {
-    return (
+    return REGISTRATION_CLOSED ? (
+      <RegistrationClosedScreen onSignOut={signOut} />
+    ) : (
       <RegistrationScreen
         email={email}
         onRegistered={(t) => {

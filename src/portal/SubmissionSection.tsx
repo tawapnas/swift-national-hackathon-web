@@ -4,6 +4,7 @@ import type { Submission } from './types'
 import PortalButton from './PortalButton'
 import ConfirmDialog from './ConfirmDialog'
 import PortalSection from './PortalSection'
+import { SUBMISSION_CLOSED } from './config'
 
 const MAX_FILE_BYTES = 25 * 1024 * 1024
 
@@ -55,6 +56,7 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
   const formReady = validate() === null
 
   const handleSubmitClick = () => {
+    if (SUBMISSION_CLOSED) return
     const err = validate()
     if (err) {
       setError(err)
@@ -163,7 +165,17 @@ export default function SubmissionSection({ submission, onSubmit }: SubmissionSe
 
         {error && <p className="text-sm text-swift-orange">{error}</p>}
 
-        <PortalButton type="button" onClick={handleSubmitClick} disabled={submitting || !formReady}>
+        {SUBMISSION_CLOSED && (
+          <p className="rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-4 py-3 text-sm text-fg">
+            {s.closedNotice}
+          </p>
+        )}
+
+        <PortalButton
+          type="button"
+          onClick={handleSubmitClick}
+          disabled={submitting || !formReady || SUBMISSION_CLOSED}
+        >
           {submitting ? s.submitting : s.submit}
         </PortalButton>
       </div>

@@ -37,8 +37,9 @@ export default function RegisterButton({
   const [busy, setBusy] = useState(false)
 
   // Signs in with Google right here (the popup opens from the click, so it
-  // isn't blocked), then enters the portal. Firebase is dynamically imported
-  // to keep it out of the marketing-site bundle.
+  // isn't blocked), then enters the Team Portal — registration is closed, so
+  // this is the way back in for teams that already registered. Firebase is
+  // dynamically imported to keep it out of the marketing-site bundle.
   const handleClick = async () => {
     if (busy) return
     setBusy(true)

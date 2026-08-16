@@ -316,6 +316,14 @@ export const portal = {
     cta: 'ไปที่ Portal',
   },
 
+  // Shown instead of the registration form once REGISTRATION_CLOSED is on
+  // (signed in, but no team doc).
+  registrationClosed: {
+    heading: 'ปิดรับลงทะเบียนแล้ว',
+    body: 'ขณะนี้ปิดรับลงทะเบียนทีมสำหรับ Young iOS Developer Hackathon 2026 แล้ว หากคุณเป็นหัวหน้าทีมที่ลงทะเบียนไว้ กรุณาเข้าสู่ระบบด้วยบัญชี Google ที่ใช้ลงทะเบียน',
+    signInOther: 'เข้าสู่ระบบด้วยบัญชีอื่น',
+  },
+
   // Team portal greeting (top of the page).
   welcome: {
     heading: 'สวัสดีทีม', // followed by the team name
@@ -418,6 +426,9 @@ export const portal = {
     terms:
       'ข้าพเจ้าและสมาชิกในทีมได้อ่านและเข้าใจกฎกติกาทั้งหมดแล้ว และยืนยันว่าผลงานนี้เป็นผลงานใหม่ที่ไม่เคยส่งเข้าประกวดหรือนำเสนอที่ใดมาก่อน ทั้งนี้ ข้าพเจ้ารับทราบว่าผลงานที่ไม่สามารถเปิดได้ระหว่างตัดสินจะไม่ถูกพิจารณา และการทุจริตทุกรูปแบบจะถูกตัดสิทธิ์ และอาจถูกระงับไม่ให้เข้าร่วมกิจกรรมของทาง Swift Coding Club TH ในอนาคต',
     termsRequired: 'กรุณายืนยันการยอมรับกฎกติกาก่อนส่งผลงาน',
+    // Shown above the (disabled) submit button once SUBMISSION_CLOSED is on.
+    closedNotice:
+      'ปิดรับส่งผลงานรอบภูมิภาคแล้ว เมื่อวันที่ 16 สิงหาคม 2569 เวลา 23:59 น. ไม่สามารถส่งผลงานเพิ่มเติมได้',
     submit: 'ส่งผลงาน',
     submitting: 'กำลังส่ง...',
     confirm: {
