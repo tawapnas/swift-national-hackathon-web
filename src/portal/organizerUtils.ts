@@ -44,7 +44,15 @@ export function filterTeams(teams: Team[], search: string, filter: SubmissionFil
 export function buildCsv(teams: Team[]): string {
   const { headers } = portal.organizer.csv
   const b = portal.organizer.badge
-  const escape = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`
+  // Essay columns follow the question order declared in content.ts, so the
+  // headers there and the ids here stay aligned automatically.
+  const questionIds = portal.submission.questions.map((q) => q.id)
+  // Lone CR inside an answer would confuse parsers that split on \r\n; the
+  // remaining newlines stay inside the quoted field (valid CSV).
+  const escape = (v: unknown) =>
+    `"${String(v ?? '')
+      .replace(/\r\n?/g, '\n')
+      .replace(/"/g, '""')}"`
 
   const rows = teams.map((t) => {
     const submitted = hasSubmitted(t)
@@ -62,6 +70,8 @@ export function buildCsv(teams: Team[]): string {
       submitted ? formatTimestamp(t.submission?.submittedAt) : '',
       t.submission?.fileName ?? '',
       t.submission?.fileUrl ?? '',
+      t.submission?.runEnvironment ?? '',
+      ...questionIds.map((id) => t.submission?.essays?.[id] ?? ''),
     ]
       .map(escape)
       .join(',')
