@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { portal } from '../data/content'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
@@ -45,9 +45,13 @@ export default function ResultScreen({
   const share = portal.result.share
   const [sharing, setSharing] = useState(false)
   const [shareError, setShareError] = useState(false)
+  // Synchronous re-entry guard: the `sharing` state only disables the button
+  // after a re-render, so a fast double-tap could start two shares without it.
+  const sharingRef = useRef(false)
 
   const handleShare = async () => {
-    if (sharing) return
+    if (sharingRef.current) return
+    sharingRef.current = true
     setSharing(true)
     setShareError(false)
     try {
@@ -55,6 +59,7 @@ export default function ResultScreen({
     } catch {
       setShareError(true)
     } finally {
+      sharingRef.current = false
       setSharing(false)
     }
   }

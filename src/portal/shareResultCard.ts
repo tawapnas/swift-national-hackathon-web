@@ -4,19 +4,16 @@
 // support download the PNG instead. All assets are same-origin /public files
 // so the canvas stays untainted.
 
-import { portal, site } from '../data/content'
+import { portal } from '../data/content'
 
 // Confetti palette sampled from the party memoji's squares + horn. Shared by
 // the on-screen confetti (ResultScreen) and the share card.
 export const CONFETTI_COLORS = ['#2e63d8', '#db3049', '#f6b31b', '#f0862c', '#7a52d9']
 
 // Design tokens from index.css @theme (canvas can't read CSS variables).
-const INK = '#0b0b0c'
 const FG = '#f5f5f7'
 const MUTED = '#a1a1a6'
-const SWIFT_ORANGE = '#f05138'
 const SWIFT_GOLD = '#fbb04d'
-const COVER_BLUE = '#2c5fc9'
 
 const FONT = '"LINE Seed Sans TH", sans-serif'
 
@@ -30,14 +27,6 @@ function loadImage(src: string): Promise<HTMLImageElement> {
     img.onerror = reject
     img.src = src
   })
-}
-
-function glow(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, color: string) {
-  const g = ctx.createRadialGradient(x, y, 0, x, y, r)
-  g.addColorStop(0, color)
-  g.addColorStop(1, 'transparent')
-  ctx.fillStyle = g
-  ctx.fillRect(0, 0, W, H)
 }
 
 /** Single-line text centered at (W/2, y); shrinks the font size until the
@@ -70,11 +59,11 @@ export async function shareResultCard(teamName: string): Promise<void> {
       document.fonts.load(`${w} 64px "LINE Seed Sans TH"`, 'ขอแสดงความยินดี'),
     ),
   ).catch(() => {}) // fall back to system font rather than failing the share
-  const [memoji, memojiLeft, memojiRight, logo] = await Promise.all([
+  const [background, memoji, memojiLeft, memojiRight] = await Promise.all([
+    loadImage(s.card.background),
     loadImage(portal.result.qualified.memoji),
     loadImage(s.card.sideMemojis[0]),
     loadImage(s.card.sideMemojis[1]),
-    loadImage('/logo.svg'),
   ])
 
   const canvas = document.createElement('canvas')
@@ -83,19 +72,22 @@ export async function shareResultCard(teamName: string): Promise<void> {
   const ctx = canvas.getContext('2d')
   if (!ctx) throw new Error('canvas 2d context unavailable')
 
-  // Background + the portal's warm/cool cover glows.
-  ctx.fillStyle = INK
-  ctx.fillRect(0, 0, W, H)
-  glow(ctx, W / 2, 430, 720, `${SWIFT_ORANGE}2e`)
-  glow(ctx, W / 2, 1560, 820, `${COVER_BLUE}30`)
+  // Branded 1080×1920 backdrop — carries the logo, event title, and footer
+  // contacts, so the card only adds the memojis, confetti, and copy.
+  ctx.drawImage(background, 0, 0, W, H)
 
-  // Scattered confetti squares, same palette as the screen animation. The R2
-  // low-discrepancy sequence spreads the points evenly over the whole card
-  // (a plain modulo scatter clumps into diagonal trails) while staying
-  // deterministic.
+  // Confetti squares scattered AROUND the memoji trio (a loose elliptical
+  // halo, like the sticker's own confetti ring): golden-angle steps spread
+  // the pieces evenly around the cluster, with a deterministic radius jitter
+  // so the ring stays organic. Centered on the trio, clear of the backdrop's
+  // header title above and the copy block below.
+  const ringCx = W / 2
+  const ringCy = 790
   for (let i = 0; i < 26; i++) {
-    const x = 40 + ((0.5 + i * 0.7548776662466927) % 1) * (W - 80)
-    const y = 60 + ((0.5 + i * 0.5698402909980532) % 1) * (H - 120)
+    const angle = i * 2.3999632297286533 // golden angle (rad)
+    const jitter = (0.5 + i * 0.7548776662466927) % 1
+    const x = ringCx + Math.cos(angle) * (330 + jitter * 170)
+    const y = ringCy + Math.sin(angle) * (240 + jitter * 140)
     const size = 16 + ((i * 7) % 22)
     ctx.save()
     ctx.translate(x, y)
@@ -112,7 +104,7 @@ export async function shareResultCard(teamName: string): Promise<void> {
   const sideSize = 320
   const drawSide = (img: HTMLImageElement, cx: number, tilt: number) => {
     ctx.save()
-    ctx.translate(cx, 430 + sideSize / 2)
+    ctx.translate(cx, 690 + sideSize / 2)
     ctx.rotate(tilt * (Math.PI / 180))
     ctx.drawImage(img, -sideSize / 2, -sideSize / 2, sideSize, sideSize)
     ctx.restore()
@@ -120,20 +112,14 @@ export async function shareResultCard(teamName: string): Promise<void> {
   drawSide(memojiRight, 260, -12)
   drawSide(memojiLeft, W - 260, 12)
   const memojiSize = 460
-  ctx.drawImage(memoji, (W - memojiSize) / 2, 300, memojiSize, memojiSize)
+  ctx.drawImage(memoji, (W - memojiSize) / 2, 560, memojiSize, memojiSize)
 
-  // Copy block.
+  // Copy block, in the backdrop's empty middle band.
   ctx.textAlign = 'center'
   ctx.textBaseline = 'alphabetic'
-  fitText(ctx, s.card.title, 990, 700, 72, FG)
-  fitText(ctx, teamName, 1140, 800, 104, SWIFT_GOLD)
-  fitText(ctx, s.card.subtitle, 1250, 400, 54, MUTED)
-  fitText(ctx, site.title, 1420, 700, 46, SWIFT_ORANGE)
-
-  // Org logo, bottom-center (intrinsic 155×24, drawn at 2.2×).
-  const logoW = 341
-  const logoH = logoW * (logo.naturalHeight / logo.naturalWidth)
-  ctx.drawImage(logo, (W - logoW) / 2, 1760, logoW, logoH)
+  fitText(ctx, s.card.title, 1250, 700, 72, FG)
+  fitText(ctx, teamName, 1400, 800, 104, SWIFT_GOLD)
+  fitText(ctx, s.card.subtitle, 1510, 400, 54, MUTED)
 
   const blob = await new Promise<Blob>((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/png'),
