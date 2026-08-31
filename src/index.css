@@ -251,6 +251,64 @@ body {
   }
 }
 
+/* ---- Result-screen confetti (SSC-style, winner) ----
+   Ambient celebratory drift like Apple's Swift Student Challenge winner
+   screen: sparse pieces float down slowly and sway, forever. Two composed
+   motions — the outer element falls (confetti-drift), the inner one sways and
+   tumbles (confetti-sway) — plus per-piece depth via size/opacity/blur.
+   Negative delays mean the sky is already populated on first paint. */
+@keyframes confetti-drift {
+  from {
+    transform: translate3d(0, -8vh, 0);
+  }
+  to {
+    transform: translate3d(0, 110vh, 0);
+  }
+}
+
+@keyframes confetti-sway {
+  0%,
+  100% {
+    transform: translateX(calc(var(--sway) * -1)) rotateX(0deg) rotateZ(0deg);
+  }
+  50% {
+    transform: translateX(var(--sway)) rotateX(540deg) rotateZ(var(--spin));
+  }
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Above the page content, below the z-50 dialogs / preview pills. */
+  z-index: 40;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  opacity: var(--o, 1);
+  filter: blur(var(--blur, 0));
+  animation: confetti-drift var(--dur) linear var(--delay) infinite;
+}
+
+.confetti-piece > i {
+  display: block;
+  width: var(--size);
+  height: calc(var(--size) * 0.6);
+  background: var(--clr);
+  border-radius: 2px;
+  animation: confetti-sway calc(var(--dur) * 0.45) ease-in-out var(--delay) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti {
+    display: none;
+  }
+}
+
 
 /* ---- Liquid-glass navbar surface ----
    A frosted-glass pill built on plain backdrop-filter. It must NOT have any

@@ -2,8 +2,8 @@ import { portal } from '../data/content'
 import PortalSection from './PortalSection'
 
 // Renders **...** spans in a copy string as bold. Odd-indexed parts of the
-// split are the text between a `**` pair.
-const withBold = (text: string) =>
+// split are the text between a `**` pair. Also used by ResultScreen.
+export const withBold = (text: string) =>
   text.split('**').map((part, i) =>
     i % 2 === 1 ? (
       <strong key={i} className="font-semibold text-fg">

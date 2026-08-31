@@ -444,6 +444,52 @@ export const portal = {
     },
   },
 
+  // Full-screen result announcement (RESULTS_ANNOUNCED in portal/config.ts).
+  // Shown on portal sign-in to teams that submitted and whose
+  // isQualifyingFinalRound has been decided by the organizers.
+  result: {
+    qualified: {
+      // Memoji shown above the heading (lives in /public, like hero.memojis).
+      memoji: '/memoji-qualified.001.png',
+      heading: 'ขอแสดงความยินดี!',
+      body: [
+        // {teamName} is replaced with the team's name; **...** renders bold
+        // (see ResultScreen).
+        'ทีม **{teamName}** ได้รับคัดเลือกให้ผ่านเข้าสู่รอบชิงชนะเลิศ Young iOS Developer Hackathon 2026 จากผลงานอันโดดเด่นที่ส่งเข้ามาในรอบภูมิภาค',
+        'ทีมจะได้รับอีเมลยืนยันการเข้าร่วมแข่งขันรอบชิงชนะเลิศ พร้อมรายละเอียดขั้นตอนถัดไปภายในสัปดาห์นี้ **กรุณาติดตามที่อีเมลของหัวหน้าทีมอย่างสม่ำเสมอ**',
+        'เกียรติบัตรการเข้าร่วมกิจกรรมจะจัดส่งให้ทุกทีมในรูปแบบไฟล์ภายในสัปดาห์นี้',
+      ],
+      cta: 'เข้าสู่ Portal ทีม',
+    },
+    notQualified: {
+      memoji: '/memoji-not-qualified.002.png',
+      heading: 'ขอบคุณที่ร่วมเป็นส่วนหนึ่งของกิจกรรม',
+      body: [
+        'ขอบคุณทีมของคุณที่ตั้งใจสร้างสรรค์และส่งผลงานเข้าร่วม Young iOS Developer Hackathon 2026 เนื่องจากปีนี้มีผลงานคุณภาพจำนวนมากทำให้การคัดเลือกเป็นไปอย่างเข้มข้น ผลงานของทีมคุณจึงยังไม่ผ่านเข้าสู่รอบชิงชนะเลิศในครั้งนี้',
+        'เกียรติบัตรการเข้าร่วมกิจกรรมจะจัดส่งให้ทุกทีมในรูปแบบไฟล์ภายในสัปดาห์นี้',
+      ],
+      cta: 'เข้าสู่ Portal ทีม',
+    },
+    // One-tap share on the winner screen: draws a 1080×1920 congratulations
+    // card (shareResultCard.ts) and opens the native share sheet — or
+    // downloads the PNG on browsers without file sharing.
+    share: {
+      button: 'แชร์ผลการแข่งขัน',
+      preparing: 'กำลังสร้างภาพ...',
+      error: 'สร้างภาพไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+      // Text attached alongside the image in the native share sheet.
+      text: 'พวกเราผ่านเข้ารอบชิงชนะเลิศ Young iOS Developer Hackathon 2026 แล้ว! 🎉',
+      filename: 'yidh26-finalist.png',
+      // Strings drawn onto the card itself.
+      card: {
+        title: 'ขอแสดงความยินดี',
+        subtitle: 'ผ่านเข้ารอบชิงชนะเลิศระดับประเทศ',
+        // Flanking memojis drawn left/right of the main party memoji.
+        sideMemojis: ['/memoji-qualified.008.png', '/memoji-qualified.011.png'],
+      },
+    },
+  },
+
   // Organizer dashboard (/organizer) — read-only. Access is gated by the
   // organizers allowlist (firestore.rules); the copy below covers the sign-in
   // gate, the access-denied screen, and the dashboard itself.
@@ -481,6 +527,10 @@ export const portal = {
       empty: 'ไม่พบทีมที่ตรงกับเงื่อนไข',
       loading: 'กำลังโหลด...',
       resultsUnit: 'ทีม',
+      // Compact labels for the per-row finalist-flag segments.
+      flagYes: 'ผ่าน',
+      flagNo: 'ไม่ผ่าน',
+      flagPending: 'รอผล',
     },
     pagination: {
       prev: 'ก่อนหน้า',
@@ -516,6 +566,16 @@ export const portal = {
         'อุปสรรคและการแก้ปัญหา',
       ],
     },
+    // Preview of the team-facing result screens (ResultScreen, both variants),
+    // so organizers can check what teams will see before announcing.
+    resultPreview: {
+      label: 'พรีวิวหน้าประกาศผล (มุมมองทีม):',
+      qualified: 'ผ่านเข้ารอบ',
+      notQualified: 'ไม่ผ่านเข้ารอบ',
+      back: 'กลับสู่ระบบผู้จัดงาน',
+      // Stand-in for the {teamName} placeholder in the preview.
+      sampleTeamName: 'ทีมตัวอย่าง',
+    },
     detail: {
       back: '← กลับ',
       teamHeading: 'ข้อมูลทีม',
@@ -528,6 +588,15 @@ export const portal = {
       finalistYes: 'ผ่านเข้ารอบ',
       finalistNo: 'ไม่ผ่านเข้ารอบ',
       finalistPending: 'ยังไม่ประกาศผล',
+      // Finalist-flag actions ({team}/{status} are replaced in the component).
+      finalistSetYes: 'ตั้งเป็นผ่านเข้ารอบ',
+      finalistSetNo: 'ตั้งเป็นไม่ผ่านเข้ารอบ',
+      finalistClear: 'ล้างสถานะ (ยังไม่ประกาศ)',
+      finalistConfirmTitle: 'ยืนยันการเปลี่ยนสถานะรอบชิงชนะเลิศ',
+      finalistConfirmBody: 'ต้องการเปลี่ยนสถานะของทีม "{team}" เป็น "{status}" ใช่หรือไม่',
+      finalistConfirm: 'ยืนยัน',
+      finalistCancel: 'ยกเลิก',
+      finalistError: 'บันทึกสถานะไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
       leaderTag: 'หัวหน้าทีม',
       advisorLabel: 'อาจารย์ที่ปรึกษา',
       emailLabel: 'อีเมล',

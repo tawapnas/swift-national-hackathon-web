@@ -110,6 +110,16 @@ export async function getSignedInCount(): Promise<number> {
   return snap.data().count
 }
 
+/** Organizer-only: sets (or clears, with null) a team's final-round
+ *  qualification flag. firestore.rules restricts this write to allowlisted
+ *  organizers and to exactly this field. */
+export async function setQualifyingFinalRound(
+  email: string,
+  value: boolean | null,
+): Promise<void> {
+  await updateDoc(teamDoc(email), { isQualifyingFinalRound: value })
+}
+
 export interface TeamsPage {
   teams: Team[]
   // Cursor for the next page (pass back as `cursor`); null on an empty page.

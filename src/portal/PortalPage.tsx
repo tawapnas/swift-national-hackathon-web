@@ -9,9 +9,10 @@ import RegistrationScreen from './RegistrationScreen'
 import RegistrationClosedScreen from './RegistrationClosedScreen'
 import RegistrationSuccessScreen from './RegistrationSuccessScreen'
 import TeamPortalScreen from './TeamPortalScreen'
+import ResultScreen from './ResultScreen'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
-import { REGISTRATION_CLOSED } from './config'
+import { REGISTRATION_CLOSED, RESULTS_ANNOUNCED } from './config'
 
 /**
  * Self-guarding /portal entry: Firestore team lookup → the team portal, or —
@@ -27,6 +28,8 @@ export default function PortalPage() {
   // True right after registering in this session — shows the success screen
   // until the team clicks through to the portal.
   const [justRegistered, setJustRegistered] = useState(false)
+  // True once the team clicks through the result announcement to the portal.
+  const [resultSeen, setResultSeen] = useState(false)
   // Bumped by the retry button to re-run the lookup effect.
   const [attempt, setAttempt] = useState(0)
 
@@ -97,5 +100,23 @@ export default function PortalPage() {
       />
     )
   }
+  // Announced + submitted + decided → full-screen result until clicked through.
+  const showResult =
+    RESULTS_ANNOUNCED &&
+    team.submission != null &&
+    team.isQualifyingFinalRound !== null &&
+    !resultSeen
+
+  if (showResult) {
+    return (
+      <ResultScreen
+        qualified={team.isQualifyingFinalRound === true}
+        teamName={team.teamName}
+        onContinue={() => setResultSeen(true)}
+        onSignOut={signOut}
+      />
+    )
+  }
+
   return <TeamPortalScreen team={team} onSignOut={signOut} />
 }

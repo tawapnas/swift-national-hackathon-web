@@ -8,7 +8,9 @@ import {
   getSubmittedCount,
   getTeamsCount,
   listTeamsPage,
+  setQualifyingFinalRound,
 } from './api'
+import ConfirmDialog from './ConfirmDialog'
 import {
   buildCsv,
   downloadCsv,
@@ -21,6 +23,7 @@ import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
 import FullScreenLoader from './FullScreenLoader'
 import OrganizerTeamDetail from './OrganizerTeamDetail'
+import ResultScreen from './ResultScreen'
 
 const o = portal.organizer
 
@@ -28,7 +31,8 @@ const o = portal.organizer
  * Organizer dashboard: team count + submitted count, a paged team list (10 per
  * page via Firestore cursors for the default browse), and search / filter / CSV
  * that lazily fall back to a one-time full fetch (Firestore can't substring-
- * search or query for an absent field). Read-only.
+ * search or query for an absent field). Read-only, except the final-round
+ * qualification flag set from the team detail.
  */
 export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => void }) {
   // Header stats.
@@ -53,6 +57,15 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
 
   const [filterPage, setFilterPage] = useState(0)
   const [selected, setSelected] = useState<Team | null>(null)
+  // Which team-facing result screen is being previewed (null = none).
+  const [resultPreview, setResultPreview] = useState<'qualified' | 'notQualified' | null>(null)
+  // In-list finalist-flag change awaiting confirmation (null = no dialog);
+  // target null means "clear back to ยังไม่ประกาศผล".
+  const [flagConfirm, setFlagConfirm] = useState<{ team: Team; target: boolean | null } | null>(
+    null,
+  )
+  const [flagSaving, setFlagSaving] = useState(false)
+  const [flagError, setFlagError] = useState(false)
   const [busy, setBusy] = useState(false)
   const [exporting, setExporting] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
@@ -101,8 +114,13 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
     [allTeams, search, filter],
   )
 
-  // ---- browse pagination -------------------------------------------------
+  // ---- pagination (filter mode pages the client-side list; browse mode
+  // pages the Firestore cursors) --------------------------------------------
   const goNext = async () => {
+    if (isFiltering) {
+      if ((filterPage + 1) * PAGE_SIZE < filtered.length) setFilterPage(filterPage + 1)
+      return
+    }
     if (pageIndex + 1 < pages.length) {
       setPageIndex(pageIndex + 1)
       return
@@ -121,7 +139,13 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
       setBusy(false)
     }
   }
-  const goPrev = () => pageIndex > 0 && setPageIndex(pageIndex - 1)
+  const goPrev = () => {
+    if (isFiltering) {
+      if (filterPage > 0) setFilterPage(filterPage - 1)
+      return
+    }
+    if (pageIndex > 0) setPageIndex(pageIndex - 1)
+  }
 
   // ---- CSV ---------------------------------------------------------------
   const handleExport = async () => {
@@ -151,10 +175,54 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
     )
   }
 
+  // Write-back after a flag edit (detail view or list segments): the cached
+  // page/full lists hold snapshot copies, so patch them (matched by doc id)
+  // to stay consistent without a refetch.
+  const handleTeamUpdate = (updated: Team) => {
+    setSelected((cur) => (cur && cur.email === updated.email ? updated : cur))
+    setPages((p) => p.map((page) => page.map((t) => (t.email === updated.email ? updated : t))))
+    setAllTeams((all) => all && all.map((t) => (t.email === updated.email ? updated : t)))
+  }
+
+  // Confirmed in-list flag change.
+  const applyFlag = async () => {
+    if (!flagConfirm) return
+    setFlagSaving(true)
+    setFlagError(false)
+    try {
+      await setQualifyingFinalRound(flagConfirm.team.email, flagConfirm.target)
+      handleTeamUpdate({ ...flagConfirm.team, isQualifyingFinalRound: flagConfirm.target })
+    } catch {
+      setFlagError(true)
+    } finally {
+      setFlagSaving(false)
+      setFlagConfirm(null)
+    }
+  }
+
+  const statusLabel = (v: boolean | null) =>
+    v === true ? o.detail.finalistYes : v === false ? o.detail.finalistNo : o.detail.finalistPending
+
+  if (resultPreview) {
+    return (
+      <ResultScreen
+        qualified={resultPreview === 'qualified'}
+        teamName={o.resultPreview.sampleTeamName}
+        onContinue={() => setResultPreview(null)}
+        onSignOut={onSignOut}
+        ctaLabel={o.resultPreview.back}
+      />
+    )
+  }
+
   if (selected) {
     return (
       <PortalShell onSignOut={onSignOut}>
-        <OrganizerTeamDetail team={selected} onBack={() => setSelected(null)} />
+        <OrganizerTeamDetail
+          team={selected}
+          onBack={() => setSelected(null)}
+          onTeamUpdate={handleTeamUpdate}
+        />
       </PortalShell>
     )
   }
@@ -191,6 +259,21 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
         />
       </div>
 
+      {/* Team-facing result screen preview */}
+      <div className="mt-6 flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted">{o.resultPreview.label}</span>
+        {(['qualified', 'notQualified'] as const).map((v) => (
+          <button
+            key={v}
+            type="button"
+            onClick={() => setResultPreview(v)}
+            className="cursor-pointer rounded-full border border-dashed border-line px-3 py-1 text-xs text-muted transition-colors hover:border-swift-orange hover:text-swift-orange"
+          >
+            {o.resultPreview[v]}
+          </button>
+        ))}
+      </div>
+
       {/* Toolbar */}
       <div className="mt-10 space-y-4">
         <input
@@ -223,6 +306,8 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
         </div>
       </div>
 
+      {flagError && <p className="mt-4 text-sm text-swift-orange">{o.detail.finalistError}</p>}
+
       {/* List */}
       <div className="mt-6">
         {listLoading && list.length === 0 ? (
@@ -233,19 +318,25 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
           <ul className="space-y-3">
             {list.map((team) => (
               <li key={team.email}>
-                <button
-                  type="button"
-                  onClick={() => setSelected(team)}
-                  className="flex w-full items-center justify-between gap-4 rounded-xl border border-line bg-surface px-4 py-3 text-left transition-colors hover:border-swift-orange"
-                >
-                  <div className="min-w-0">
+                <div className="flex w-full items-center justify-between gap-4 rounded-xl border border-line bg-surface px-4 py-3 transition-colors hover:border-swift-orange">
+                  <button
+                    type="button"
+                    onClick={() => setSelected(team)}
+                    className="min-w-0 flex-1 cursor-pointer text-left"
+                  >
                     <p className="truncate font-medium">{team.teamName}</p>
                     <p className="truncate text-sm text-muted">
                       {team.schoolName} · {team.province}
                     </p>
-                  </div>
-                  <SubmissionBadge submitted={hasSubmitted(team)} />
-                </button>
+                  </button>
+                  <span className="flex flex-none flex-wrap items-center justify-end gap-2">
+                    <FlagSegments
+                      value={team.isQualifyingFinalRound}
+                      onPick={(target) => setFlagConfirm({ team, target })}
+                    />
+                    <SubmissionBadge submitted={hasSubmitted(team)} />
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
@@ -267,6 +358,23 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
           </PortalButton>
         </div>
       )}
+
+      <ConfirmDialog
+        open={flagConfirm !== null}
+        title={o.detail.finalistConfirmTitle}
+        body={
+          flagConfirm
+            ? o.detail.finalistConfirmBody
+                .replace('{team}', flagConfirm.team.teamName)
+                .replace('{status}', statusLabel(flagConfirm.target))
+            : ''
+        }
+        confirmLabel={o.detail.finalistConfirm}
+        cancelLabel={o.detail.finalistCancel}
+        onConfirm={applyFlag}
+        onCancel={() => setFlagConfirm(null)}
+        busy={flagSaving}
+      />
     </PortalShell>
   )
 }
@@ -281,6 +389,42 @@ function Stat({ label, value, unit }: { label: string; value: string; unit: stri
         {value} <span className="text-base font-normal text-muted">{unit}</span>
       </p>
     </div>
+  )
+}
+
+/** Compact three-state finalist-flag control shown on each list row. The
+ *  current state is highlighted and inert; picking another opens the shared
+ *  confirm dialog via onPick. */
+function FlagSegments({
+  value,
+  onPick,
+}: {
+  value: boolean | null
+  onPick: (target: boolean | null) => void
+}) {
+  const opts: { target: boolean | null; label: string; active: string }[] = [
+    { target: true, label: o.list.flagYes, active: 'border-swift-gold bg-swift-gold/15 text-swift-gold' },
+    { target: false, label: o.list.flagNo, active: 'border-line bg-surface-2 text-fg' },
+    { target: null, label: o.list.flagPending, active: 'border-line bg-surface-2 text-muted' },
+  ]
+  return (
+    <span className="flex flex-none items-center gap-1">
+      {opts.map((opt) => (
+        <button
+          key={opt.label}
+          type="button"
+          disabled={value === opt.target}
+          onClick={() => onPick(opt.target)}
+          className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+            value === opt.target
+              ? opt.active
+              : 'cursor-pointer border-transparent text-muted/60 hover:border-swift-orange hover:text-swift-orange'
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </span>
   )
 }
 

@@ -1,23 +1,48 @@
+import { useState } from 'react'
 import { portal } from '../data/content'
 import type { Advisor, Leader, Person, Team } from './types'
 import { formatTimestamp, fullName } from './organizerUtils'
+import { setQualifyingFinalRound } from './api'
+import ConfirmDialog from './ConfirmDialog'
 
-/** Read-only detail for a single team, shown in place of the list (the
- *  dashboard supplies the surrounding PortalShell). */
+/** Detail for a single team, shown in place of the list (the dashboard
+ *  supplies the surrounding PortalShell). Read-only except the final-round
+ *  qualification flag, which organizers set here. */
 export default function OrganizerTeamDetail({
   team,
   onBack,
+  onTeamUpdate,
 }: {
   team: Team
   onBack: () => void
+  onTeamUpdate: (team: Team) => void
 }) {
   const d = portal.organizer.detail
-  const finalist =
-    team.isQualifyingFinalRound === true
-      ? d.finalistYes
-      : team.isQualifyingFinalRound === false
-        ? d.finalistNo
-        : d.finalistPending
+  // The pending status change awaiting confirmation; undefined = no dialog
+  // (null is a real target: "clear back to ยังไม่ประกาศผล").
+  const [confirmTarget, setConfirmTarget] = useState<boolean | null | undefined>(undefined)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(false)
+
+  const statusLabel = (v: boolean | null) =>
+    v === true ? d.finalistYes : v === false ? d.finalistNo : d.finalistPending
+  const finalist = statusLabel(team.isQualifyingFinalRound)
+
+  const applyStatus = async () => {
+    if (confirmTarget === undefined) return
+    setSaving(true)
+    setSaveError(false)
+    try {
+      await setQualifyingFinalRound(team.email, confirmTarget)
+      onTeamUpdate({ ...team, isQualifyingFinalRound: confirmTarget })
+      setConfirmTarget(undefined)
+    } catch {
+      setSaveError(true)
+      setConfirmTarget(undefined)
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <div>
@@ -39,9 +64,49 @@ export default function OrganizerTeamDetail({
         <dl className="grid gap-4 sm:grid-cols-2">
           <Field label={d.createdAtLabel} value={formatTimestamp(team.createdAt)} />
           <Field label={d.lastLoginLabel} value={formatTimestamp(team.lastLogin)} />
-          <Field label={d.finalistLabel} value={finalist} />
         </dl>
+
+        {/* Final-round qualification — the one thing organizers can edit. */}
+        <div className="mt-6">
+          <p className="text-sm text-muted">{d.finalistLabel}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span
+              className={`rounded-full border px-3 py-1 text-xs font-medium ${
+                team.isQualifyingFinalRound === true
+                  ? 'border-swift-orange bg-swift-orange/15 text-swift-orange'
+                  : team.isQualifyingFinalRound === false
+                    ? 'border-line text-fg'
+                    : 'border-line text-muted'
+              }`}
+            >
+              {finalist}
+            </span>
+            {team.isQualifyingFinalRound !== true && (
+              <FlagButton label={d.finalistSetYes} onClick={() => setConfirmTarget(true)} />
+            )}
+            {team.isQualifyingFinalRound !== false && (
+              <FlagButton label={d.finalistSetNo} onClick={() => setConfirmTarget(false)} />
+            )}
+            {team.isQualifyingFinalRound !== null && (
+              <FlagButton label={d.finalistClear} onClick={() => setConfirmTarget(null)} />
+            )}
+          </div>
+          {saveError && <p className="mt-2 text-sm text-swift-orange">{d.finalistError}</p>}
+        </div>
       </Section>
+
+      <ConfirmDialog
+        open={confirmTarget !== undefined}
+        title={d.finalistConfirmTitle}
+        body={d.finalistConfirmBody
+          .replace('{team}', team.teamName)
+          .replace('{status}', statusLabel(confirmTarget ?? null))}
+        confirmLabel={d.finalistConfirm}
+        cancelLabel={d.finalistCancel}
+        onConfirm={applyStatus}
+        onCancel={() => setConfirmTarget(undefined)}
+        busy={saving}
+      />
 
       {/* People */}
       <Section heading={d.peopleHeading}>
@@ -103,6 +168,19 @@ export default function OrganizerTeamDetail({
         )}
       </Section>
     </div>
+  )
+}
+
+/** Small pill action for changing the finalist status (dashboard-filter styling). */
+function FlagButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="cursor-pointer rounded-full border border-line px-3 py-1 text-xs text-muted transition-colors hover:border-swift-orange hover:text-swift-orange"
+    >
+      {label}
+    </button>
   )
 }
 
