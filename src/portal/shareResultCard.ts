@@ -29,8 +29,10 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
-/** Single-line text centered at (W/2, y); shrinks the font size until the
- *  line fits maxWidth (long team names). Returns the size actually used. */
+/** Single-line text centered horizontally at y; shrinks the font size until
+ *  the line fits maxWidth (long team names). Centering is computed manually
+ *  from measureText — Safari doesn't reliably honor ctx.textAlign, which
+ *  left-shifted the whole copy block. */
 function fitText(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -41,13 +43,15 @@ function fitText(
   maxWidth = 940,
 ) {
   let px = size
+  let width = 0
   do {
     ctx.font = `${weight} ${px}px ${FONT}`
-    if (ctx.measureText(text).width <= maxWidth) break
+    width = ctx.measureText(text).width
+    if (width <= maxWidth) break
     px -= 4
   } while (px > 28)
   ctx.fillStyle = color
-  ctx.fillText(text, W / 2, y)
+  ctx.fillText(text, (W - width) / 2, y)
 }
 
 export async function shareResultCard(teamName: string): Promise<void> {
@@ -114,8 +118,8 @@ export async function shareResultCard(teamName: string): Promise<void> {
   const memojiSize = 460
   ctx.drawImage(memoji, (W - memojiSize) / 2, 560, memojiSize, memojiSize)
 
-  // Copy block, in the backdrop's empty middle band.
-  ctx.textAlign = 'center'
+  // Copy block, in the backdrop's empty middle band (fitText centers each
+  // line manually — see its note on Safari).
   ctx.textBaseline = 'alphabetic'
   fitText(ctx, s.card.title, 1250, 700, 72, FG)
   fitText(ctx, teamName, 1400, 800, 104, SWIFT_GOLD)
@@ -129,7 +133,9 @@ export async function shareResultCard(teamName: string): Promise<void> {
   // Native share sheet where supported (iOS/Android); download elsewhere.
   if (typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
     try {
-      await navigator.share({ files: [file], text: s.text })
+      // Image only — including `text` alongside `files` makes WebKit's share
+      // sheet treat the payload as two items (e.g. Copy yields two images).
+      await navigator.share({ files: [file] })
     } catch (err) {
       // Closing the sheet without sharing is not an error.
       if (err instanceof DOMException && err.name === 'AbortError') return

@@ -475,10 +475,8 @@ export const portal = {
     // downloads the PNG on browsers without file sharing.
     share: {
       button: 'แชร์ผลการแข่งขัน',
-      preparing: 'กำลังสร้างภาพ...',
+      preparing: 'กำลังโหลด...',
       error: 'สร้างภาพไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
-      // Text attached alongside the image in the native share sheet.
-      text: 'พวกเราผ่านเข้ารอบชิงชนะเลิศ Young iOS Developer Hackathon 2026 แล้ว! 🎉',
       filename: 'yidh26-finalist.png',
       // Strings drawn onto the card itself.
       card: {

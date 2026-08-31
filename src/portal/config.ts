@@ -12,4 +12,4 @@ export const REGISTRATION_CLOSED: boolean = true
 
 /** Regional-round results are announced — submitted teams with a decided
  *  isQualifyingFinalRound see the full-screen result on portal sign-in. */
-export const RESULTS_ANNOUNCED: boolean = false
+export const RESULTS_ANNOUNCED: boolean = true
