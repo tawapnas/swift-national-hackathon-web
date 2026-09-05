@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { portal } from '../data/content'
 import type { Team } from './types'
 import { useAuth } from './useAuth'
@@ -10,6 +10,7 @@ import RegistrationClosedScreen from './RegistrationClosedScreen'
 import RegistrationSuccessScreen from './RegistrationSuccessScreen'
 import TeamPortalScreen from './TeamPortalScreen'
 import ResultScreen from './ResultScreen'
+import FinalRoundScreen from './FinalRoundScreen'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
 import { REGISTRATION_CLOSED, RESULTS_ANNOUNCED } from './config'
@@ -19,9 +20,14 @@ import { REGISTRATION_CLOSED, RESULTS_ANNOUNCED } from './config'
  * with no team doc — registration (closed: see REGISTRATION_CLOSED). Sign-in
  * happens on the site's เข้าร่วมการแข่งขัน CTA before arriving here;
  * signed-out visits bounce back to the home page.
+ *
+ * `view` selects the screen once the team is loaded: the portal itself, or
+ * (/portal/final-round) the national-round page — finalists only; everyone
+ * else is sent back to /portal.
  */
-export default function PortalPage() {
+export default function PortalPage({ view = 'portal' }: { view?: 'portal' | 'finalRound' }) {
   const { user, loading, signOut } = useAuth()
+  const navigate = useNavigate()
   const [team, setTeam] = useState<Team | null>(null)
   const [teamLoading, setTeamLoading] = useState(false)
   const [loadFailed, setLoadFailed] = useState(false)
@@ -113,6 +119,26 @@ export default function PortalPage() {
         qualified={team.isQualifyingFinalRound === true}
         teamName={team.teamName}
         onContinue={() => setResultSeen(true)}
+        onSignOut={signOut}
+      />
+    )
+  }
+
+  if (view === 'finalRound') {
+    if (team.isQualifyingFinalRound !== true) return <Navigate to="/portal" replace />
+    // Phase 1: the confirmation lives in memory only (no Firestore write yet);
+    // updating `team` flips the page to its locked view and the banner to
+    // "confirmed" for the rest of this session.
+    const handleConfirm = async () => {
+      setTeam((t) =>
+        t && { ...t, finalRound: { confirmedAt: new Date().toISOString(), locked: true } },
+      )
+    }
+    return (
+      <FinalRoundScreen
+        team={team}
+        onConfirm={handleConfirm}
+        onBack={() => navigate('/portal')}
         onSignOut={signOut}
       />
     )

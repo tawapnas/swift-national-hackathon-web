@@ -121,7 +121,7 @@ export const timeline = {
     { date: '11 กรกฎาคม', title: 'ปฐมนิเทศและสัมมนาออนไลน์เตรียมความพร้อม' },
     { date: '16 สิงหาคม', title: 'ปิดรับส่งผลงานรอบภูมิภาค' },
     { date: '31 สิงหาคม', title: 'ประกาศผลทีมที่ผ่านเข้ารอบระดับประเทศ' },
-    { date: '16 – 18 ตุลาคม', title: 'การแข่งขันรอบระดับประเทศ ณ กรุงเทพมหานคร' },
+    { date: '17 – 19 ตุลาคม', title: 'การแข่งขันรอบระดับประเทศ ณ กรุงเทพมหานคร' },
   ],
 }
 
@@ -490,6 +490,105 @@ export const portal = {
     },
   },
 
+  // Banner at the top of the team portal once results are announced. Shown
+  // only to teams that submitted and have a decided isQualifyingFinalRound.
+  banner: {
+    qualified: {
+      memoji: '/memoji-qualified.001.png',
+      eyebrow: 'รอบชิงชนะเลิศระดับประเทศ',
+      heading: 'ทีมของคุณผ่านเข้ารอบระดับประเทศ',
+      body: 'พบกัน 17 – 19 ตุลาคม 2569 ที่กรุงเทพฯ อ่านรายละเอียดการแข่งขัน และยืนยันการเข้าร่วมของทีมได้ที่นี่',
+      confirmed: 'ยืนยันการเข้าร่วมแล้ว',
+      cta: 'ดูรายละเอียดและยืนยันการเข้าร่วม',
+      ctaConfirmed: 'ดูรายละเอียดรอบชิงชนะเลิศ',
+    },
+    notQualified: {
+      eyebrow: 'เกียรติบัตรการเข้าร่วมกิจกรรม',
+      heading: 'ขอบคุณที่ร่วมเป็นส่วนหนึ่งของ YiDH 26',
+      body: 'เกียรติบัตรการเข้าร่วมกิจกรรมสำหรับสมาชิกทุกคนในทีมและอาจารย์ที่ปรึกษา จัดทำในรูปแบบไฟล์ PDF',
+      download: 'ดาวน์โหลดเกียรติบัตร',
+      preparing: 'กำลังจัดเตรียมเกียรติบัตร จะพร้อมให้ดาวน์โหลดเร็ว ๆ นี้',
+    },
+  },
+
+  // National-round page (/portal/final-round) for finalist teams: logistics,
+  // LINE Open Chat, documents, and the participation confirmation.
+  finalRound: {
+    // Values here are shared by the result banner and the national-round page.
+    confirmDeadline: '11 กันยายน 2569 เวลา 22:00 น.',
+    lineOpenChatUrl:
+      'https://line.me/ti/g2/b9_zi76xhrt9vdDq05hqkRs-rSCpH9ri551v4w?utm_source=invitation&utm_medium=link_copy&utm_campaign=default',
+
+    // {teamName} is replaced with the team's name.
+    heading: 'ยินดีด้วย ทีม {teamName}',
+    lead: 'ทีมของคุณเป็น 1 ในทีมที่ผ่านการคัดเลือกจากรอบภูมิภาคเข้าสู่รอบชิงชนะเลิศระดับประเทศ Young iOS Developer Hackathon 2026 ขอให้อ่านรายละเอียดด้านล่างให้ครบถ้วน และยืนยันการเข้าร่วมภายในวันที่กำหนดครับ',
+    back: '← กลับสู่ Portal ทีม',
+    info: {
+      heading: 'ข้อมูลการแข่งขัน',
+      dateLabel: 'วันแข่งขัน',
+      date: '17 – 19 ตุลาคม 2569 (3 วัน)',
+      dateNote: 'หมายเหตุ: เปลี่ยนแปลงจากกำหนดการเดิม 16 – 18 ตุลาคม 2569',
+      venueLabel: 'สถานที่',
+      venue:
+        'วิทยาลัยนวัตกรรมสื่อสารสังคม มหาวิทยาลัยศรีนครินทรวิโรฒ (ประสานมิตร) กรุงเทพฯ',
+      topicLabel: 'หัวข้อการแข่งขัน',
+      topic: 'ประกาศวันที่ 1 ตุลาคม 2569 ทางอีเมลและ LINE Open Chat',
+    },
+    notes: {
+      heading: 'สิ่งที่ทีมต้องทราบ',
+      // **...** renders bold (withBold).
+      items: [
+        '**ที่พักและการเดินทาง** สถานศึกษาเป็นผู้จัดหาและรับผิดชอบค่าใช้จ่ายเอง ผู้จัดงานไม่มีที่พักให้',
+        '**อาหารกลางวัน** มีให้ทุกวันตลอดการแข่งขัน',
+        '**อุปกรณ์** ผู้จัดงานจัดเตรียม iPad และ MacBook ให้ใช้ตลอดการแข่งขัน',
+        'สมาชิกทั้ง 3 คนและอาจารย์ที่ปรึกษา 1 ท่าน ต้องเข้าร่วมครบตลอดทั้ง 3 วัน',
+        'มี Workshop, Coaching Clinic และการนำเสนอผลงานต่อคณะกรรมการในวันสุดท้าย',
+      ],
+    },
+    lineChat: {
+      heading: 'LINE Open Chat',
+      body: 'ช่องทางหลักในการติดต่อและแจ้งข่าวระหว่างทีมกับผู้จัดงาน ขอให้หัวหน้าทีม สมาชิก และอาจารย์ที่ปรึกษาทุกคนเข้าร่วม และตั้งชื่อในแชทตามรูปแบบนี้',
+      format: '[ชื่อทีม] - [ชื่อจริง]',
+      example: 'เช่น SwiftCats - ภูมิ',
+      cta: 'เข้าร่วม Open Chat',
+      qr: '/line-openchat-qr.jpg',
+      qrCaption: 'หรือสแกน QR Code',
+    },
+    documents: {
+      heading: 'เอกสาร',
+      certificate: {
+        title: 'เกียรติบัตรผ่านการคัดเลือกเข้ารอบระดับประเทศ',
+        note: 'ไฟล์ PDF สำหรับสมาชิกทุกคนในทีมและอาจารย์ที่ปรึกษา',
+      },
+      invitation: {
+        title: 'จดหมายเชิญเข้าร่วมการแข่งขัน',
+        note: 'สำหรับยื่นต่อสถานศึกษาเพื่อขออนุญาตเดินทางและจัดหาที่พัก',
+      },
+      download: 'ดาวน์โหลด',
+      preparing: 'กำลังจัดเตรียม',
+    },
+    form: {
+      heading: 'ยืนยันการเข้าร่วม',
+      // {deadline} is replaced with confirmDeadline; **...** renders bold.
+      deadlineNotice:
+        'กรุณายืนยันการเข้าร่วมภายในวันที่ **{deadline}** หากไม่ยืนยันภายในกำหนด ผู้จัดงานขอสงวนสิทธิ์เชิญทีมสำรองเข้าร่วมแทน',
+      lead: 'กดปุ่มด้านล่างเพื่อยืนยันว่าสมาชิกทั้ง 3 คนและอาจารย์ที่ปรึกษาจะเข้าร่วมการแข่งขันครบทั้ง 3 วัน ผู้จัดงานจะแจ้งรายละเอียดเพิ่มเติมและขอข้อมูลที่จำเป็นทาง LINE Open Chat',
+      submit: 'ยืนยันการเข้าร่วม',
+      submitting: 'กำลังยืนยัน...',
+      submitError: 'ยืนยันไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+      confirm: {
+        title: 'ยืนยันการเข้าร่วม',
+        body: 'เมื่อยืนยันแล้วจะไม่สามารถแก้ไขข้อมูลได้เอง หากต้องการแก้ไขภายหลังให้ติดต่อผู้จัดงานทาง LINE Open Chat ต้องการดำเนินการต่อหรือไม่?',
+        confirm: 'ยืนยัน',
+        cancel: 'ยกเลิก',
+      },
+      locked: {
+        notice: 'ทีมของคุณยืนยันการเข้าร่วมเรียบร้อยแล้ว แล้วพบกันที่กรุงเทพฯ!',
+        confirmedAtLabel: 'ยืนยันเมื่อ',
+      },
+    },
+  },
+
   // Organizer dashboard (/organizer) — read-only. Access is gated by the
   // organizers allowlist (firestore.rules); the copy below covers the sign-in
   // gate, the access-denied screen, and the dashboard itself.
@@ -572,6 +671,11 @@ export const portal = {
       label: 'พรีวิวหน้าประกาศผล (มุมมองทีม):',
       qualified: 'ผ่านเข้ารอบ',
       notQualified: 'ไม่ผ่านเข้ารอบ',
+      // Team portal with the result banner + the national-round page, on a
+      // sample team (previewData.ts).
+      portalQualified: 'Portal ทีม (ผ่านเข้ารอบ)',
+      portalNotQualified: 'Portal ทีม (ไม่ผ่านเข้ารอบ)',
+      finalRound: 'หน้ารอบชิงชนะเลิศ',
       back: 'กลับสู่ระบบผู้จัดงาน',
       // Stand-in for the {teamName} placeholder in the preview.
       sampleTeamName: 'ทีมตัวอย่าง',

@@ -24,8 +24,22 @@ import PortalButton from './PortalButton'
 import FullScreenLoader from './FullScreenLoader'
 import OrganizerTeamDetail from './OrganizerTeamDetail'
 import ResultScreen from './ResultScreen'
+import TeamPortalScreen from './TeamPortalScreen'
+import FinalRoundScreen from './FinalRoundScreen'
+import { sampleTeam } from './previewData'
 
 const o = portal.organizer
+
+// Team-facing screens the dashboard can preview (labels in content.ts
+// portal.organizer.resultPreview).
+const TEAM_PREVIEWS = [
+  'qualified',
+  'notQualified',
+  'portalQualified',
+  'portalNotQualified',
+  'finalRound',
+] as const
+type TeamPreview = (typeof TEAM_PREVIEWS)[number]
 
 /**
  * Organizer dashboard: team count + submitted count, a paged team list (10 per
@@ -57,8 +71,16 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
 
   const [filterPage, setFilterPage] = useState(0)
   const [selected, setSelected] = useState<Team | null>(null)
-  // Which team-facing result screen is being previewed (null = none).
-  const [resultPreview, setResultPreview] = useState<'qualified' | 'notQualified' | null>(null)
+  // Which team-facing screen is being previewed (null = none): the result
+  // announcement, the portal with its banner, or the national-round page.
+  const [resultPreview, setResultPreview] = useState<TeamPreview | null>(null)
+  // In-memory confirmation for the national-round preview so the form's
+  // locked view can be checked too. Reset when the preview closes.
+  const [previewConfirmation, setPreviewConfirmation] = useState<Team['finalRound']>(undefined)
+  const closePreview = () => {
+    setResultPreview(null)
+    setPreviewConfirmation(undefined)
+  }
   // In-list finalist-flag change awaiting confirmation (null = no dialog);
   // target null means "clear back to ยังไม่ประกาศผล".
   const [flagConfirm, setFlagConfirm] = useState<{ team: Team; target: boolean | null } | null>(
@@ -203,14 +225,38 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
   const statusLabel = (v: boolean | null) =>
     v === true ? o.detail.finalistYes : v === false ? o.detail.finalistNo : o.detail.finalistPending
 
-  if (resultPreview) {
+  if (resultPreview === 'qualified' || resultPreview === 'notQualified') {
     return (
       <ResultScreen
         qualified={resultPreview === 'qualified'}
         teamName={o.resultPreview.sampleTeamName}
-        onContinue={() => setResultPreview(null)}
+        onContinue={closePreview}
         onSignOut={onSignOut}
         ctaLabel={o.resultPreview.back}
+      />
+    )
+  }
+  if (resultPreview === 'portalQualified' || resultPreview === 'portalNotQualified') {
+    return (
+      <TeamPortalScreen
+        team={{
+          ...sampleTeam(resultPreview === 'portalQualified'),
+          finalRound: previewConfirmation,
+        }}
+        onSignOut={onSignOut}
+        previewExit={{ label: o.resultPreview.back, onClick: closePreview }}
+      />
+    )
+  }
+  if (resultPreview === 'finalRound') {
+    return (
+      <FinalRoundScreen
+        team={{ ...sampleTeam(true), finalRound: previewConfirmation }}
+        onConfirm={async () =>
+          setPreviewConfirmation({ confirmedAt: new Date().toISOString(), locked: true })
+        }
+        onBack={closePreview}
+        onSignOut={onSignOut}
       />
     )
   }
@@ -262,7 +308,7 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
       {/* Team-facing result screen preview */}
       <div className="mt-6 flex flex-wrap items-center gap-2">
         <span className="text-sm text-muted">{o.resultPreview.label}</span>
-        {(['qualified', 'notQualified'] as const).map((v) => (
+        {TEAM_PREVIEWS.map((v) => (
           <button
             key={v}
             type="button"

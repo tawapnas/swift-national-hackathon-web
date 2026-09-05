@@ -54,6 +54,15 @@ export interface Submission {
   locked: true
 }
 
+// A finalist team's national-round participation confirmation. Written once,
+// then locked (Phase 1: held in memory; Phase 2: stored on the team doc as
+// `finalRound`). Logistics details and consents are collected separately.
+export interface FinalRoundConfirmation {
+  // serverTimestamp() on write / Timestamp on read; ISO string in Phase 1.
+  confirmedAt: unknown
+  locked: true
+}
+
 export interface Team {
   email: string // == Firestore doc id; the leader's (registered) email
   teamName: string
@@ -72,4 +81,11 @@ export interface Team {
   // login (Timestamp on read). See scripts/add-lastlogin.mjs for backfill.
   lastLogin: unknown
   submission?: Submission
+  // National round (set after RESULTS_ANNOUNCED). The two URLs are uploaded
+  // per team by organizers — a participation certificate for every submitted
+  // team (finalist certificate for finalists), an invitation letter for
+  // finalists only. Absent until uploaded.
+  finalRound?: FinalRoundConfirmation
+  certificateUrl?: string
+  invitationLetterUrl?: string
 }

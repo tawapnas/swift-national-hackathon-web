@@ -30,6 +30,11 @@ const sizes: Record<Size, string> = {
   lg: 'px-8 py-3.5 text-lg',
 }
 
+/** The full class string for a given variant/size — for anchors (download
+ *  links) that need to look exactly like a PortalButton. */
+export const portalButtonClass = (variant: Variant = 'solid', size: Size = 'md') =>
+  `${base} ${variants[variant]} ${sizes[size]}`
+
 export default function PortalButton({
   children,
   onClick,

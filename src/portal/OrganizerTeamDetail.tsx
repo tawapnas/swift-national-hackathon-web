@@ -4,6 +4,7 @@ import type { Advisor, Leader, Person, Team } from './types'
 import { formatTimestamp, fullName } from './organizerUtils'
 import { setQualifyingFinalRound } from './api'
 import ConfirmDialog from './ConfirmDialog'
+import { portalButtonClass } from './PortalButton'
 
 /** Detail for a single team, shown in place of the list (the dashboard
  *  supplies the surrounding PortalShell). Read-only except the final-round
@@ -157,7 +158,7 @@ export default function OrganizerTeamDetail({
               download={team.submission.fileName}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-swift-orange px-6 py-2.5 font-semibold text-white shadow-lg shadow-swift-orange/25 transition-all duration-200 hover:brightness-110 hover:shadow-swift-orange/40 active:scale-[0.98]"
+              className={portalButtonClass()}
             >
               ⬇ {d.downloadLabel}
               <span className="text-sm font-normal text-white/80">({team.submission.fileName})</span>
