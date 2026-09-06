@@ -4,13 +4,15 @@
 import { portal } from '../data/content'
 import type { Advisor, Leader, Person, Team } from './types'
 
-export type SubmissionFilter = 'all' | 'submitted' | 'notSubmitted'
+export type SubmissionFilter = 'all' | 'submitted' | 'notSubmitted' | 'confirmed' | 'notConfirmed'
 
 export const PAGE_SIZE = 10
 
 export const fullName = (p: Person | Leader | Advisor) => `${p.prefix} ${p.nameTh}`.trim()
 
 export const hasSubmitted = (t: Team) => Boolean(t.submission?.locked)
+export const isFinalist = (t: Team) => t.isQualifyingFinalRound === true
+export const hasConfirmed = (t: Team) => Boolean(t.finalRound?.locked)
 
 /** Formats a Firestore Timestamp (typed `unknown` on our models) to a Thai
  *  date-time string. Returns '—' for missing/unstamped values. */
@@ -31,6 +33,9 @@ export function filterTeams(teams: Team[], search: string, filter: SubmissionFil
     const submitted = hasSubmitted(t)
     if (filter === 'submitted' && !submitted) return false
     if (filter === 'notSubmitted' && submitted) return false
+    // The confirmation filters only make sense over finalists.
+    if (filter === 'confirmed' && !(isFinalist(t) && hasConfirmed(t))) return false
+    if (filter === 'notConfirmed' && !(isFinalist(t) && !hasConfirmed(t))) return false
     if (!q) return true
     return (
       t.teamName.toLowerCase().includes(q) ||
@@ -44,6 +49,7 @@ export function filterTeams(teams: Team[], search: string, filter: SubmissionFil
 export function buildCsv(teams: Team[]): string {
   const { headers } = portal.organizer.csv
   const b = portal.organizer.badge
+  const d = portal.organizer.detail
   // Essay columns follow the question order declared in content.ts, so the
   // headers there and the ids here stay aligned automatically.
   const questionIds = portal.submission.questions.map((q) => q.id)
@@ -68,6 +74,8 @@ export function buildCsv(teams: Team[]): string {
       t.advisor.email,
       submitted ? b.submitted : b.notSubmitted,
       submitted ? formatTimestamp(t.submission?.submittedAt) : '',
+      isFinalist(t) ? d.finalistYes : t.isQualifyingFinalRound === false ? d.finalistNo : d.finalistPending,
+      hasConfirmed(t) ? formatTimestamp(t.finalRound?.confirmedAt) : '',
       t.submission?.fileName ?? '',
       t.submission?.fileUrl ?? '',
       t.submission?.runEnvironment ?? '',

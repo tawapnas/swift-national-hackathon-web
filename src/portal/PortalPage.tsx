@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { portal } from '../data/content'
 import type { Team } from './types'
 import { useAuth } from './useAuth'
-import { getTeam, updateLastLogin } from './api'
+import { confirmFinalRound, getTeam, updateLastLogin } from './api'
 import FullScreenLoader from './FullScreenLoader'
 import RegistrationScreen from './RegistrationScreen'
 import RegistrationClosedScreen from './RegistrationClosedScreen'
@@ -126,12 +126,16 @@ export default function PortalPage({ view = 'portal' }: { view?: 'portal' | 'fin
 
   if (view === 'finalRound') {
     if (team.isQualifyingFinalRound !== true) return <Navigate to="/portal" replace />
-    // Phase 1: the confirmation lives in memory only (no Firestore write yet);
-    // updating `team` flips the page to its locked view and the banner to
-    // "confirmed" for the rest of this session.
+    // Writes the one-shot confirmation to Firestore, then re-reads the doc so
+    // local state carries the server timestamp; the page flips to its locked
+    // view and the banner to "confirmed".
     const handleConfirm = async () => {
-      setTeam((t) =>
-        t && { ...t, finalRound: { confirmedAt: new Date().toISOString(), locked: true } },
+      await confirmFinalRound(team.email)
+      const fresh = await getTeam(team.email)
+      setTeam(
+        (t) =>
+          fresh ??
+          (t && { ...t, finalRound: { confirmedAt: new Date().toISOString(), locked: true } }),
       )
     }
     return (

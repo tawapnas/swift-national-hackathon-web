@@ -4,6 +4,8 @@ import { portal } from '../data/content'
 import type { Team } from './types'
 import {
   fetchAllTeams,
+  getConfirmedCount,
+  getFinalistCount,
   getSignedInCount,
   getSubmittedCount,
   getTeamsCount,
@@ -15,7 +17,9 @@ import {
   buildCsv,
   downloadCsv,
   filterTeams,
+  hasConfirmed,
   hasSubmitted,
+  isFinalist,
   PAGE_SIZE,
   type SubmissionFilter,
 } from './organizerUtils'
@@ -53,6 +57,8 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
   const [totalTeams, setTotalTeams] = useState<number | null>(null)
   const [signedInCount, setSignedInCount] = useState<number | null>(null)
   const [submittedCount, setSubmittedCount] = useState<number | null>(null)
+  const [finalistCount, setFinalistCount] = useState<number | null>(null)
+  const [confirmedCount, setConfirmedCount] = useState<number | null>(null)
 
   // Search / filter (active when either is set → client-side over the full list).
   const [search, setSearch] = useState('')
@@ -100,13 +106,17 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
       getTeamsCount(),
       getSignedInCount(),
       getSubmittedCount(),
+      getFinalistCount(),
+      getConfirmedCount(),
       listTeamsPage(null),
     ])
-      .then(([total, signedIn, submitted, first]) => {
+      .then(([total, signedIn, submitted, finalists, confirmed, first]) => {
         if (cancelled) return
         setTotalTeams(total)
         setSignedInCount(signedIn)
         setSubmittedCount(submitted)
+        setFinalistCount(finalists)
+        setConfirmedCount(confirmed)
         setPages([first.teams])
         lastDocRef.current = first.lastDoc
         setHasMore(first.hasMore)
@@ -291,7 +301,7 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
       <p className="mt-2 text-muted">{o.lead}</p>
 
       {/* Stats */}
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label={o.stats.totalTeams} value={fmt(totalTeams)} unit={o.stats.unit} />
         <Stat
           label={o.stats.signedIn}
@@ -301,6 +311,11 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
         <Stat
           label={o.stats.submitted}
           value={`${fmt(submittedCount)}/${fmt(totalTeams)}`}
+          unit={o.stats.unit}
+        />
+        <Stat
+          label={o.stats.confirmed}
+          value={`${fmt(confirmedCount)}/${fmt(finalistCount)}`}
           unit={o.stats.unit}
         />
       </div>
@@ -331,7 +346,7 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
         />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2">
-            {(['all', 'submitted', 'notSubmitted'] as const).map((f) => (
+            {(['all', 'submitted', 'notSubmitted', 'confirmed', 'notConfirmed'] as const).map((f) => (
               <button
                 key={f}
                 type="button"
@@ -380,6 +395,7 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
                       value={team.isQualifyingFinalRound}
                       onPick={(target) => setFlagConfirm({ team, target })}
                     />
+                    {isFinalist(team) && <ConfirmedBadge confirmed={hasConfirmed(team)} />}
                     <SubmissionBadge submitted={hasSubmitted(team)} />
                   </span>
                 </div>
@@ -470,6 +486,19 @@ function FlagSegments({
           {opt.label}
         </button>
       ))}
+    </span>
+  )
+}
+
+/** National-round confirmation state, shown on finalist rows only. */
+function ConfirmedBadge({ confirmed }: { confirmed: boolean }) {
+  return confirmed ? (
+    <span className="flex-none rounded-full border border-swift-gold bg-swift-gold/15 px-3 py-1 text-xs font-medium text-swift-gold">
+      {o.badge.confirmed}
+    </span>
+  ) : (
+    <span className="flex-none rounded-full border border-dashed border-swift-gold/60 px-3 py-1 text-xs text-swift-gold/80">
+      {o.badge.notConfirmed}
     </span>
   )
 }

@@ -610,6 +610,8 @@ export const portal = {
       totalTeams: 'ทีมทั้งหมด',
       signedIn: 'เข้าสู่ระบบแล้ว',
       submitted: 'ส่งผลงานแล้ว',
+      // Finalists that confirmed national-round participation, out of all finalists.
+      confirmed: 'ยืนยันเข้าร่วมรอบชิงฯ',
       unit: 'ทีม',
     },
     searchPlaceholder: 'ค้นหาชื่อทีม / สถานศึกษา / จังหวัด',
@@ -617,10 +619,16 @@ export const portal = {
       all: 'ทั้งหมด',
       submitted: 'ส่งแล้ว',
       notSubmitted: 'ยังไม่ส่ง',
+      // Finalists only, split by national-round confirmation.
+      confirmed: 'ยืนยันเข้าร่วมแล้ว',
+      notConfirmed: 'รอยืนยันเข้าร่วม',
     },
     badge: {
       submitted: 'ส่งแล้ว',
       notSubmitted: 'ยังไม่ส่ง',
+      // Shown on finalist rows only.
+      confirmed: 'ยืนยันแล้ว',
+      notConfirmed: 'รอยืนยัน',
     },
     list: {
       empty: 'ไม่พบทีมที่ตรงกับเงื่อนไข',
@@ -653,6 +661,8 @@ export const portal = {
         'อีเมลอาจารย์',
         'ส่งผลงาน',
         'เวลาที่ส่ง',
+        'ผ่านเข้ารอบชิงฯ',
+        'ยืนยันเข้าร่วมรอบชิงฯ เมื่อ',
         'ชื่อไฟล์',
         'ลิงก์ไฟล์',
         'อุปกรณ์ที่ใช้ทดสอบ',
@@ -688,6 +698,8 @@ export const portal = {
       submissionHeading: 'ผลงานที่ส่ง',
       createdAtLabel: 'ลงทะเบียนเมื่อ',
       lastLoginLabel: 'เข้าสู่ระบบล่าสุด',
+      confirmedAtLabel: 'ยืนยันเข้าร่วมรอบชิงฯ เมื่อ',
+      notConfirmed: 'ยังไม่ยืนยัน',
       finalistLabel: 'สถานะรอบชิงชนะเลิศ',
       finalistYes: 'ผ่านเข้ารอบ',
       finalistNo: 'ไม่ผ่านเข้ารอบ',

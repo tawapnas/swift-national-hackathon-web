@@ -65,6 +65,12 @@ export default function OrganizerTeamDetail({
         <dl className="grid gap-4 sm:grid-cols-2">
           <Field label={d.createdAtLabel} value={formatTimestamp(team.createdAt)} />
           <Field label={d.lastLoginLabel} value={formatTimestamp(team.lastLogin)} />
+          {team.isQualifyingFinalRound === true && (
+            <Field
+              label={d.confirmedAtLabel}
+              value={team.finalRound ? formatTimestamp(team.finalRound.confirmedAt) : d.notConfirmed}
+            />
+          )}
         </dl>
 
         {/* Final-round qualification — the one thing organizers can edit. */}

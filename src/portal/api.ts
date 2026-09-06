@@ -75,6 +75,16 @@ export async function submitProject(
   return submission
 }
 
+/** Finalist-only, one-shot: records the team's national-round participation
+ *  confirmation on the doc. firestore.rules allows this only for the leader of
+ *  a qualified team that has not confirmed yet, with confirmedAt pinned to the
+ *  server time. */
+export async function confirmFinalRound(email: string): Promise<void> {
+  await updateDoc(teamDoc(email), {
+    finalRound: { confirmedAt: serverTimestamp(), locked: true },
+  })
+}
+
 // ---------------------------------------------------------------------------
 // Organizer dashboard (/organizer). All reads below require the caller to be on
 // the organizers/{email} allowlist — enforced by firestore.rules, which grants
@@ -107,6 +117,20 @@ export async function getSubmittedCount(): Promise<number> {
  *  signed-in ones (and excludes any doc still missing the field). */
 export async function getSignedInCount(): Promise<number> {
   const snap = await getCountFromServer(query(teamsCol(), where('lastLogin', '!=', null)))
+  return snap.data().count
+}
+
+/** How many teams are flagged as finalists. */
+export async function getFinalistCount(): Promise<number> {
+  const snap = await getCountFromServer(
+    query(teamsCol(), where('isQualifyingFinalRound', '==', true)),
+  )
+  return snap.data().count
+}
+
+/** How many finalists have confirmed national-round participation. */
+export async function getConfirmedCount(): Promise<number> {
+  const snap = await getCountFromServer(query(teamsCol(), where('finalRound.locked', '==', true)))
   return snap.data().count
 }
 
