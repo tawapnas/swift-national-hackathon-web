@@ -71,5 +71,6 @@ export function sampleTeam(qualified: boolean, { withDocs = true } = {}): Team {
       locked: true,
     },
     certificateUrl: withDocs ? '#' : undefined,
+    thankYouLetterUrl: withDocs ? '#' : undefined,
   }
 }

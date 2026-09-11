@@ -16,7 +16,10 @@ export default function ResultBanner({ team }: { team: Team }) {
   return team.isQualifyingFinalRound ? (
     <QualifiedBanner confirmed={team.finalRound != null} />
   ) : (
-    <CertificateBanner url={team.certificateUrl} />
+    <CertificateBanner
+      certificateUrl={team.certificateUrl}
+      thankYouUrl={team.thankYouLetterUrl}
+    />
   )
 }
 
@@ -71,7 +74,13 @@ function ConfirmedPill() {
   )
 }
 
-function CertificateBanner({ url }: { url?: string }) {
+function CertificateBanner({
+  certificateUrl,
+  thankYouUrl,
+}: {
+  certificateUrl?: string
+  thankYouUrl?: string
+}) {
   const b = portal.banner.notQualified
 
   return (
@@ -83,29 +92,42 @@ function CertificateBanner({ url }: { url?: string }) {
           </p>
           <h2 className="mt-2 text-2xl font-bold leading-tight">{b.heading}</h2>
           <p className="mt-2 text-pretty leading-relaxed text-muted">{b.body}</p>
-          {!url && <p className="mt-2 text-sm text-swift-gold">{b.preparing}</p>}
+          {!certificateUrl && <p className="mt-2 text-sm text-swift-gold">{b.preparing}</p>}
         </div>
-        {url ? (
-          <a
-            href={url}
-            download
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${portalButtonClass()} flex-none`}
-          >
-            <DownloadIcon />
-            {b.download}
-          </a>
-        ) : (
-          // Same footprint as the live button, so the layout doesn't jump
-          // once the file lands.
-          <span aria-disabled className={`${portalButtonClass()} flex-none opacity-40`}>
-            <DownloadIcon />
-            {b.download}
-          </span>
-        )}
+        <div className="flex flex-none flex-col gap-3">
+          <DownloadLink url={certificateUrl} label={b.download} />
+          <DownloadLink url={thankYouUrl} label={b.downloadThankYou} variant="outline" />
+        </div>
       </div>
     </section>
+  )
+}
+
+/** Download anchor that keeps the live button's footprint while the file is
+ *  still missing, so the layout doesn't jump once it lands. */
+function DownloadLink({
+  url,
+  label,
+  variant = 'solid',
+}: {
+  url?: string
+  label: string
+  variant?: 'solid' | 'outline'
+}) {
+  const className = `${portalButtonClass(variant)} flex-none`
+  if (!url) {
+    return (
+      <span aria-disabled className={`${className} opacity-40`}>
+        <DownloadIcon />
+        {label}
+      </span>
+    )
+  }
+  return (
+    <a href={url} download target="_blank" rel="noopener noreferrer" className={className}>
+      <DownloadIcon />
+      {label}
+    </a>
   )
 }
 

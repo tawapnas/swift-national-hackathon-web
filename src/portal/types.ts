@@ -81,11 +81,12 @@ export interface Team {
   // login (Timestamp on read). See scripts/add-lastlogin.mjs for backfill.
   lastLogin: unknown
   submission?: Submission
-  // National round (set after RESULTS_ANNOUNCED). The two URLs are uploaded
-  // per team by organizers — a participation certificate for every submitted
-  // team (finalist certificate for finalists), an invitation letter for
-  // finalists only. Absent until uploaded.
+  // National round (set after RESULTS_ANNOUNCED). The URLs are uploaded per
+  // team by organizers — a participation certificate and an advisor thank-you
+  // letter for every submitted team (finalist certificate for finalists), an
+  // invitation letter for finalists only. Absent until uploaded.
   finalRound?: FinalRoundConfirmation
   certificateUrl?: string
   invitationLetterUrl?: string
+  thankYouLetterUrl?: string
 }

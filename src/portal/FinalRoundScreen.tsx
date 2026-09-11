@@ -110,6 +110,16 @@ export default function FinalRoundScreen({
               note={f.documents.invitation.note}
               url={team.invitationLetterUrl}
             />
+            <DocumentRow
+              title={f.documents.thankYou.title}
+              note={f.documents.thankYou.note}
+              url={team.thankYouLetterUrl}
+            />
+            <DocumentRow
+              title={f.documents.agenda.title}
+              note={f.documents.agenda.note}
+              url={f.agendaUrl}
+            />
           </ul>
         </PortalSection>
 

@@ -505,8 +505,9 @@ export const portal = {
     notQualified: {
       eyebrow: 'เกียรติบัตรการเข้าร่วมกิจกรรม',
       heading: 'ขอบคุณที่ร่วมเป็นส่วนหนึ่งของ YiDH 26',
-      body: 'เกียรติบัตรการเข้าร่วมกิจกรรมสำหรับสมาชิกทั้ง 3 คนในทีม จัดทำในรูปแบบไฟล์ PDF',
+      body: 'เกียรติบัตรการเข้าร่วมกิจกรรมสำหรับสมาชิกทั้ง 3 คนในทีม และหนังสือขอบคุณอาจารย์ที่ปรึกษา จัดทำในรูปแบบไฟล์ PDF',
       download: 'ดาวน์โหลดเกียรติบัตร',
+      downloadThankYou: 'ดาวน์โหลดหนังสือขอบคุณอาจารย์',
       preparing: 'กำลังจัดเตรียมเกียรติบัตร จะพร้อมให้ดาวน์โหลดเร็ว ๆ นี้',
     },
   },
@@ -518,6 +519,8 @@ export const portal = {
     confirmDeadline: '11 กันยายน 2569 เวลา 22:00 น.',
     lineOpenChatUrl:
       'https://line.me/ti/g2/b9_zi76xhrt9vdDq05hqkRs-rSCpH9ri551v4w?utm_source=invitation&utm_medium=link_copy&utm_campaign=default',
+    agendaUrl:
+      'https://firebasestorage.googleapis.com/v0/b/swift-national-hackathon.firebasestorage.app/o/documents%2Fagenda.pdf?alt=media&token=31fba66b-9a1b-4ecf-8a9a-6e305fcb37ca',
 
     // {teamName} is replaced with the team's name.
     heading: 'ยินดีด้วย ทีม {teamName}',
@@ -563,6 +566,14 @@ export const portal = {
       invitation: {
         title: 'จดหมายเชิญเข้าร่วมการแข่งขัน',
         note: 'สำหรับยื่นต่อสถานศึกษาเพื่อขออนุญาตเดินทางและจัดหาที่พัก',
+      },
+      agenda: {
+        title: 'หนังสือแจ้งกำหนดการ',
+        note: 'กำหนดการตลอด 3 วันของการแข่งขัน สำหรับทีมและอาจารย์ที่ปรึกษา',
+      },
+      thankYou: {
+        title: 'หนังสือขอบคุณอาจารย์ที่ปรึกษา',
+        note: 'สำหรับมอบให้อาจารย์ที่ปรึกษาของทีม',
       },
       download: 'ดาวน์โหลด',
       preparing: 'กำลังจัดเตรียม',
