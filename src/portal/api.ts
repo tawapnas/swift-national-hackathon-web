@@ -1,6 +1,7 @@
 // Firestore/Storage data layer for the portal. A team doc lives at
 // teams/{leaderEmail} (lowercased); the submission ZIP at
-// submissions/{leaderEmail}/{fileName}. Security rules mirror this layout
+// submissions/{leaderEmail}/{fileName}; finalist Memoji/selfie images at
+// finalists/{leaderEmail}/memoji-{0|1|2}.{ext}. Security rules mirror this layout
 // (see firestore.rules / storage.rules at the repo root).
 
 import {
@@ -22,7 +23,7 @@ import {
 } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { db, storage } from './firebase'
-import type { Submission, Team } from './types'
+import type { FinalistInfoInput, Submission, Team } from './types'
 
 const teamDoc = (email: string) => doc(db, 'teams', email.toLowerCase())
 const teamsCol = () => collection(db, 'teams')
@@ -85,6 +86,35 @@ export async function confirmFinalRound(email: string): Promise<void> {
   })
 }
 
+/** Finalist-only, one-shot: uploads each student's Memoji (or selfie for the
+ *  staff-made option) — files[i] belongs to students[i] — then writes the
+ *  locked `finalistInfo` onto the team doc. firestore.rules allows this only
+ *  for the leader of a qualified, confirmed team that hasn't submitted yet. */
+export async function submitFinalistInfo(
+  email: string,
+  info: FinalistInfoInput,
+  files: File[],
+): Promise<void> {
+  const owner = email.toLowerCase()
+  const urls = await Promise.all(
+    files.map(async (file, i) => {
+      const ext = file.name.match(/\.([a-z0-9]+)$/i)?.[1]?.toLowerCase() ?? 'png'
+      const fileRef = ref(storage, `finalists/${owner}/memoji-${i}.${ext}`)
+      // HEIC often arrives with an empty MIME type; storage.rules needs image/*.
+      await uploadBytes(fileRef, file, { contentType: file.type || `image/${ext}` })
+      return getDownloadURL(fileRef)
+    }),
+  )
+  await updateDoc(teamDoc(email), {
+    finalistInfo: {
+      ...info,
+      students: info.students.map((s, i) => ({ ...s, memojiUrl: urls[i] })),
+      submittedAt: serverTimestamp(),
+      locked: true,
+    },
+  })
+}
+
 // ---------------------------------------------------------------------------
 // Organizer dashboard (/organizer). All reads below require the caller to be on
 // the organizers/{email} allowlist — enforced by firestore.rules, which grants
@@ -131,6 +161,12 @@ export async function getFinalistCount(): Promise<number> {
 /** How many finalists have confirmed national-round participation. */
 export async function getConfirmedCount(): Promise<number> {
   const snap = await getCountFromServer(query(teamsCol(), where('finalRound.locked', '==', true)))
+  return snap.data().count
+}
+
+/** How many finalists have submitted the finalist-info form. */
+export async function getFinalistInfoCount(): Promise<number> {
+  const snap = await getCountFromServer(query(teamsCol(), where('finalistInfo.locked', '==', true)))
   return snap.data().count
 }
 

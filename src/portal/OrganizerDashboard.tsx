@@ -6,6 +6,7 @@ import {
   fetchAllTeams,
   getConfirmedCount,
   getFinalistCount,
+  getFinalistInfoCount,
   getSignedInCount,
   getSubmittedCount,
   getTeamsCount,
@@ -15,12 +16,15 @@ import {
 import ConfirmDialog from './ConfirmDialog'
 import {
   buildCsv,
+  buildFinalistCsv,
   downloadCsv,
   filterTeams,
   hasConfirmed,
+  hasFinalistInfo,
   hasSubmitted,
   isFinalist,
   PAGE_SIZE,
+  tallyShirtSizes,
   type SubmissionFilter,
 } from './organizerUtils'
 import PortalShell from './PortalShell'
@@ -30,7 +34,9 @@ import OrganizerTeamDetail from './OrganizerTeamDetail'
 import ResultScreen from './ResultScreen'
 import TeamPortalScreen from './TeamPortalScreen'
 import FinalRoundScreen from './FinalRoundScreen'
-import { sampleTeam } from './previewData'
+import FinalistInfoScreen from './FinalistInfoScreen'
+import { sampleConsentDocs, sampleFinalistInfo, sampleTeam } from './previewData'
+import type { FinalistInfoInput } from './types'
 
 const o = portal.organizer
 
@@ -42,6 +48,8 @@ const TEAM_PREVIEWS = [
   'portalQualified',
   'portalNotQualified',
   'finalRound',
+  'finalistInfo',
+  'finalistInfoLocked',
 ] as const
 type TeamPreview = (typeof TEAM_PREVIEWS)[number]
 
@@ -59,6 +67,7 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
   const [submittedCount, setSubmittedCount] = useState<number | null>(null)
   const [finalistCount, setFinalistCount] = useState<number | null>(null)
   const [confirmedCount, setConfirmedCount] = useState<number | null>(null)
+  const [finalistInfoCount, setFinalistInfoCount] = useState<number | null>(null)
 
   // Search / filter (active when either is set → client-side over the full list).
   const [search, setSearch] = useState('')
@@ -83,10 +92,15 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
   // In-memory confirmation for the national-round preview so the form's
   // locked view can be checked too. Reset when the preview closes.
   const [previewConfirmation, setPreviewConfirmation] = useState<Team['finalRound']>(undefined)
+  // Same for the finalist-info form preview (submitting it shows the summary).
+  const [previewInfo, setPreviewInfo] = useState<Team['finalistInfo']>(undefined)
   const closePreview = () => {
     setResultPreview(null)
     setPreviewConfirmation(undefined)
+    setPreviewInfo(undefined)
   }
+  // Shirt-size summary is opt-in (it needs the full team list).
+  const [showShirts, setShowShirts] = useState(false)
   // In-list finalist-flag change awaiting confirmation (null = no dialog);
   // target null means "clear back to ยังไม่ประกาศผล".
   const [flagConfirm, setFlagConfirm] = useState<{ team: Team; target: boolean | null } | null>(
@@ -95,7 +109,7 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
   const [flagSaving, setFlagSaving] = useState(false)
   const [flagError, setFlagError] = useState(false)
   const [busy, setBusy] = useState(false)
-  const [exporting, setExporting] = useState(false)
+  const [exporting, setExporting] = useState<'teams' | 'finalists' | null>(null)
   const [initialLoading, setInitialLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -108,15 +122,17 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
       getSubmittedCount(),
       getFinalistCount(),
       getConfirmedCount(),
+      getFinalistInfoCount(),
       listTeamsPage(null),
     ])
-      .then(([total, signedIn, submitted, finalists, confirmed, first]) => {
+      .then(([total, signedIn, submitted, finalists, confirmed, infoSubmitted, first]) => {
         if (cancelled) return
         setTotalTeams(total)
         setSignedInCount(signedIn)
         setSubmittedCount(submitted)
         setFinalistCount(finalists)
         setConfirmedCount(confirmed)
+        setFinalistInfoCount(infoSubmitted)
         setPages([first.teams])
         lastDocRef.current = first.lastDoc
         setHasMore(first.hasMore)
@@ -130,13 +146,13 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
 
   // Lazily load the full list the first time search/filter is used.
   useEffect(() => {
-    if (!isFiltering || allTeams !== null || allLoading) return
+    if (!(isFiltering || showShirts) || allTeams !== null || allLoading) return
     setAllLoading(true)
     fetchAllTeams()
       .then(setAllTeams)
       .catch(() => setError(true))
       .finally(() => setAllLoading(false))
-  }, [isFiltering, allTeams, allLoading])
+  }, [isFiltering, showShirts, allTeams, allLoading])
 
   // Reset to the first result page whenever the query changes.
   useEffect(() => setFilterPage(0), [search, filter])
@@ -180,17 +196,18 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
   }
 
   // ---- CSV ---------------------------------------------------------------
-  const handleExport = async () => {
+  const handleExport = async (kind: 'teams' | 'finalists') => {
     if (exporting) return
-    setExporting(true)
+    setExporting(kind)
     try {
       const data = allTeams ?? (await fetchAllTeams())
       if (!allTeams) setAllTeams(data)
-      downloadCsv(buildCsv(data))
+      if (kind === 'teams') downloadCsv(buildCsv(data))
+      else downloadCsv(buildFinalistCsv(data), o.csv.finalistFilename)
     } catch {
       setError(true)
     } finally {
-      setExporting(false)
+      setExporting(null)
     }
   }
 
@@ -261,10 +278,35 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
   if (resultPreview === 'finalRound') {
     return (
       <FinalRoundScreen
-        team={{ ...sampleTeam(true), finalRound: previewConfirmation }}
+        team={{ ...sampleTeam(true), finalRound: previewConfirmation, finalistInfo: previewInfo }}
         onConfirm={async () =>
           setPreviewConfirmation({ confirmedAt: new Date().toISOString(), locked: true })
         }
+        onOpenInfo={() => setResultPreview('finalistInfo')}
+        onBack={closePreview}
+        onSignOut={onSignOut}
+      />
+    )
+  }
+  if (resultPreview === 'finalistInfo' || resultPreview === 'finalistInfoLocked') {
+    // The form preview "submits" in memory: local object URLs stand in for
+    // the uploaded images so the summary renders them.
+    const previewSubmit = async (info: FinalistInfoInput, files: File[]) =>
+      setPreviewInfo({
+        ...info,
+        students: info.students.map((s, i) => ({ ...s, memojiUrl: URL.createObjectURL(files[i]) })),
+        submittedAt: new Date().toISOString(),
+        locked: true,
+      })
+    return (
+      <FinalistInfoScreen
+        team={{
+          ...sampleTeam(true),
+          finalRound: { confirmedAt: new Date().toISOString(), locked: true },
+          finalistInfo: resultPreview === 'finalistInfoLocked' ? sampleFinalistInfo() : previewInfo,
+          consentDocs: sampleConsentDocs(),
+        }}
+        onSubmit={previewSubmit}
         onBack={closePreview}
         onSignOut={onSignOut}
       />
@@ -301,7 +343,7 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
       <p className="mt-2 text-muted">{o.lead}</p>
 
       {/* Stats */}
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Stat label={o.stats.totalTeams} value={fmt(totalTeams)} unit={o.stats.unit} />
         <Stat
           label={o.stats.signedIn}
@@ -318,6 +360,26 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
           value={`${fmt(confirmedCount)}/${fmt(finalistCount)}`}
           unit={o.stats.unit}
         />
+        <Stat
+          label={o.stats.finalistInfo}
+          value={`${fmt(finalistInfoCount)}/${fmt(finalistCount)}`}
+          unit={o.stats.unit}
+        />
+      </div>
+
+      {/* Shirt sizes across submitted finalist teams */}
+      <div className="mt-4">
+        {showShirts ? (
+          <ShirtSummary teams={allTeams} />
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowShirts(true)}
+            className="cursor-pointer text-sm text-swift-orange hover:underline"
+          >
+            {o.shirtSummary.load}
+          </button>
+        )}
       </div>
 
       {/* Team-facing result screen preview */}
@@ -346,7 +408,17 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
         />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2">
-            {(['all', 'submitted', 'notSubmitted', 'confirmed', 'notConfirmed'] as const).map((f) => (
+            {(
+              [
+                'all',
+                'submitted',
+                'notSubmitted',
+                'confirmed',
+                'notConfirmed',
+                'infoSubmitted',
+                'infoNotSubmitted',
+              ] as const
+            ).map((f) => (
               <button
                 key={f}
                 type="button"
@@ -361,9 +433,24 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
               </button>
             ))}
           </div>
-          <PortalButton variant="outline" size="sm" onClick={handleExport} disabled={exporting}>
-            {exporting ? o.csv.exporting : o.csv.export}
-          </PortalButton>
+          <div className="flex flex-wrap gap-2">
+            <PortalButton
+              variant="outline"
+              size="sm"
+              onClick={() => handleExport('teams')}
+              disabled={exporting !== null}
+            >
+              {exporting === 'teams' ? o.csv.exporting : o.csv.export}
+            </PortalButton>
+            <PortalButton
+              variant="outline"
+              size="sm"
+              onClick={() => handleExport('finalists')}
+              disabled={exporting !== null}
+            >
+              {exporting === 'finalists' ? o.csv.exporting : o.csv.finalistExport}
+            </PortalButton>
+          </div>
         </div>
       </div>
 
@@ -396,6 +483,9 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
                       onPick={(target) => setFlagConfirm({ team, target })}
                     />
                     {isFinalist(team) && <ConfirmedBadge confirmed={hasConfirmed(team)} />}
+                    {isFinalist(team) && hasConfirmed(team) && (
+                      <InfoBadge submitted={hasFinalistInfo(team)} />
+                    )}
                     <SubmissionBadge submitted={hasSubmitted(team)} />
                   </span>
                 </div>
@@ -500,6 +590,47 @@ function ConfirmedBadge({ confirmed }: { confirmed: boolean }) {
     <span className="flex-none rounded-full border border-dashed border-swift-gold/60 px-3 py-1 text-xs text-swift-gold/80">
       {o.badge.notConfirmed}
     </span>
+  )
+}
+
+/** Finalist-info form state, shown on confirmed finalist rows only. */
+function InfoBadge({ submitted }: { submitted: boolean }) {
+  return submitted ? (
+    <span className="flex-none rounded-full border border-swift-gold bg-swift-gold/15 px-3 py-1 text-xs font-medium text-swift-gold">
+      {o.badge.infoSubmitted}
+    </span>
+  ) : (
+    <span className="flex-none rounded-full border border-dashed border-swift-gold/60 px-3 py-1 text-xs text-swift-gold/80">
+      {o.badge.infoNotSubmitted}
+    </span>
+  )
+}
+
+/** Shirt-size counts over the full team list (null while it loads). */
+function ShirtSummary({ teams }: { teams: Team[] | null }) {
+  const c = o.shirtSummary
+  if (!teams) return <p className="text-sm text-muted">{c.loading}</p>
+  const tally = tallyShirtSizes(teams)
+  const total = tally.reduce((sum, t) => sum + t.count, 0)
+  return (
+    <div className="rounded-2xl border border-line bg-surface p-5">
+      <p className="font-medium">{c.heading}</p>
+      <p className="mt-1 text-sm text-muted">{c.lead}</p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {tally.map(({ size, count }) => (
+          <span key={size} className="rounded-xl border border-line bg-surface-2 px-3 py-2 text-sm">
+            <span className="text-muted">{size}</span>{' '}
+            <span className="font-semibold">{count.toLocaleString('th-TH')}</span>
+          </span>
+        ))}
+        <span className="rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-3 py-2 text-sm">
+          <span className="text-muted">{c.total}</span>{' '}
+          <span className="font-semibold">
+            {total.toLocaleString('th-TH')} {c.unit}
+          </span>
+        </span>
+      </div>
+    </div>
   )
 }
 

@@ -63,6 +63,90 @@ export interface FinalRoundConfirmation {
   locked: true
 }
 
+// ---------------------------------------------------------------------------
+// Finalist info (ข้อมูลผู้เข้าแข่งขัน) — filled once by the leader for the whole
+// team after confirming, then locked. Stored on the team doc as `finalistInfo`.
+// Option values (travel mode, stay type, shirt size) are the plain strings from
+// content.ts portal.finalistInfo.options, like the registration fields.
+// ---------------------------------------------------------------------------
+
+export type MemojiMode = 'diy' | 'staff' // ทำเอง (Memoji PNG) | ให้ทีมงานทำ (รูปถ่าย)
+
+export interface StudentInfo {
+  nickname: string
+  dob: string // yyyy-mm-dd
+  memojiMode: MemojiMode
+  // Storage download URL (finalists/{email}/memoji-{i}.{ext}). DIY Memoji are
+  // flattened onto a white background before upload (memojiImage.ts).
+  memojiUrl: string
+  medical: { hasCondition: boolean; detail: string } // โรคประจำตัว + ยาที่ใช้
+  dietary: string // ข้อจำกัดด้านอาหาร / อาหารที่แพ้
+  shirtSize: string
+  emergency: { name: string; relationship: string; phone: string }
+}
+
+export interface AdvisorInfo {
+  lineId: string
+  position: string // วิชาที่สอน / ตำแหน่ง
+  shirtSize: string
+  dietary: string
+  // ผู้อำนวยการสถานศึกษา — receives the organizers' invitation by email
+  // (the director's own address or the school's official one).
+  director: { name: string; email: string }
+}
+
+// ผู้ปกครอง/ผู้ดูแลที่เดินทางมาด้วย. Fields are '' when not attending; a team
+// without one must bring the signed liability release forms.
+export interface GuardianInfo {
+  attending: boolean
+  name: string
+  phone: string
+  email: string
+  lineId: string
+  dietary: string
+}
+
+export interface FinalistInfo {
+  travel: { mode: string; detail: string }
+  stay: { type: string; detail: string } // detail = hotel name / other details
+  arrivalAt: string // datetime-local (yyyy-mm-ddThh:mm)
+  departureAt: string
+  guardian: GuardianInfo
+  students: StudentInfo[] // [leader, member 1, member 2] — same order as the team
+  advisor: AdvisorInfo
+  codeOfConductAccepted: true
+  // serverTimestamp() on write / Timestamp on read; ISO string in previews.
+  submittedAt: unknown
+  locked: true
+}
+
+// Personalised consent PDFs, generated per person from the Word masters by
+// scripts/generate-consents.mjs (Admin SDK) — never written by the client.
+export interface ConsentDoc {
+  url: string // tokenised Storage URL (certificates/{email}/consent-advisor.pdf)
+  docNo: string // e.g. SCCTH26217 — unique per person
+  kind: 'advisor'
+  name: string // the name filled in — lets the script spot stale PDFs
+}
+
+// A student's parent form exists in both versions up front, sharing one
+// number: Parent_Consent_Normal (a guardian travels with the team) and
+// Parent_Consent_Liability_Release (no guardian). The portal offers the one
+// matching the team's guardian answer (both until it's known).
+export interface StudentConsent {
+  docNo: string
+  name: string
+  normalUrl: string
+  liabilityUrl: string
+}
+
+export type ParentFormKind = 'normal' | 'liability'
+
+export interface ConsentDocs {
+  advisor?: ConsentDoc | null
+  students?: (StudentConsent | null)[] // [leader, member 1, member 2]
+}
+
 export interface Team {
   email: string // == Firestore doc id; the leader's (registered) email
   teamName: string
@@ -86,7 +170,14 @@ export interface Team {
   // letter for every submitted team (finalist certificate for finalists), an
   // invitation letter for finalists only. Absent until uploaded.
   finalRound?: FinalRoundConfirmation
+  // Filled after confirming (FinalistInfoScreen); absent until submitted.
+  finalistInfo?: FinalistInfo
+  consentDocs?: ConsentDocs
   certificateUrl?: string
   invitationLetterUrl?: string
   thankYouLetterUrl?: string
 }
+
+// What the finalist-info form hands to its submit handler: memojiUrl is ''
+// until the caller uploads the images; submittedAt/locked are stamped on save.
+export type FinalistInfoInput = Omit<FinalistInfo, 'submittedAt' | 'locked'>

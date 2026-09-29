@@ -5,6 +5,7 @@ import { formatTimestamp, fullName } from './organizerUtils'
 import { setQualifyingFinalRound } from './api'
 import ConfirmDialog from './ConfirmDialog'
 import { portalButtonClass } from './PortalButton'
+import FinalistInfoSummary from './FinalistInfoSummary'
 
 /** Detail for a single team, shown in place of the list (the dashboard
  *  supplies the surrounding PortalShell). Read-only except the final-round
@@ -71,6 +72,14 @@ export default function OrganizerTeamDetail({
               value={team.finalRound ? formatTimestamp(team.finalRound.confirmedAt) : d.notConfirmed}
             />
           )}
+          {team.isQualifyingFinalRound === true && (
+            <Field
+              label={d.finalistInfoAtLabel}
+              value={
+                team.finalistInfo ? formatTimestamp(team.finalistInfo.submittedAt) : d.noFinalistInfo
+              }
+            />
+          )}
         </dl>
 
         {/* Final-round qualification — the one thing organizers can edit. */}
@@ -125,6 +134,17 @@ export default function OrganizerTeamDetail({
           <PersonCard person={team.advisor} tag={d.advisorLabel} advisor />
         </div>
       </Section>
+
+      {/* National-round info (finalists only) */}
+      {team.isQualifyingFinalRound === true && (
+        <Section heading={d.finalistInfoHeading}>
+          {team.finalistInfo ? (
+            <FinalistInfoSummary team={team} info={team.finalistInfo} organizerView />
+          ) : (
+            <p className="text-muted">{d.noFinalistInfo}</p>
+          )}
+        </Section>
+      )}
 
       {/* Survey */}
       <Section heading={d.surveyHeading}>

@@ -6,8 +6,7 @@ import { RESULTS_ANNOUNCED } from './config'
 
 /**
  * Top-of-portal banner once regional results are out. Finalists get the
- * orange-glow card that leads to the national-round page (with their
- * confirmation status); every other submitted team gets a quiet card with
+ * orange-glow card that leads to the national-round page; every other submitted team gets a quiet card with
  * just the participation-certificate download. Teams that never submitted
  * (or whose flag is undecided) see nothing.
  */
@@ -49,7 +48,6 @@ function QualifiedBanner({ confirmed }: { confirmed: boolean }) {
             <PortalButton onClick={() => navigate('/portal/final-round')}>
               {confirmed ? b.ctaConfirmed : b.cta}
             </PortalButton>
-            {confirmed && <ConfirmedPill />}
           </div>
         </div>
         <img
@@ -60,17 +58,6 @@ function QualifiedBanner({ confirmed }: { confirmed: boolean }) {
         />
       </div>
     </section>
-  )
-}
-
-/** Shown once the team has confirmed its participation. */
-function ConfirmedPill() {
-  const b = portal.banner.qualified
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-swift-orange bg-swift-orange/15 px-3 py-1 text-xs font-medium text-swift-orange">
-      <CheckIcon />
-      {b.confirmed}
-    </span>
   )
 }
 

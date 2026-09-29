@@ -6,14 +6,17 @@ import { sendWelcomeEmail } from './firebase'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
 import PortalSection from './PortalSection'
-import { CheckboxGroup, RadioGroup, SelectField, TextField } from './fields'
+import {
+  CheckboxGroup,
+  isValidEmail,
+  isValidPhone,
+  RadioGroup,
+  SelectField,
+  TextField,
+} from './fields'
 
 const r = portal.registration
 const o = r.options
-
-const isValidEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim())
-// 10 digits, allowing typed spaces/dashes (e.g. 089-070-0279).
-const isValidPhone = (s: string) => /^\d{10}$/.test(s.replace(/[\s-]/g, ''))
 
 // Inline field errors — only shown once the field has content.
 const emailError = (v: string) => (v.trim() && !isValidEmail(v) ? r.invalidEmail : undefined)

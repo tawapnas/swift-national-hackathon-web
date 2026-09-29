@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { portal } from '../data/content'
-import type { Team } from './types'
+import type { FinalistInfoInput, Team } from './types'
 import { useAuth } from './useAuth'
-import { confirmFinalRound, getTeam, updateLastLogin } from './api'
+import { confirmFinalRound, getTeam, submitFinalistInfo, updateLastLogin } from './api'
 import FullScreenLoader from './FullScreenLoader'
 import RegistrationScreen from './RegistrationScreen'
 import RegistrationClosedScreen from './RegistrationClosedScreen'
@@ -11,9 +11,15 @@ import RegistrationSuccessScreen from './RegistrationSuccessScreen'
 import TeamPortalScreen from './TeamPortalScreen'
 import ResultScreen from './ResultScreen'
 import FinalRoundScreen from './FinalRoundScreen'
+import FinalistInfoScreen from './FinalistInfoScreen'
 import PortalShell from './PortalShell'
 import PortalButton from './PortalButton'
-import { REGISTRATION_CLOSED, RESULTS_ANNOUNCED } from './config'
+import {
+  canSeeFinalistInfo,
+  FINALIST_INFO_CLOSED,
+  REGISTRATION_CLOSED,
+  RESULTS_ANNOUNCED,
+} from './config'
 
 /**
  * Self-guarding /portal entry: Firestore team lookup → the team portal, or —
@@ -21,11 +27,16 @@ import { REGISTRATION_CLOSED, RESULTS_ANNOUNCED } from './config'
  * happens on the site's เข้าร่วมการแข่งขัน CTA before arriving here;
  * signed-out visits bounce back to the home page.
  *
- * `view` selects the screen once the team is loaded: the portal itself, or
- * (/portal/final-round) the national-round page — finalists only; everyone
- * else is sent back to /portal.
+ * `view` selects the screen once the team is loaded: the portal itself,
+ * (/portal/final-round) the national-round page, or (/portal/final-round/info)
+ * the finalist-info form — both finalists only; everyone else is sent back to
+ * /portal, and the form additionally requires a confirmed team.
  */
-export default function PortalPage({ view = 'portal' }: { view?: 'portal' | 'finalRound' }) {
+export default function PortalPage({
+  view = 'portal',
+}: {
+  view?: 'portal' | 'finalRound' | 'finalistInfo'
+}) {
   const { user, loading, signOut } = useAuth()
   const navigate = useNavigate()
   const [team, setTeam] = useState<Team | null>(null)
@@ -124,6 +135,29 @@ export default function PortalPage({ view = 'portal' }: { view?: 'portal' | 'fin
     )
   }
 
+  if (view === 'finalistInfo') {
+    if (team.isQualifyingFinalRound !== true) return <Navigate to="/portal" replace />
+    if (!team.finalRound) return <Navigate to="/portal/final-round" replace />
+    // Staff-only while FINALIST_INFO_STAFF_ONLY (production testing).
+    if (!canSeeFinalistInfo(team.email)) return <Navigate to="/portal/final-round" replace />
+    // Uploads the images + writes the locked form, then re-reads the doc so
+    // the screen flips to its summary with the stored URLs and timestamp.
+    const handleSubmitInfo = async (info: FinalistInfoInput, files: File[]) => {
+      await submitFinalistInfo(team.email, info, files)
+      const fresh = await getTeam(team.email)
+      if (fresh) setTeam(fresh)
+    }
+    return (
+      <FinalistInfoScreen
+        team={team}
+        onSubmit={handleSubmitInfo}
+        closed={FINALIST_INFO_CLOSED}
+        onBack={() => navigate('/portal/final-round')}
+        onSignOut={signOut}
+      />
+    )
+  }
+
   if (view === 'finalRound') {
     if (team.isQualifyingFinalRound !== true) return <Navigate to="/portal" replace />
     // Writes the one-shot confirmation to Firestore, then re-reads the doc so
@@ -142,6 +176,9 @@ export default function PortalPage({ view = 'portal' }: { view?: 'portal' | 'fin
       <FinalRoundScreen
         team={team}
         onConfirm={handleConfirm}
+        onOpenInfo={() => navigate('/portal/final-round/info')}
+        infoClosed={FINALIST_INFO_CLOSED}
+        infoAvailable={canSeeFinalistInfo(team.email)}
         onBack={() => navigate('/portal')}
         onSignOut={signOut}
       />

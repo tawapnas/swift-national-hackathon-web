@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { portal } from '../data/content'
-import type { FinalRoundConfirmation, Team } from './types'
+import type { ParentFormKind, StudentConsent, Team } from './types'
 import PortalShell from './PortalShell'
 import PortalSection from './PortalSection'
 import PortalButton, { portalButtonClass } from './PortalButton'
 import ConfirmDialog from './ConfirmDialog'
 import { withBold } from './HackathonDetailSection'
-import { formatTimestamp } from './organizerUtils'
+import { formatTimestamp, fullName } from './organizerUtils'
 import { CheckIcon, DownloadIcon } from './ResultBanner'
 
 const f = portal.finalRound
@@ -16,18 +16,28 @@ interface FinalRoundScreenProps {
   // Persists the confirmation; the caller stamps confirmedAt/locked and
   // updates team.finalRound, which flips this screen to the locked view.
   onConfirm: () => Promise<void>
+  // Opens the finalist-info form (/portal/final-round/info).
+  onOpenInfo: () => void
+  // FINALIST_INFO_CLOSED — the form no longer takes submissions.
+  infoClosed?: boolean
+  // FINALIST_INFO_STAFF_ONLY — false hides the finalist-info section entirely.
+  infoAvailable?: boolean
   onBack: () => void
   onSignOut: () => void
 }
 
 /**
  * National-round page for finalist teams (/portal/final-round): the key
- * facts, what to prepare, LINE Open Chat, per-team documents, and the
- * one-time participation confirmation (locked once confirmed).
+ * facts, what to prepare, LINE Open Chat, per-team and shared documents, the
+ * one-time participation confirmation (locked once confirmed), and — once
+ * confirmed — the entry to the finalist-info form.
  */
 export default function FinalRoundScreen({
   team,
   onConfirm,
+  onOpenInfo,
+  infoClosed = false,
+  infoAvailable = true,
   onBack,
   onSignOut,
 }: FinalRoundScreenProps) {
@@ -120,17 +130,31 @@ export default function FinalRoundScreen({
               note={f.documents.agenda.note}
               url={f.agendaUrl}
             />
+            <DocumentRow
+              title={f.documents.codeOfConduct.title}
+              note={f.documents.codeOfConduct.note}
+              url={f.codeOfConductUrl || undefined}
+            />
+            <ConsentRows team={team} />
           </ul>
+          <p className="mt-5 rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-4 py-3 text-sm text-fg">
+            {withBold(f.documents.signNotice)}
+          </p>
         </PortalSection>
 
-        {/* Confirmation */}
-        <PortalSection heading={f.form.heading}>
-          {team.finalRound ? (
-            <LockedSummary confirmation={team.finalRound} />
-          ) : (
+        {/* Confirmation — only until the team has confirmed. */}
+        {!team.finalRound && (
+          <PortalSection heading={f.form.heading}>
             <ConfirmationForm onConfirm={onConfirm} />
-          )}
-        </PortalSection>
+          </PortalSection>
+        )}
+
+        {/* Finalist info */}
+        {infoAvailable && (
+          <PortalSection heading={f.infoCard.heading}>
+            <InfoCard team={team} onOpen={onOpenInfo} closed={infoClosed} />
+          </PortalSection>
+        )}
       </div>
     </PortalShell>
   )
@@ -191,19 +215,139 @@ function ConfirmationForm({ onConfirm }: { onConfirm: () => Promise<void> }) {
   )
 }
 
-/* ---------- locked (already confirmed) view ---------- */
+/* ---------- personalised consent forms ---------- */
 
-function LockedSummary({ confirmation }: { confirmation: FinalRoundConfirmation }) {
-  const s = f.form
+// The team's guardian answer picks the parent-form version; null = not
+// answered yet (the finalist-info form isn't sent), so offer both.
+const guardianKind = (team: Team): ParentFormKind | null =>
+  team.finalistInfo ? (team.finalistInfo.guardian.attending ? 'normal' : 'liability') : null
+
+/** The advisor's form + one parent form per student, all pre-generated
+ *  (team.consentDocs, scripts/generate-consents.mjs). */
+function ConsentRows({ team }: { team: Team }) {
+  const c = f.documents.consent
+  const advisor = team.consentDocs?.advisor
+  return (
+    <>
+      <DocumentRow
+        // The generated doc carries the cleaned name (title stripped).
+        title={c.advisorTitle.replace('{name}', advisor?.name ?? team.advisor.nameTh)}
+        note={c.advisorNote}
+        url={advisor?.url}
+      />
+      <ParentConsentRows team={team} kind={guardianKind(team)} />
+    </>
+  )
+}
+
+/** One row per student with that student's parent form: the `kind` version
+ *  only, or both versions (two buttons) when kind is null. Also used by the
+ *  finalist-info form, driven by the guardian option being chosen there. */
+export function ParentConsentRows({ team, kind }: { team: Team; kind: ParentFormKind | null }) {
+  const c = f.documents.consent
+  const students = [team.leader, ...team.members]
+  return (
+    <>
+      {students.map((p, i) => {
+        const doc = team.consentDocs?.students?.[i] ?? null
+        const base = kind === 'liability' ? c.liabilityNote : kind === 'normal' ? c.normalNote : c.chooseNote
+        return (
+          <ParentConsentRow
+            key={i}
+            title={c.studentTitle.replace('{name}', doc?.name ?? fullName(p))}
+            note={base}
+            doc={doc}
+            kind={kind}
+          />
+        )
+      })}
+    </>
+  )
+}
+
+function ParentConsentRow({
+  title,
+  note,
+  doc,
+  kind,
+}: {
+  title: string
+  note: string
+  doc: StudentConsent | null
+  kind: ParentFormKind | null
+}) {
+  const c = f.documents.consent
+  const links: { label: string; url: string }[] = !doc
+    ? []
+    : kind === 'normal'
+      ? [{ label: f.documents.download, url: doc.normalUrl }]
+      : kind === 'liability'
+        ? [{ label: f.documents.download, url: doc.liabilityUrl }]
+        : [
+            { label: c.normalButton, url: doc.normalUrl },
+            { label: c.liabilityButton, url: doc.liabilityUrl },
+          ]
+  return (
+    <li className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0">
+        <p className="font-medium">{title}</p>
+        <p className="mt-1 text-sm text-muted">{note}</p>
+      </div>
+      {links.length ? (
+        <div className="flex flex-none flex-wrap gap-2">
+          {links.map((l) => (
+            <a
+              key={l.url}
+              href={l.url}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${portalButtonClass('outline', 'sm')} flex-none`}
+            >
+              <DownloadIcon />
+              {l.label}
+            </a>
+          ))}
+        </div>
+      ) : (
+        <span className="flex-none self-start rounded-full border border-dashed border-line px-3 py-1 text-xs text-muted sm:self-auto">
+          {f.documents.preparing}
+        </span>
+      )}
+    </li>
+  )
+}
+
+/* ---------- finalist info entry ---------- */
+
+function InfoCard({ team, onOpen, closed }: { team: Team; onOpen: () => void; closed: boolean }) {
+  const c = f.infoCard
+  if (!team.finalRound) return <p className="leading-relaxed text-muted">{c.needConfirm}</p>
+  if (team.finalistInfo) {
+    return (
+      <div>
+        <p className="flex items-start gap-2 rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-4 py-3 text-sm text-fg">
+          <CheckIcon className="mt-0.5 h-4 w-4 flex-none text-swift-orange" />
+          {c.sent}
+        </p>
+        <p className="mt-3 text-sm text-muted">
+          {c.sentAtLabel} {formatConfirmedAt(team.finalistInfo.submittedAt)}
+        </p>
+        <div className="mt-6">
+          <PortalButton variant="outline" onClick={onOpen}>
+            {c.viewCta}
+          </PortalButton>
+        </div>
+      </div>
+    )
+  }
+  if (closed) return <p className="leading-relaxed text-muted">{c.closed}</p>
   return (
     <div>
-      <p className="flex items-start gap-2 rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-4 py-3 text-sm text-fg">
-        <CheckIcon className="mt-0.5 h-4 w-4 flex-none text-swift-orange" />
-        {s.locked.notice}
-      </p>
-      <p className="mt-3 text-sm text-muted">
-        {s.locked.confirmedAtLabel} {formatConfirmedAt(confirmation.confirmedAt)}
-      </p>
+      <p className="leading-relaxed text-muted">{c.body}</p>
+      <div className="mt-8">
+        <PortalButton onClick={onOpen}>{c.cta}</PortalButton>
+      </div>
     </div>
   )
 }
@@ -220,7 +364,7 @@ function formatConfirmedAt(value: unknown): string {
 
 /* ---------- building blocks ---------- */
 
-function DocumentRow({ title, note, url }: { title: string; note: string; url?: string }) {
+export function DocumentRow({ title, note, url }: { title: string; note: string; url?: string }) {
   const d = f.documents
   return (
     <li className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">

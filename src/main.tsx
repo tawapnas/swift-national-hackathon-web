@@ -31,6 +31,14 @@ createRoot(document.getElementById('root')!).render(
           }
         />
         <Route
+          path="/portal/final-round/info"
+          element={
+            <Suspense fallback={<FullScreenLoader />}>
+              <PortalPage view="finalistInfo" />
+            </Suspense>
+          }
+        />
+        <Route
           path="/organizer"
           element={
             <Suspense fallback={<FullScreenLoader />}>
