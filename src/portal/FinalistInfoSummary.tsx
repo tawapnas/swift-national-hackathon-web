@@ -59,7 +59,7 @@ export default function FinalistInfoSummary({
       {/* Guardian */}
       <div>
         <SubHeading>{fi.guardian.heading}</SubHeading>
-        {g.attending && g.isAdvisor ? (
+        {g.isAdvisor ? (
           <dl className="grid gap-4 sm:grid-cols-2">
             <Field label={fi.guardian.name} value={fullName(team.advisor)} note={sm.guardianIsAdvisor} />
           </dl>

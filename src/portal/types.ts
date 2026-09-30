@@ -95,10 +95,12 @@ export interface AdvisorInfo {
   director: { name: string; email: string }
 }
 
-// ผู้ปกครอง/ผู้ดูแลที่เดินทางมาด้วย. When the advisor is the accompanying
-// guardian (isAdvisor) their details come from the advisor, so the fields
-// below stay ''; they're also '' when no one comes — such a team's students
-// need the liability-release consent form.
+// ผู้ปกครอง/ผู้ดูแลที่เดินทางมาด้วย — answered as the advisor or someone else.
+//   isAdvisor: the advisor looks after the team and no parent comes, so the
+//     students' parents sign the liability-release consent form; the detail
+//     fields below stay ''.
+//   attending: a parent / other guardian travels with the team (normal
+//     consent form); the detail fields are theirs.
 export interface GuardianInfo {
   attending: boolean
   isAdvisor: boolean
@@ -134,7 +136,8 @@ export interface ConsentDoc {
 
 // A student's parent form exists in both versions up front, sharing one
 // number: Parent_Consent_Normal (a guardian travels with the team) and
-// Parent_Consent_Liability_Release (no guardian). The portal offers the one
+// Parent_Consent_Liability_Release (the advisor looks after the team, no
+// parent comes). The portal offers the one
 // matching the team's guardian answer (both until it's known).
 export interface StudentConsent {
   docNo: string

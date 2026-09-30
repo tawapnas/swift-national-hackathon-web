@@ -107,8 +107,6 @@ export function buildCsv(teams: Team[]): string {
 export function buildFinalistCsv(teams: Team[]): string {
   const { finalistHeaders, roles } = portal.organizer.csv
   const fi = portal.finalistInfo
-  const yes = portal.organizer.detail.yes
-  const no = portal.organizer.detail.no
   const rows: unknown[][] = []
 
   for (const t of teams) {
@@ -122,7 +120,7 @@ export function buildFinalistCsv(teams: Team[]): string {
       info.stay.detail,
       info.arrivalAt.replace('T', ' '),
       info.departureAt.replace('T', ' '),
-      info.guardian.attending ? (info.guardian.isAdvisor ? `${yes} (${roles.advisor})` : yes) : no,
+      info.guardian.isAdvisor ? roles.advisor : info.guardian.attending ? roles.guardian : '',
       formatTimestamp(info.submittedAt),
     ]
     const people: Person[] = [t.leader, ...t.members]

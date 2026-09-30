@@ -24,8 +24,10 @@ const fi = portal.finalistInfo
 const o = fi.options
 const [MEDICAL_NONE, MEDICAL_YES] = o.medical
 const [DIET_NONE, DIET_YES] = o.dietary
-const [GUARDIAN_YES, GUARDIAN_NO] = o.guardian
-const [WHO_ADVISOR] = o.guardianWho
+// Who travels with the team as guardian. The advisor → no parent comes, so the
+// students' parents sign the liability-release consent form; anyone else (a
+// parent / guardian) → the normal form.
+const [WHO_ADVISOR, WHO_OTHER] = o.guardianWho
 const STAY_HOME = o.stayTypes[0]
 
 // Format checks — run while filling in (TextField `validate`, on blur) and
@@ -85,7 +87,6 @@ interface Draft {
     directorEmail: string
   }
   guardian: {
-    attending: string
     who: string // อาจารย์ที่ปรึกษา / อื่น ๆ
     name: string
     phone: string
@@ -129,7 +130,6 @@ const emptyDraft = (): Draft => ({
     directorEmail: '',
   },
   guardian: {
-    attending: '',
     who: '',
     name: '',
     phone: '',
@@ -280,7 +280,7 @@ function InfoForm({
 
   const a = draft.advisor
   const g = draft.guardian
-  const guardianIsOther = g.attending === GUARDIAN_YES && g.who !== '' && g.who !== WHO_ADVISOR
+  const guardianIsOther = g.who === WHO_OTHER
   const valid = Boolean(
     draft.travelMode &&
       draft.stayType &&
@@ -295,9 +295,8 @@ function InfoForm({
       dietaryOk(a.dietaryChoice, a.dietary) &&
       a.directorName.trim() &&
       isValidEmail(a.directorEmail) &&
-      g.attending &&
-      (g.attending === GUARDIAN_NO ||
-        g.who === WHO_ADVISOR ||
+      g.who &&
+      (g.who === WHO_ADVISOR ||
         (guardianIsOther &&
           g.name.trim() &&
           isValidPhone(g.phone) &&
@@ -324,10 +323,11 @@ function InfoForm({
       },
       arrivalAt: draft.arrivalAt,
       departureAt: draft.departureAt,
-      // The advisor-as-guardian and no-guardian cases keep the detail fields ''.
+      // attending = a parent / guardian travels (normal consent form); the
+      // advisor case (liability-release form) keeps the detail fields ''.
       guardian: {
-        attending: g.attending === GUARDIAN_YES,
-        isAdvisor: g.attending === GUARDIAN_YES && g.who === WHO_ADVISOR,
+        attending: other,
+        isAdvisor: g.who === WHO_ADVISOR,
         name: other ? g.name.trim() : '',
         phone: other ? g.phone.trim() : '',
         email: other ? g.email.trim() : '',
@@ -640,21 +640,12 @@ function InfoForm({
       <PortalSection heading={fi.guardian.heading}>
         <div className="space-y-5">
           <RadioGroup
-            label={fi.guardian.attending}
-            options={o.guardian}
-            value={g.attending}
-            onChange={(v) => patchGuardian({ attending: v })}
-            error={choose(!g.attending)}
+            label={fi.guardian.who}
+            options={o.guardianWho}
+            value={g.who}
+            onChange={(v) => patchGuardian({ who: v })}
+            error={choose(!g.who)}
           />
-          {g.attending === GUARDIAN_YES && (
-            <RadioGroup
-              label={fi.guardian.who}
-              options={o.guardianWho}
-              value={g.who}
-              onChange={(v) => patchGuardian({ who: v })}
-              error={choose(!g.who)}
-            />
-          )}
           {guardianIsOther && (
             <>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -701,17 +692,17 @@ function InfoForm({
             </>
           )}
           {/* Each student's parent form, in the version matching this choice. */}
-          {g.attending && (
+          {g.who && (
             <div>
               <p className="rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-4 py-3 text-sm text-fg">
-                {g.attending === GUARDIAN_NO
+                {g.who === WHO_ADVISOR
                   ? withBold(fi.guardian.noGuardianNotice)
                   : fi.guardian.guardianFormsNote}
               </p>
               <ul className="mt-2 divide-y divide-line">
                 <ParentConsentRows
                   team={team}
-                  kind={g.attending === GUARDIAN_NO ? 'liability' : 'normal'}
+                  kind={g.who === WHO_ADVISOR ? 'liability' : 'normal'}
                 />
               </ul>
             </div>

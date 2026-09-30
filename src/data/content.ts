@@ -582,12 +582,12 @@ export const portal = {
         advisorNote: 'สำหรับอาจารย์ที่ปรึกษาลงนาม',
         studentTitle: 'หนังสือขอความยินยอมผู้ปกครอง - {name}',
         normalNote: 'สำหรับผู้ปกครองลงนาม',
-        liabilityNote: 'สำหรับผู้ปกครองลงนาม (กรณีไม่มีผู้ปกครองเดินทางมาด้วย)',
+        liabilityNote: 'สำหรับผู้ปกครองลงนาม (กรณีอาจารย์ที่ปรึกษาเป็นผู้ดูแล)',
         // Each student's parent form comes in two versions. Until the team's
         // guardian answer is known, both are offered with these button labels.
         chooseNote: 'เลือกฉบับตามกรณีของทีม',
-        normalButton: 'มีผู้ปกครองมาด้วย',
-        liabilityButton: 'ไม่มีผู้ปกครองมาด้วย',
+        normalButton: 'ผู้ปกครองเดินทางมาด้วย',
+        liabilityButton: 'อาจารย์ที่ปรึกษาเป็นผู้ดูแล',
       },
       // **...** renders bold (withBold).
       signNotice:
@@ -646,8 +646,8 @@ export const portal = {
       shirtSizes: ['S', 'M', 'L', 'XL', '2XL', '3XL'],
       medical: ['ไม่มี', 'มี'],
       dietary: ['ไม่มี', 'มี'],
-      guardian: ['มี', 'ไม่มี'],
-      // Who the accompanying guardian is; only "อื่น ๆ" asks for their details.
+      // Who travels with the team as guardian; only "อื่น ๆ" asks for details.
+      // อาจารย์ที่ปรึกษา = no parent comes → the liability-release consent form.
       guardianWho: ['อาจารย์ที่ปรึกษา', 'อื่น ๆ'],
       memoji: { diy: 'ทำ Memoji เอง', staff: 'ให้ทีมงานทำให้' },
     },
@@ -724,7 +724,6 @@ export const portal = {
     },
     guardian: {
       heading: 'ผู้ปกครองที่เดินทางมาด้วย',
-      attending: 'มีผู้ปกครองหรือผู้ดูแลเดินทางมากับทีมหรือไม่',
       who: 'ผู้ปกครองหรือผู้ดูแลที่เดินทางมาด้วยคือ',
       name: 'ชื่อ-นามสกุล',
       phone: 'เบอร์โทร',
@@ -732,7 +731,7 @@ export const portal = {
       lineId: 'LINE ID',
       // **...** renders bold (withBold).
       noGuardianNotice:
-        '**ทีมที่ไม่มีผู้ปกครองมาด้วย** ผู้ปกครองของนักเรียนทุกคนต้องลงนามในหนังสือขอความยินยอมฉบับสำหรับกรณีไม่มีผู้ปกครองเดินทางมาด้วย (ดาวน์โหลดด้านล่าง) และนำมาส่งในวันแข่งขัน',
+        '**กรณีอาจารย์ที่ปรึกษาเป็นผู้ดูแล (ไม่มีผู้ปกครองเดินทางมาด้วย)** ผู้ปกครองของนักเรียนทุกคนต้องลงนามในหนังสือขอความยินยอมฉบับสำหรับกรณีนี้ (ดาวน์โหลดด้านล่าง) และนำมาส่งในวันแข่งขัน',
       // Shown with the per-student download rows once มี is chosen.
       guardianFormsNote:
         'ผู้ปกครองของนักเรียนทุกคนต้องลงนามในหนังสือขอความยินยอม (ดาวน์โหลดด้านล่าง) และนำมาส่งในวันแข่งขัน',
@@ -966,7 +965,7 @@ export const portal = {
         'รายละเอียดที่พัก',
         'มาถึง',
         'เดินทางกลับ',
-        'ผู้ปกครองมาด้วย',
+        'ผู้ดูแลที่มากับทีม',
         'ส่งข้อมูลเมื่อ',
       ],
     },
