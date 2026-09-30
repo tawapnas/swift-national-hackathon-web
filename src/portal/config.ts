@@ -22,7 +22,7 @@ export const FINALIST_INFO_CLOSED: boolean = false
  *  card on the national-round page) is visible ONLY to the staff test
  *  account(s) below — for testing on production before opening it to every
  *  finalist. Flip to false to launch. */
-export const FINALIST_INFO_STAFF_ONLY: boolean = true
+export const FINALIST_INFO_STAFF_ONLY: boolean = false
 export const STAFF_TEST_EMAILS: readonly string[] = ['staff@swiftcodingclubth.com']
 
 /** Whether this team (by its leader email) may see the finalist-info form. */
