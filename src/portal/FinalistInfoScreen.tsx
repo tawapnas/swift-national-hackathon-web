@@ -89,6 +89,7 @@ interface Draft {
   guardian: {
     who: string // อาจารย์ที่ปรึกษา / อื่น ๆ
     name: string
+    relationship: string
     phone: string
     email: string
     lineId: string
@@ -132,6 +133,7 @@ const emptyDraft = (): Draft => ({
   guardian: {
     who: '',
     name: '',
+    relationship: '',
     phone: '',
     email: '',
     lineId: '',
@@ -299,6 +301,7 @@ function InfoForm({
       (g.who === WHO_ADVISOR ||
         (guardianIsOther &&
           g.name.trim() &&
+          g.relationship.trim() &&
           isValidPhone(g.phone) &&
           isValidEmail(g.email) &&
           g.lineId.trim() &&
@@ -329,6 +332,7 @@ function InfoForm({
         attending: other,
         isAdvisor: g.who === WHO_ADVISOR,
         name: other ? g.name.trim() : '',
+        relationship: other ? g.relationship.trim() : '',
         phone: other ? g.phone.trim() : '',
         email: other ? g.email.trim() : '',
         lineId: other ? g.lineId.trim() : '',
@@ -498,11 +502,30 @@ function InfoForm({
                 />
                 <p className="mt-2 text-sm text-muted">{st.memojiLead}</p>
                 {mode === 'diy' && (
-                  <ol className="mt-4 list-decimal space-y-1 pl-5 text-sm leading-relaxed text-muted marker:text-swift-orange">
-                    {st.diySteps.map((step, n) => (
-                      <li key={n}>{step}</li>
-                    ))}
-                  </ol>
+                  <div className="mt-4 space-y-4 text-sm leading-relaxed text-muted">
+                    <div>
+                      <p className="font-medium text-fg">{st.diyIphoneHeading}</p>
+                      <ol className="mt-1 list-decimal space-y-1 pl-5 marker:text-swift-orange">
+                        {st.diySteps.map((step, n) => (
+                          <li key={n}>{step}</li>
+                        ))}
+                      </ol>
+                    </div>
+                    <div>
+                      <p className="font-medium text-fg">{st.diyMacHeading}</p>
+                      <p className="mt-1">
+                        {st.diyMacNote}{' '}
+                        <a
+                          href={st.diyMacUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-swift-orange underline-offset-2 hover:underline"
+                        >
+                          {st.diyMacLinkLabel} ↗
+                        </a>
+                      </p>
+                    </div>
+                  </div>
                 )}
                 {mode === 'staff' && (
                   <p className="mt-4 text-sm leading-relaxed text-muted">{st.staffNote}</p>
@@ -649,14 +672,18 @@ function InfoForm({
           {guardianIsOther && (
             <>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="sm:col-span-2">
-                  <TextField
-                    label={fi.guardian.name}
-                    value={g.name}
-                    onChange={(v) => patchGuardian({ name: v })}
-                    error={need(!g.name.trim())}
-                  />
-                </div>
+                <TextField
+                  label={fi.guardian.name}
+                  value={g.name}
+                  onChange={(v) => patchGuardian({ name: v })}
+                  error={need(!g.name.trim())}
+                />
+                <TextField
+                  label={fi.guardian.relationship}
+                  value={g.relationship}
+                  onChange={(v) => patchGuardian({ relationship: v })}
+                  error={need(!g.relationship.trim())}
+                />
                 <TextField
                   type="tel"
                   label={fi.guardian.phone}

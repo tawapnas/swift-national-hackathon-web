@@ -66,6 +66,7 @@ export default function FinalistInfoSummary({
         ) : g.attending ? (
           <dl className="grid gap-4 sm:grid-cols-2">
             <Field label={fi.guardian.name} value={g.name} />
+            <Field label={fi.guardian.relationship} value={g.relationship} />
             <Field label={fi.guardian.phone} value={g.phone} />
             <Field label={fi.guardian.email} value={g.email} />
             <Field label={fi.guardian.lineId} value={g.lineId} />

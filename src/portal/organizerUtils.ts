@@ -193,7 +193,7 @@ export function buildFinalistCsv(teams: Team[]): string {
         g.email,
         g.lineId,
         '',
-        '',
+        g.relationship,
         '',
         '',
         '',

@@ -105,6 +105,7 @@ export interface GuardianInfo {
   attending: boolean
   isAdvisor: boolean
   name: string
+  relationship: string // ความสัมพันธ์กับนักเรียน
   phone: string
   email: string
   lineId: string

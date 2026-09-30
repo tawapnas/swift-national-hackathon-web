@@ -686,7 +686,8 @@ export const portal = {
       dob: 'วันเกิด',
       memoji: 'Memoji',
       memojiLead: 'Memoji ของทุกคนจะใช้บนป้ายชื่อและสื่อของการแข่งขัน เลือกได้ว่าจะทำเองหรือให้ทีมงานทำให้',
-      // Shown for the DIY option (iPhone/iPad).
+      // Shown for the DIY option: the iPhone/iPad steps, then a Mac guide link.
+      diyIphoneHeading: 'สำหรับ iPhone / iPad',
       diySteps: [
         'บน iPhone หรือ iPad เปิดแอปโน้ต (Notes) แล้วสร้างโน้ตเปล่าใหม่',
         'เปิดแป้นพิมพ์อีโมจิ แตะแท็บ Memoji Stickers แล้วเลือก Memoji ท่าทางใดก็ได้ที่ชอบใส่ลงในโน้ต',
@@ -696,6 +697,10 @@ export const portal = {
         'อัปโหลดภาพ Memoji พื้นหลังสีขาวด้านล่าง',
       ],
       // Shown under the DIY upload (the file is checked + flattened onto white).
+      diyMacHeading: 'สำหรับ Mac',
+      diyMacNote: 'ทำตามขั้นตอนในบทความนี้เพื่อบันทึก Memoji เป็นไฟล์ภาพ แล้วอัปโหลดภาพ Memoji พื้นหลังสีขาวด้านล่าง',
+      diyMacLinkLabel: 'วิธีบันทึก Memoji เป็นไฟล์ภาพบน Mac',
+      diyMacUrl: 'https://claudiocambra.com/posts/memoji-pngs/',
       memojiHint: 'ไฟล์ PNG หรือ JPG พื้นหลังสีขาว ขนาดไม่เกิน 10 MB',
       staffNote:
         'อัปโหลดรูปถ่ายหน้าตรง เห็นใบหน้าชัดเจน แสงสว่างเพียงพอ ไม่สวมแว่นกันแดดหรือหมวก ทีมงานจะสร้าง Memoji ให้',
@@ -726,6 +731,7 @@ export const portal = {
       heading: 'ผู้ปกครองที่เดินทางมาด้วย',
       who: 'ผู้ปกครองหรือผู้ดูแลที่เดินทางมาด้วยคือ',
       name: 'ชื่อ-นามสกุล',
+      relationship: 'ความสัมพันธ์กับนักเรียน',
       phone: 'เบอร์โทร',
       email: 'อีเมล',
       lineId: 'LINE ID',

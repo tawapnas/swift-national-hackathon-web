@@ -102,6 +102,7 @@ export function sampleFinalistInfo(): FinalistInfo {
       attending: true,
       isAdvisor: false,
       name: 'นางสมศรี ตัวอย่าง',
+      relationship: 'มารดา',
       phone: '0856789012',
       email: 'parent@example.com',
       lineId: 'somsri.t',
