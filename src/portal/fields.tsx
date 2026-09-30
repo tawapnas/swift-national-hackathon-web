@@ -152,7 +152,7 @@ export function RadioGroup({
   onChange,
   error,
 }: {
-  label: string
+  label?: string // omitted when the section heading already asks the question
   options: readonly string[]
   value: string
   onChange: (value: string) => void
@@ -161,8 +161,8 @@ export function RadioGroup({
 }) {
   return (
     <div>
-      <span className="block font-medium">{label}</span>
-      <div className="mt-2 flex flex-wrap gap-2">
+      {label && <span className="mb-2 block font-medium">{label}</span>}
+      <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const active = value === opt
           return (

@@ -582,12 +582,12 @@ export const portal = {
         advisorNote: 'สำหรับอาจารย์ที่ปรึกษาลงนาม',
         studentTitle: 'หนังสือขอความยินยอมผู้ปกครอง - {name}',
         normalNote: 'สำหรับผู้ปกครองลงนาม',
-        liabilityNote: 'สำหรับผู้ปกครองลงนาม (กรณีอาจารย์ที่ปรึกษาเป็นผู้ดูแล)',
+        liabilityNote: 'สำหรับผู้ปกครองลงนาม (กรณีไม่มีผู้ดูแลเดินทางมาด้วย)',
         // Each student's parent form comes in two versions. Until the team's
         // guardian answer is known, both are offered with these button labels.
         chooseNote: 'เลือกฉบับตามกรณีของทีม',
-        normalButton: 'ผู้ปกครองเดินทางมาด้วย',
-        liabilityButton: 'อาจารย์ที่ปรึกษาเป็นผู้ดูแล',
+        normalButton: 'มีผู้ดูแลเดินทางมาด้วย',
+        liabilityButton: 'ไม่มีผู้ดูแลเดินทางมาด้วย',
       },
       // **...** renders bold (withBold).
       signNotice:
@@ -646,9 +646,10 @@ export const portal = {
       shirtSizes: ['S', 'M', 'L', 'XL', '2XL', '3XL'],
       medical: ['ไม่มี', 'มี'],
       dietary: ['ไม่มี', 'มี'],
-      // Who travels with the team as guardian; only "อื่น ๆ" asks for details.
-      // อาจารย์ที่ปรึกษา = no parent comes → the liability-release consent form.
-      guardianWho: ['อาจารย์ที่ปรึกษา', 'อื่น ๆ'],
+      // Who travels with the team as guardian; only ผู้ปกครอง asks for details.
+      // อาจารย์ที่ปรึกษา / ผู้ปกครอง → the normal consent form; ไม่มี → the
+      // liability-release form.
+      guardianWho: ['อาจารย์ที่ปรึกษา', 'ผู้ปกครอง', 'ไม่มี'],
       memoji: { diy: 'ทำ Memoji เอง', staff: 'ให้ทีมงานทำให้' },
     },
     // From the shirt supplier's chart (inches) — keep in sync with shirtSizes.
@@ -728,8 +729,7 @@ export const portal = {
       directorEmail: 'อีเมลผู้อำนวยการ หรืออีเมลของสถานศึกษา',
     },
     guardian: {
-      heading: 'ผู้ปกครองที่เดินทางมาด้วย',
-      who: 'ผู้ปกครองหรือผู้ดูแลที่เดินทางมาด้วยคือ',
+      heading: 'ผู้ดูแลที่เดินทางมาด้วย',
       name: 'ชื่อ-นามสกุล',
       relationship: 'ความสัมพันธ์กับนักเรียน',
       phone: 'เบอร์โทร',
@@ -737,8 +737,8 @@ export const portal = {
       lineId: 'LINE ID',
       // **...** renders bold (withBold).
       noGuardianNotice:
-        '**กรณีอาจารย์ที่ปรึกษาเป็นผู้ดูแล (ไม่มีผู้ปกครองเดินทางมาด้วย)** ผู้ปกครองของนักเรียนทุกคนต้องลงนามในหนังสือขอความยินยอมฉบับสำหรับกรณีนี้ (ดาวน์โหลดด้านล่าง) และนำมาส่งในวันแข่งขัน',
-      // Shown with the per-student download rows once มี is chosen.
+        '**กรณีไม่มีผู้ดูแลเดินทางมาด้วย** ผู้ปกครองของนักเรียนทุกคนต้องลงนามในหนังสือขอความยินยอมฉบับสำหรับกรณีนี้ (ดาวน์โหลดด้านล่าง) และนำมาส่งในวันแข่งขัน',
+      // Shown with the per-student download rows once อาจารย์ที่ปรึกษา / ผู้ปกครอง is chosen.
       guardianFormsNote:
         'ผู้ปกครองของนักเรียนทุกคนต้องลงนามในหนังสือขอความยินยอม (ดาวน์โหลดด้านล่าง) และนำมาส่งในวันแข่งขัน',
     },
@@ -836,7 +836,7 @@ export const portal = {
       consentOpen: 'เปิด PDF',
       consentPending: 'ยังไม่ได้สร้างเอกสาร',
       guardianIsAdvisor: 'อาจารย์ที่ปรึกษา',
-      noGuardian: 'ไม่มีผู้ปกครองมาด้วย — ต้องมีหนังสือยินยอมกรณีจากผู้ปกครองของนักเรียนทุกคน',
+      noGuardian: 'ไม่มีผู้ดูแลเดินทางมาด้วย — ต้องมีหนังสือยินยอมกรณีนี้จากผู้ปกครองของนักเรียนทุกคน',
       none: 'ไม่มี',
       age: 'อายุ', // followed by the computed age + ปี
       years: 'ปี',

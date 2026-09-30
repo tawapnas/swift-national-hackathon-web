@@ -24,10 +24,10 @@ const fi = portal.finalistInfo
 const o = fi.options
 const [MEDICAL_NONE, MEDICAL_YES] = o.medical
 const [DIET_NONE, DIET_YES] = o.dietary
-// Who travels with the team as guardian. The advisor → no parent comes, so the
-// students' parents sign the liability-release consent form; anyone else (a
-// parent / guardian) → the normal form.
-const [WHO_ADVISOR, WHO_OTHER] = o.guardianWho
+// Who travels with the team as guardian. The advisor or a parent → the
+// students' parents sign the normal consent form (only a parent fills in
+// details); no one → the liability-release form.
+const [WHO_ADVISOR, WHO_PARENT, WHO_NONE] = o.guardianWho
 const STAY_HOME = o.stayTypes[0]
 
 // Format checks — run while filling in (TextField `validate`, on blur) and
@@ -87,7 +87,7 @@ interface Draft {
     directorEmail: string
   }
   guardian: {
-    who: string // อาจารย์ที่ปรึกษา / อื่น ๆ
+    who: string // อาจารย์ที่ปรึกษา / ผู้ปกครอง / ไม่มี
     name: string
     relationship: string
     phone: string
@@ -155,13 +155,16 @@ function loadDraft(email: string): Draft {
     if (!raw) return base
     const saved = JSON.parse(raw) as Partial<Draft>
     // Merge over the defaults so a draft saved by an older form shape still loads.
-    return {
+    const merged: Draft = {
       ...base,
       ...saved,
       students: base.students.map((s, i) => ({ ...s, ...saved.students?.[i] })),
       advisor: { ...base.advisor, ...saved.advisor },
       guardian: { ...base.guardian, ...saved.guardian },
     }
+    // Drop a guardian answer that's no longer an option (older form shape).
+    if (!(o.guardianWho as readonly string[]).includes(merged.guardian.who)) merged.guardian.who = ''
+    return merged
   } catch {
     return base
   }
@@ -282,7 +285,7 @@ function InfoForm({
 
   const a = draft.advisor
   const g = draft.guardian
-  const guardianIsOther = g.who === WHO_OTHER
+  const guardianIsParent = g.who === WHO_PARENT
   const valid = Boolean(
     draft.travelMode &&
       draft.stayType &&
@@ -298,9 +301,8 @@ function InfoForm({
       a.directorName.trim() &&
       isValidEmail(a.directorEmail) &&
       g.who &&
-      (g.who === WHO_ADVISOR ||
-        (guardianIsOther &&
-          g.name.trim() &&
+      (!guardianIsParent ||
+        (g.name.trim() &&
           g.relationship.trim() &&
           isValidPhone(g.phone) &&
           isValidEmail(g.email) &&
@@ -317,7 +319,7 @@ function InfoForm({
   const dietaryText = (choice: string, detail: string) => (choice === DIET_YES ? detail.trim() : '')
 
   const toInput = (): FinalistInfoInput => {
-    const other = guardianIsOther
+    const parent = guardianIsParent
     return {
       travel: { mode: draft.travelMode, detail: draft.travelDetail.trim() },
       stay: {
@@ -326,17 +328,17 @@ function InfoForm({
       },
       arrivalAt: draft.arrivalAt,
       departureAt: draft.departureAt,
-      // attending = a parent / guardian travels (normal consent form); the
-      // advisor case (liability-release form) keeps the detail fields ''.
+      // attending = the advisor or a parent travels (normal consent form);
+      // only a parent fills in the detail fields.
       guardian: {
-        attending: other,
+        attending: g.who !== WHO_NONE,
         isAdvisor: g.who === WHO_ADVISOR,
-        name: other ? g.name.trim() : '',
-        relationship: other ? g.relationship.trim() : '',
-        phone: other ? g.phone.trim() : '',
-        email: other ? g.email.trim() : '',
-        lineId: other ? g.lineId.trim() : '',
-        dietary: other ? dietaryText(g.dietaryChoice, g.dietary) : '',
+        name: parent ? g.name.trim() : '',
+        relationship: parent ? g.relationship.trim() : '',
+        phone: parent ? g.phone.trim() : '',
+        email: parent ? g.email.trim() : '',
+        lineId: parent ? g.lineId.trim() : '',
+        dietary: parent ? dietaryText(g.dietaryChoice, g.dietary) : '',
       },
       students: draft.students.map((s) => ({
         nickname: s.nickname.trim(),
@@ -663,13 +665,12 @@ function InfoForm({
       <PortalSection heading={fi.guardian.heading}>
         <div className="space-y-5">
           <RadioGroup
-            label={fi.guardian.who}
             options={o.guardianWho}
             value={g.who}
             onChange={(v) => patchGuardian({ who: v })}
             error={choose(!g.who)}
           />
-          {guardianIsOther && (
+          {guardianIsParent && (
             <>
               <div className="grid gap-4 sm:grid-cols-2">
                 <TextField
@@ -722,14 +723,14 @@ function InfoForm({
           {g.who && (
             <div>
               <p className="rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-4 py-3 text-sm text-fg">
-                {g.who === WHO_ADVISOR
+                {g.who === WHO_NONE
                   ? withBold(fi.guardian.noGuardianNotice)
                   : fi.guardian.guardianFormsNote}
               </p>
               <ul className="mt-2 divide-y divide-line">
                 <ParentConsentRows
                   team={team}
-                  kind={g.who === WHO_ADVISOR ? 'liability' : 'normal'}
+                  kind={g.who === WHO_NONE ? 'liability' : 'normal'}
                 />
               </ul>
             </div>
