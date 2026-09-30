@@ -100,6 +100,7 @@ export function sampleFinalistInfo(): FinalistInfo {
     departureAt: '2026-10-19T18:00',
     guardian: {
       attending: true,
+      isAdvisor: false,
       name: 'นางสมศรี ตัวอย่าง',
       phone: '0856789012',
       email: 'parent@example.com',

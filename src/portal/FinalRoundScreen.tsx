@@ -130,11 +130,6 @@ export default function FinalRoundScreen({
               note={f.documents.agenda.note}
               url={f.agendaUrl}
             />
-            <DocumentRow
-              title={f.documents.codeOfConduct.title}
-              note={f.documents.codeOfConduct.note}
-              url={f.codeOfConductUrl || undefined}
-            />
             <ConsentRows team={team} />
           </ul>
           <p className="mt-5 rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-4 py-3 text-sm text-fg">

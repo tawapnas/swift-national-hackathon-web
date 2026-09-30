@@ -80,7 +80,7 @@ export interface StudentInfo {
   // flattened onto a white background before upload (memojiImage.ts).
   memojiUrl: string
   medical: { hasCondition: boolean; detail: string } // โรคประจำตัว + ยาที่ใช้
-  dietary: string // ข้อจำกัดด้านอาหาร / อาหารที่แพ้
+  dietary: string // ข้อจำกัดด้านอาหาร / อาหารที่แพ้ ('' = none)
   shirtSize: string
   emergency: { name: string; relationship: string; phone: string }
 }
@@ -95,15 +95,18 @@ export interface AdvisorInfo {
   director: { name: string; email: string }
 }
 
-// ผู้ปกครอง/ผู้ดูแลที่เดินทางมาด้วย. Fields are '' when not attending; a team
-// without one must bring the signed liability release forms.
+// ผู้ปกครอง/ผู้ดูแลที่เดินทางมาด้วย. When the advisor is the accompanying
+// guardian (isAdvisor) their details come from the advisor, so the fields
+// below stay ''; they're also '' when no one comes — such a team's students
+// need the liability-release consent form.
 export interface GuardianInfo {
   attending: boolean
+  isAdvisor: boolean
   name: string
   phone: string
   email: string
   lineId: string
-  dietary: string
+  dietary: string // '' = none
 }
 
 export interface FinalistInfo {

@@ -122,7 +122,7 @@ export function buildFinalistCsv(teams: Team[]): string {
       info.stay.detail,
       info.arrivalAt.replace('T', ' '),
       info.departureAt.replace('T', ' '),
-      info.guardian.attending ? yes : no,
+      info.guardian.attending ? (info.guardian.isAdvisor ? `${yes} (${roles.advisor})` : yes) : no,
       formatTimestamp(info.submittedAt),
     ]
     const people: Person[] = [t.leader, ...t.members]
@@ -178,8 +178,9 @@ export function buildFinalistCsv(teams: Team[]): string {
       a.director.email,
       ...tripCols,
     ])
+    // A guardian who is the advisor is already the advisor row.
     const g = info.guardian
-    if (g.attending) {
+    if (g.attending && !g.isAdvisor) {
       rows.push([
         ...teamCols,
         roles.guardian,

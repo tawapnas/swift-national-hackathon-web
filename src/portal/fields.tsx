@@ -19,6 +19,7 @@ export function TextField({
   hint,
   disabled = false,
   error,
+  validate,
   type = 'text',
 }: {
   label: string
@@ -28,8 +29,13 @@ export function TextField({
   disabled?: boolean
   // Inline validation message; also tints the border while present.
   error?: string
+  // Format check run while filling in: shown once the field has been left
+  // (blurred), then kept live as the value changes. `error` takes precedence.
+  validate?: (value: string) => string | undefined
   type?: 'text' | 'tel' | 'email' | 'date' | 'datetime-local'
 }) {
+  const [touched, setTouched] = useState(false)
+  const message = error ?? (touched && validate ? validate(value) : undefined)
   return (
     <label className="block">
       <span className="block font-medium">{label}</span>
@@ -38,10 +44,11 @@ export function TextField({
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
-        className={`${inputClass} ${error ? 'border-swift-orange' : ''}`}
+        onBlur={() => setTouched(true)}
+        className={`${inputClass} ${message ? 'border-swift-orange' : ''}`}
       />
-      {error ? (
-        <span className="mt-1 block text-xs text-swift-orange">{error}</span>
+      {message ? (
+        <span className="mt-1 block text-xs text-swift-orange">{message}</span>
       ) : (
         hint && <span className="mt-1 block text-xs text-muted">{hint}</span>
       )}
@@ -54,11 +61,13 @@ export function SelectField({
   value,
   options,
   onChange,
+  error,
 }: {
   label: string
   value: string
   options: readonly string[]
   onChange: (value: string) => void
+  error?: string
 }) {
   return (
     <label className="block">
@@ -70,7 +79,7 @@ export function SelectField({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`${inputClass} appearance-none pr-10 ${value ? '' : 'text-muted'}`}
+          className={`${inputClass} appearance-none pr-10 ${value ? '' : 'text-muted'} ${error ? 'border-swift-orange' : ''}`}
         >
           <option value="" disabled>
             {portal.registration.selectPlaceholder}
@@ -94,6 +103,7 @@ export function SelectField({
           />
         </svg>
       </span>
+      {error && <span className="mt-1 block text-xs text-swift-orange">{error}</span>}
     </label>
   )
 }
@@ -140,11 +150,14 @@ export function RadioGroup({
   options,
   value,
   onChange,
+  error,
 }: {
   label: string
   options: readonly string[]
   value: string
   onChange: (value: string) => void
+  // Shown under the pills (e.g. "nothing chosen" after a submit attempt).
+  error?: string
 }) {
   return (
     <div>
@@ -160,7 +173,9 @@ export function RadioGroup({
               className={`cursor-pointer rounded-full border px-4 py-2 text-sm transition-colors ${
                 active
                   ? 'border-swift-orange bg-swift-orange/15 text-swift-orange'
-                  : 'border-line text-muted hover:border-swift-orange'
+                  : error
+                    ? 'border-swift-orange/70 text-muted hover:border-swift-orange'
+                    : 'border-line text-muted hover:border-swift-orange'
               }`}
             >
               {opt}
@@ -168,6 +183,7 @@ export function RadioGroup({
           )
         })}
       </div>
+      {error && <span className="mt-1 block text-xs text-swift-orange">{error}</span>}
     </div>
   )
 }

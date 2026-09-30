@@ -7,7 +7,7 @@ import PortalButton from './PortalButton'
 import ConfirmDialog from './ConfirmDialog'
 import { withBold } from './HackathonDetailSection'
 import { CheckIcon } from './ResultBanner'
-import { DocumentRow, ParentConsentRows } from './FinalRoundScreen'
+import { ParentConsentRows } from './FinalRoundScreen'
 import FinalistInfoSummary, { formatDateTime } from './FinalistInfoSummary'
 import { toWhiteBackgroundPng } from './memojiImage'
 import { formatTimestamp, fullName } from './organizerUtils'
@@ -23,11 +23,23 @@ import {
 const fi = portal.finalistInfo
 const o = fi.options
 const [MEDICAL_NONE, MEDICAL_YES] = o.medical
+const [DIET_NONE, DIET_YES] = o.dietary
 const [GUARDIAN_YES, GUARDIAN_NO] = o.guardian
+const [WHO_ADVISOR] = o.guardianWho
 const STAY_HOME = o.stayTypes[0]
 
+// Format checks — run while filling in (TextField `validate`, on blur) and
+// again on submit. Empty values are the "required" check's job.
 const invalidEmail = (v: string) => (v.trim() && !isValidEmail(v) ? fi.invalidEmail : undefined)
 const invalidPhone = (v: string) => (v.trim() && !isValidPhone(v) ? fi.invalidPhone : undefined)
+// A date of birth must be a real past date (and not absurdly old).
+const invalidDob = (v: string) => {
+  if (!v) return undefined
+  const today = new Date().toLocaleDateString('en-CA') // yyyy-mm-dd, local time
+  return v > today || v < '1940-01-01' ? fi.invalidDob : undefined
+}
+const dietaryOk = (choice: string, detail: string) =>
+  Boolean(choice) && (choice === DIET_NONE || detail.trim() !== '')
 
 // DIY Memoji: flatten onto white before the file is accepted; the thrown
 // message is what the upload field shows.
@@ -47,6 +59,7 @@ interface StudentDraft {
   memojiMode: MemojiMode | ''
   medical: string
   medicalDetail: string
+  dietaryChoice: string // ไม่มี / มี
   dietary: string
   shirtSize: string
   emergencyName: string
@@ -66,16 +79,19 @@ interface Draft {
     lineId: string
     position: string
     shirtSize: string
+    dietaryChoice: string
     dietary: string
     directorName: string
     directorEmail: string
   }
   guardian: {
     attending: string
+    who: string // อาจารย์ที่ปรึกษา / อื่น ๆ
     name: string
     phone: string
     email: string
     lineId: string
+    dietaryChoice: string
     dietary: string
   }
   conduct: boolean
@@ -87,6 +103,7 @@ const emptyStudent = (): StudentDraft => ({
   memojiMode: '',
   medical: '',
   medicalDetail: '',
+  dietaryChoice: '',
   dietary: '',
   shirtSize: '',
   emergencyName: '',
@@ -106,16 +123,19 @@ const emptyDraft = (): Draft => ({
     lineId: '',
     position: '',
     shirtSize: '',
+    dietaryChoice: '',
     dietary: '',
     directorName: '',
     directorEmail: '',
   },
   guardian: {
     attending: '',
+    who: '',
     name: '',
     phone: '',
     email: '',
     lineId: '',
+    dietaryChoice: '',
     dietary: '',
   },
   conduct: false,
@@ -247,10 +267,12 @@ function InfoForm({
   const studentComplete = (s: StudentDraft, i: number) =>
     s.nickname.trim() &&
     s.dob &&
+    !invalidDob(s.dob) &&
     s.memojiMode &&
     files[i] &&
     s.medical &&
     (s.medical === MEDICAL_NONE || s.medicalDetail.trim()) &&
+    dietaryOk(s.dietaryChoice, s.dietary) &&
     s.shirtSize &&
     s.emergencyName.trim() &&
     s.emergencyRelationship.trim() &&
@@ -258,6 +280,7 @@ function InfoForm({
 
   const a = draft.advisor
   const g = draft.guardian
+  const guardianIsOther = g.attending === GUARDIAN_YES && g.who !== '' && g.who !== WHO_ADVISOR
   const valid = Boolean(
     draft.travelMode &&
       draft.stayType &&
@@ -269,19 +292,30 @@ function InfoForm({
       a.lineId.trim() &&
       a.position.trim() &&
       a.shirtSize &&
+      dietaryOk(a.dietaryChoice, a.dietary) &&
       a.directorName.trim() &&
       isValidEmail(a.directorEmail) &&
       g.attending &&
       (g.attending === GUARDIAN_NO ||
-        (g.name.trim() &&
+        g.who === WHO_ADVISOR ||
+        (guardianIsOther &&
+          g.name.trim() &&
           isValidPhone(g.phone) &&
           isValidEmail(g.email) &&
-          g.lineId.trim())) &&
+          g.lineId.trim() &&
+          dietaryOk(g.dietaryChoice, g.dietary))) &&
       draft.conduct,
   )
 
+  // Per-field messages, shown only after the first submit attempt.
+  const need = (missing: boolean) => (showErrors && missing ? fi.requiredField : undefined)
+  const choose = (missing: boolean) => (showErrors && missing ? fi.requiredChoice : undefined)
+  const phoneError = (v: string) => (showErrors ? (need(!v.trim()) ?? invalidPhone(v)) : undefined)
+  const emailError = (v: string) => (showErrors ? (need(!v.trim()) ?? invalidEmail(v)) : undefined)
+  const dietaryText = (choice: string, detail: string) => (choice === DIET_YES ? detail.trim() : '')
+
   const toInput = (): FinalistInfoInput => {
-    const guardianAttending = g.attending === GUARDIAN_YES
+    const other = guardianIsOther
     return {
       travel: { mode: draft.travelMode, detail: draft.travelDetail.trim() },
       stay: {
@@ -290,23 +324,16 @@ function InfoForm({
       },
       arrivalAt: draft.arrivalAt,
       departureAt: draft.departureAt,
-      guardian: guardianAttending
-        ? {
-            attending: true,
-            name: g.name.trim(),
-            phone: g.phone.trim(),
-            email: g.email.trim(),
-            lineId: g.lineId.trim(),
-            dietary: g.dietary.trim(),
-          }
-        : {
-            attending: false,
-            name: '',
-            phone: '',
-            email: '',
-            lineId: '',
-            dietary: '',
-          },
+      // The advisor-as-guardian and no-guardian cases keep the detail fields ''.
+      guardian: {
+        attending: g.attending === GUARDIAN_YES,
+        isAdvisor: g.attending === GUARDIAN_YES && g.who === WHO_ADVISOR,
+        name: other ? g.name.trim() : '',
+        phone: other ? g.phone.trim() : '',
+        email: other ? g.email.trim() : '',
+        lineId: other ? g.lineId.trim() : '',
+        dietary: other ? dietaryText(g.dietaryChoice, g.dietary) : '',
+      },
       students: draft.students.map((s) => ({
         nickname: s.nickname.trim(),
         dob: s.dob,
@@ -316,7 +343,7 @@ function InfoForm({
           hasCondition: s.medical === MEDICAL_YES,
           detail: s.medical === MEDICAL_YES ? s.medicalDetail.trim() : '',
         },
-        dietary: s.dietary.trim(),
+        dietary: dietaryText(s.dietaryChoice, s.dietary),
         shirtSize: s.shirtSize,
         emergency: {
           name: s.emergencyName.trim(),
@@ -328,7 +355,7 @@ function InfoForm({
         lineId: a.lineId.trim(),
         position: a.position.trim(),
         shirtSize: a.shirtSize,
-        dietary: a.dietary.trim(),
+        dietary: dietaryText(a.dietaryChoice, a.dietary),
         director: {
           name: a.directorName.trim(),
           email: a.directorEmail.trim(),
@@ -382,6 +409,7 @@ function InfoForm({
             options={o.travelModes}
             value={draft.travelMode}
             onChange={(v) => patch({ travelMode: v })}
+            error={choose(!draft.travelMode)}
           />
           <TextField
             label={fi.trip.travelDetail}
@@ -394,12 +422,14 @@ function InfoForm({
             options={o.stayTypes}
             value={draft.stayType}
             onChange={(v) => patch({ stayType: v })}
+            error={choose(!draft.stayType)}
           />
           {draft.stayType && draft.stayType !== STAY_HOME && (
             <TextField
               label={fi.trip.stayDetail}
               value={draft.stayDetail}
               onChange={(v) => patch({ stayDetail: v })}
+              error={need(!draft.stayDetail.trim())}
             />
           )}
           <div className="grid gap-4 sm:grid-cols-2">
@@ -408,13 +438,16 @@ function InfoForm({
               label={fi.trip.arrivalAt}
               value={draft.arrivalAt}
               onChange={(v) => patch({ arrivalAt: v })}
+              error={need(!draft.arrivalAt)}
             />
             <TextField
               type="datetime-local"
               label={fi.trip.departureAt}
               value={draft.departureAt}
               onChange={(v) => patch({ departureAt: v })}
-              error={departureBeforeArrival ? fi.trip.departureError : undefined}
+              error={
+                departureBeforeArrival ? fi.trip.departureError : need(!draft.departureAt)
+              }
             />
           </div>
         </div>
@@ -436,12 +469,15 @@ function InfoForm({
                   label={st.nickname}
                   value={s.nickname}
                   onChange={(v) => patchStudent(i, { nickname: v })}
+                  error={need(!s.nickname.trim())}
                 />
                 <TextField
                   type="date"
                   label={st.dob}
                   value={s.dob}
                   onChange={(v) => patchStudent(i, { dob: v })}
+                  validate={invalidDob}
+                  error={invalidDob(s.dob) ?? need(!s.dob)}
                 />
               </div>
 
@@ -458,6 +494,7 @@ function InfoForm({
                     // A selfie isn't a Memoji (and vice versa) — re-pick.
                     setFiles((prev) => prev.map((x, idx) => (idx === i ? null : x)))
                   }}
+                  error={choose(!mode)}
                 />
                 <p className="mt-2 text-sm text-muted">{st.memojiLead}</p>
                 {mode === 'diy' && (
@@ -491,6 +528,7 @@ function InfoForm({
                 options={o.medical}
                 value={s.medical}
                 onChange={(v) => patchStudent(i, { medical: v })}
+                error={choose(!s.medical)}
               />
               {s.medical === MEDICAL_YES && (
                 <TextField
@@ -498,16 +536,20 @@ function InfoForm({
                   hint={st.medicalDetailHint}
                   value={s.medicalDetail}
                   onChange={(v) => patchStudent(i, { medicalDetail: v })}
+                  error={need(!s.medicalDetail.trim())}
                 />
               )}
-              <TextField
-                label={`${st.dietary} ${st.optional}`}
-                value={s.dietary}
-                onChange={(v) => patchStudent(i, { dietary: v })}
+              <DietaryField
+                choice={s.dietaryChoice}
+                detail={s.dietary}
+                onChoice={(v) => patchStudent(i, { dietaryChoice: v })}
+                onDetail={(v) => patchStudent(i, { dietary: v })}
+                showErrors={showErrors}
               />
               <ShirtSizeField
                 value={s.shirtSize}
                 onChange={(v) => patchStudent(i, { shirtSize: v })}
+                error={choose(!s.shirtSize)}
               />
 
               <div>
@@ -517,18 +559,21 @@ function InfoForm({
                     label={st.emergencyName}
                     value={s.emergencyName}
                     onChange={(v) => patchStudent(i, { emergencyName: v })}
+                    error={need(!s.emergencyName.trim())}
                   />
                   <TextField
                     label={st.emergencyRelationship}
                     value={s.emergencyRelationship}
                     onChange={(v) => patchStudent(i, { emergencyRelationship: v })}
+                    error={need(!s.emergencyRelationship.trim())}
                   />
                   <TextField
                     type="tel"
                     label={st.emergencyPhone}
                     value={s.emergencyPhone}
                     onChange={(v) => patchStudent(i, { emergencyPhone: v })}
-                    error={showErrors ? invalidPhone(s.emergencyPhone) : undefined}
+                    validate={invalidPhone}
+                    error={phoneError(s.emergencyPhone)}
                   />
                 </div>
               </div>
@@ -546,19 +591,27 @@ function InfoForm({
               label={fi.advisor.lineId}
               value={a.lineId}
               onChange={(v) => patchAdvisor({ lineId: v })}
+              error={need(!a.lineId.trim())}
             />
             <TextField
               label={fi.advisor.position}
               value={a.position}
               onChange={(v) => patchAdvisor({ position: v })}
+              error={need(!a.position.trim())}
             />
           </div>
-          <TextField
-            label={`${st.dietary} ${st.optional}`}
-            value={a.dietary}
-            onChange={(v) => patchAdvisor({ dietary: v })}
+          <DietaryField
+            choice={a.dietaryChoice}
+            detail={a.dietary}
+            onChoice={(v) => patchAdvisor({ dietaryChoice: v })}
+            onDetail={(v) => patchAdvisor({ dietary: v })}
+            showErrors={showErrors}
           />
-          <ShirtSizeField value={a.shirtSize} onChange={(v) => patchAdvisor({ shirtSize: v })} />
+          <ShirtSizeField
+            value={a.shirtSize}
+            onChange={(v) => patchAdvisor({ shirtSize: v })}
+            error={choose(!a.shirtSize)}
+          />
 
           <div className="rounded-xl border border-line bg-surface p-4">
             <p className="font-medium">{fi.advisor.directorHeading}</p>
@@ -568,13 +621,15 @@ function InfoForm({
                 label={fi.advisor.directorName}
                 value={a.directorName}
                 onChange={(v) => patchAdvisor({ directorName: v })}
+                error={need(!a.directorName.trim())}
               />
               <TextField
                 type="email"
                 label={fi.advisor.directorEmail}
                 value={a.directorEmail}
                 onChange={(v) => patchAdvisor({ directorEmail: v })}
-                error={showErrors ? invalidEmail(a.directorEmail) : undefined}
+                validate={invalidEmail}
+                error={emailError(a.directorEmail)}
               />
             </div>
           </div>
@@ -589,8 +644,18 @@ function InfoForm({
             options={o.guardian}
             value={g.attending}
             onChange={(v) => patchGuardian({ attending: v })}
+            error={choose(!g.attending)}
           />
           {g.attending === GUARDIAN_YES && (
+            <RadioGroup
+              label={fi.guardian.who}
+              options={o.guardianWho}
+              value={g.who}
+              onChange={(v) => patchGuardian({ who: v })}
+              error={choose(!g.who)}
+            />
+          )}
+          {guardianIsOther && (
             <>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
@@ -598,6 +663,7 @@ function InfoForm({
                     label={fi.guardian.name}
                     value={g.name}
                     onChange={(v) => patchGuardian({ name: v })}
+                    error={need(!g.name.trim())}
                   />
                 </div>
                 <TextField
@@ -605,26 +671,33 @@ function InfoForm({
                   label={fi.guardian.phone}
                   value={g.phone}
                   onChange={(v) => patchGuardian({ phone: v })}
-                  error={showErrors ? invalidPhone(g.phone) : undefined}
+                  validate={invalidPhone}
+                  error={phoneError(g.phone)}
                 />
                 <TextField
                   type="email"
                   label={fi.guardian.email}
                   value={g.email}
                   onChange={(v) => patchGuardian({ email: v })}
-                  error={showErrors ? invalidEmail(g.email) : undefined}
+                  validate={invalidEmail}
+                  error={emailError(g.email)}
                 />
-                <TextField
-                  label={fi.guardian.lineId}
-                  value={g.lineId}
-                  onChange={(v) => patchGuardian({ lineId: v })}
-                />
-                <TextField
-                  label={`${st.dietary} ${st.optional}`}
-                  value={g.dietary}
-                  onChange={(v) => patchGuardian({ dietary: v })}
-                />
+                <div className="sm:col-span-2">
+                  <TextField
+                    label={fi.guardian.lineId}
+                    value={g.lineId}
+                    onChange={(v) => patchGuardian({ lineId: v })}
+                    error={need(!g.lineId.trim())}
+                  />
+                </div>
               </div>
+              <DietaryField
+                choice={g.dietaryChoice}
+                detail={g.dietary}
+                onChoice={(v) => patchGuardian({ dietaryChoice: v })}
+                onDetail={(v) => patchGuardian({ dietary: v })}
+                showErrors={showErrors}
+              />
             </>
           )}
           {/* Each student's parent form, in the version matching this choice. */}
@@ -648,7 +721,11 @@ function InfoForm({
 
       {/* Code of Conduct */}
       <PortalSection heading={fi.conduct.heading}>
-        <ConductAgreement accepted={draft.conduct} onChange={(v) => patch({ conduct: v })} />
+        <ConductAgreement
+          accepted={draft.conduct}
+          onChange={(v) => patch({ conduct: v })}
+          error={showErrors && !draft.conduct ? fi.requiredConduct : undefined}
+        />
       </PortalSection>
 
       <div className="mt-12">
@@ -688,14 +765,16 @@ function RegisteredName({ name, nameEn }: { name: string; nameEn?: string }) {
   )
 }
 
-/** The Code of Conduct shown in full in a scroll box, with a download link
- *  and the (required) accept checkbox. */
+/** The Code of Conduct shown in full in a scroll box, with the (required)
+ *  accept checkbox. */
 function ConductAgreement({
   accepted,
   onChange,
+  error,
 }: {
   accepted: boolean
   onChange: (v: boolean) => void
+  error?: string
 }) {
   const c = fi.conduct
 
@@ -719,13 +798,6 @@ function ConductAgreement({
           ))}
         </ol>
       </div>
-      <ul className="mt-3 divide-y divide-line border-b border-line">
-        <DocumentRow
-          title={portal.finalRound.documents.codeOfConduct.title}
-          note={portal.finalRound.documents.codeOfConduct.note}
-          url={portal.finalRound.codeOfConductUrl || undefined}
-        />
-      </ul>
       <label className="mt-5 flex cursor-pointer items-start gap-3">
         <input
           type="checkbox"
@@ -735,11 +807,57 @@ function ConductAgreement({
         />
         <span className="font-medium">{c.accept}</span>
       </label>
+      {error && <p className="mt-1 pl-8 text-xs text-swift-orange">{error}</p>}
     </div>
   )
 }
 
-function ShirtSizeField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+/** ข้อจำกัดด้านอาหาร: ไม่มี / มี, and the detail field for มี (same pattern as
+ *  โรคประจำตัว). Stored as '' for none. */
+function DietaryField({
+  choice,
+  detail,
+  onChoice,
+  onDetail,
+  showErrors,
+}: {
+  choice: string
+  detail: string
+  onChoice: (v: string) => void
+  onDetail: (v: string) => void
+  showErrors: boolean
+}) {
+  const st = fi.student
+  return (
+    <>
+      <RadioGroup
+        label={st.dietary}
+        options={o.dietary}
+        value={choice}
+        onChange={onChoice}
+        error={showErrors && !choice ? fi.requiredChoice : undefined}
+      />
+      {choice === DIET_YES && (
+        <TextField
+          label={st.dietaryDetail}
+          value={detail}
+          onChange={onDetail}
+          error={showErrors && !detail.trim() ? fi.requiredField : undefined}
+        />
+      )}
+    </>
+  )
+}
+
+function ShirtSizeField({
+  value,
+  onChange,
+  error,
+}: {
+  value: string
+  onChange: (v: string) => void
+  error?: string
+}) {
   const c = fi.sizeChart
   return (
     <div>
@@ -748,6 +866,7 @@ function ShirtSizeField({ value, onChange }: { value: string; onChange: (v: stri
         value={value}
         options={o.shirtSizes}
         onChange={onChange}
+        error={error}
       />
       <details className="mt-2 text-sm">
         <summary className="cursor-pointer text-swift-orange">{c.toggle}</summary>
