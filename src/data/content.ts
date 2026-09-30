@@ -698,7 +698,7 @@ export const portal = {
       ],
       // Shown under the DIY upload (the file is checked + flattened onto white).
       diyMacHeading: 'สำหรับ Mac',
-      diyMacNote: 'ทำตามขั้นตอนในบทความนี้เพื่อบันทึก Memoji เป็นไฟล์ภาพ แล้วอัปโหลดภาพ Memoji พื้นหลังสีขาวด้านล่าง',
+      diyMacNote: 'ทำตามขั้นตอนในบทความนี้เพื่อบันทึก Memoji เป็นไฟล์ภาพ',
       diyMacLinkLabel: 'วิธีบันทึก Memoji เป็นไฟล์ภาพบน Mac',
       diyMacUrl: 'https://claudiocambra.com/posts/memoji-pngs/',
       memojiHint: 'ไฟล์ PNG หรือ JPG พื้นหลังสีขาว ขนาดไม่เกิน 10 MB',
