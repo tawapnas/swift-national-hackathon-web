@@ -7,7 +7,7 @@
 
 /** Shows the page's link in the navigation bar. While false the page still
  *  works at /explore — it just isn't linked from anywhere. */
-export const LESSONS_IN_NAV: boolean = false
+export const LESSONS_IN_NAV: boolean = true
 
 /** While true, EVERY lesson can be read by ANYONE who opens the page,
  *  whatever its date — for checking the lessons ahead of time. The date check
