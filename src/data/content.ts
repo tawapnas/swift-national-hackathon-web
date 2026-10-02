@@ -158,7 +158,6 @@ export const lessons = {
   previewNotice: 'โหมดตรวจทาน: เปิดได้ทุกบทเรียน',
   tile: {
     // {n} = the lesson's number.
-    today: 'วันนี้',
     lockedAria: 'บทเรียนที่ {n} ยังไม่เปิด',
     openAria: 'บทเรียนที่ {n}: {title}',
     notReady: 'ยังเปิดไม่ได้ แตะเพื่อลองใหม่',

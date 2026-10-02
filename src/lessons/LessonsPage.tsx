@@ -274,11 +274,6 @@ function DayTile({
         >
           {n}
         </span>
-        {isToday && (
-          <span className="rounded-full bg-swift-orange px-2.5 py-0.5 text-xs font-semibold text-white">
-            {t.today}
-          </span>
-        )}
       </span>
       <span className="relative line-clamp-4 text-sm font-semibold leading-snug [word-break:auto-phrase]">
         {state.lesson.title}
