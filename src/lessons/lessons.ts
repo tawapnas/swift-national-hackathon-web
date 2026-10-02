@@ -13,7 +13,7 @@ export const LESSONS_IN_NAV: boolean = false
  *  whatever its date — for checking the lessons ahead of time. The date check
  *  is enforced by firestore.rules, so this must match allLessonsOpen()
  *  there: change both, and deploy both the rules and the site. */
-export const LESSONS_ALL_OPEN: boolean = true
+export const LESSONS_ALL_OPEN: boolean = false
 
 export const LESSON_COUNT = 14
 
@@ -37,15 +37,6 @@ export const todayLesson = (now: number): number | null => {
   const n = unlockedCount(now)
   return n >= 1 && now < lessonUnlockAt(n) + DAY_MS ? n : null
 }
-
-const dateFormat = new Intl.DateTimeFormat('th-TH', {
-  timeZone: 'Asia/Bangkok',
-  day: 'numeric',
-  month: 'short',
-})
-
-/** A lesson's date in Bangkok time, e.g. "3 ต.ค.". */
-export const formatLessonDate = (day: number): string => dateFormat.format(lessonUnlockAt(day))
 
 /** The clock the page runs on. In dev, `?now=<ISO date-time>` overrides it so
  *  each date state can be walked through without waiting for the day. */

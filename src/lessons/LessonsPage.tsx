@@ -11,7 +11,6 @@ import {
   LESSON_COUNT,
   lessonsNow,
   lessonUnlockAt,
-  formatLessonDate,
   todayLesson,
   unlockedCount,
 } from './lessons'
@@ -106,6 +105,11 @@ export default function LessonsPage() {
   }
   const canEnter = (n: number) => n >= 1 && n <= available && entries[n]?.status === 'ok'
 
+  // Tapping a lesson whose day hasn't come shows a notice instead. It closes
+  // by itself if the lesson opens (midnight passes) while it is showing.
+  const [lockedDay, setLockedDay] = useState<number | null>(null)
+  const lockedNotice = lockedDay !== null && lockedDay > available ? lockedDay : null
+
   return (
     <div className="relative min-h-screen bg-ink text-fg">
       {/* Same royal-blue → navy cover glow as the portal pages. */}
@@ -145,6 +149,7 @@ export default function LessonsPage() {
               state={entries[n]}
               isToday={n === today}
               onOpen={() => openLesson(n)}
+              onLocked={() => setLockedDay(n)}
               onRetry={() => load(n)}
             />
           ))}
@@ -161,6 +166,7 @@ export default function LessonsPage() {
         onPrev={active && canEnter(active.day - 1) ? () => stepTo(active.day - 1) : undefined}
         onNext={active && canEnter(active.day + 1) ? () => stepTo(active.day + 1) : undefined}
       />
+      <LockedNotice open={lockedNotice !== null} onClose={() => setLockedDay(null)} />
     </div>
   )
 }
@@ -177,6 +183,7 @@ function DayTile({
   state,
   isToday,
   onOpen,
+  onLocked,
   onRetry,
 }: {
   n: number
@@ -185,24 +192,25 @@ function DayTile({
   state: DayState | undefined
   isToday: boolean
   onOpen: () => void
+  onLocked: () => void
   onRetry: () => void
 }) {
   const t = a.tile
-  const date = formatLessonDate(n)
 
+  // Not open yet: a tap says so.
   if (future) {
     return (
-      <div
-        role="img"
-        aria-label={t.lockedAria.replace('{n}', String(n)).replace('{date}', date)}
-        className={`${tileBase} border-line/70 bg-surface/50`}
+      <button
+        type="button"
+        onClick={onLocked}
+        aria-label={t.lockedAria.replace('{n}', String(n))}
+        className={`${tileBase} cursor-pointer border-line/70 bg-surface/50 hover:border-line`}
       >
-        <span className="flex items-center justify-between text-xs text-muted">
-          <span>{t.opens.replace('{date}', date)}</span>
+        <span className="flex justify-end text-muted">
           <LockIcon />
         </span>
         <span className={`${lockedNumeral} text-fg/15`}>{n}</span>
-      </div>
+      </button>
     )
   }
 
@@ -316,6 +324,64 @@ function HackDayTile() {
         <span className="mt-2 block text-sm text-white/75">{h.note}</span>
       </span>
     </div>
+  )
+}
+
+/* ---------- the "not open yet" notice ---------- */
+
+/**
+ * Shown when a lesson whose day hasn't come is tapped: a small native modal
+ * <dialog>, like the lesson sheet (Escape and a backdrop click close it).
+ */
+function LockedNotice({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const t = a.locked
+  const ref = useRef<HTMLDialogElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (open && !el.open) el.showModal()
+    if (!open && el.open) el.close()
+  }, [open])
+
+  return (
+    <dialog
+      ref={ref}
+      role="alertdialog"
+      aria-labelledby="locked-notice-title"
+      aria-describedby="locked-notice-body"
+      // Escape closes the dialog natively; sync the state.
+      onClose={() => {
+        if (open) onClose()
+      }}
+      // A click that lands on the dialog element itself is on the backdrop.
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
+      className="lesson-notice fixed inset-0 m-auto w-[calc(100%-3rem)] max-w-sm rounded-2xl border border-line bg-surface p-0 text-fg"
+    >
+      {open && (
+        <div className="p-6">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-fg/80">
+            <LockIcon className="h-4 w-4" />
+          </span>
+          <h2 id="locked-notice-title" className="mt-4 text-xl font-bold">
+            {t.title}
+          </h2>
+          <p
+            id="locked-notice-body"
+            className="mt-2 text-pretty leading-relaxed text-muted [word-break:auto-phrase]"
+          >
+            {t.body}
+          </p>
+          <div className="mt-6 flex justify-end">
+            <PortalButton variant="solid" size="sm" onClick={onClose}>
+              {t.ok}
+            </PortalButton>
+          </div>
+        </div>
+      )}
+    </dialog>
   )
 }
 
@@ -567,9 +633,9 @@ const iconProps = {
   'aria-hidden': true,
 } as const
 
-function LockIcon() {
+function LockIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
   return (
-    <svg {...iconProps} className="h-3.5 w-3.5">
+    <svg {...iconProps} className={className}>
       <rect x="5" y="11" width="14" height="9" rx="2" />
       <path d="M8 11V8a4 4 0 0 1 8 0v3" />
     </svg>

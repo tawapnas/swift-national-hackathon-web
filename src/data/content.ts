@@ -157,14 +157,19 @@ export const lessons = {
   // Shown while LESSONS_ALL_OPEN (src/lessons/lessons.ts).
   previewNotice: 'โหมดตรวจทาน: เปิดได้ทุกบทเรียน',
   tile: {
-    // {n} = the lesson's number, {date} = its date.
+    // {n} = the lesson's number.
     today: 'วันนี้',
-    opens: 'เปิด {date}',
-    lockedAria: 'บทเรียนที่ {n} เปิดวันที่ {date}',
+    lockedAria: 'บทเรียนที่ {n} ยังไม่เปิด',
     openAria: 'บทเรียนที่ {n}: {title}',
     notReady: 'ยังเปิดไม่ได้ แตะเพื่อลองใหม่',
     missing: 'ยังไม่มีเนื้อหา แตะเพื่อลองใหม่',
     error: 'โหลดไม่สำเร็จ แตะเพื่อลองใหม่',
+  },
+  // The notice shown when a lesson that hasn't opened yet is tapped.
+  locked: {
+    title: 'เนื้อหานี้ยังไม่เปิด',
+    body: 'อดใจรออีกนิด แล้วกลับมาอ่านกันนะ',
+    ok: 'ตกลง',
   },
   hackDay: {
     title: 'Hack Day',

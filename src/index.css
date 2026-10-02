@@ -311,14 +311,17 @@ body {
 
 /* ---- Daily lessons (/explore) ----
    The opened lesson is a native <dialog>: it slides up as its backdrop fades
-   in, and the page behind stops scrolling while it is open. Today's lesson
-   breathes a soft orange glow — the only looping motion on the page. */
-html:has(dialog.lesson-sheet[open]) {
+   in, and the page behind stops scrolling while it is open. The "not open
+   yet" notice (.lesson-notice) is a second, smaller dialog with the same
+   behaviour. Today's lesson breathes a soft orange glow — the only looping
+   motion on the page. */
+html:has(dialog.lesson-sheet[open], dialog.lesson-notice[open]) {
   overflow: hidden;
 }
 
 /* Literal colour: ::backdrop doesn't inherit the theme variables everywhere. */
-dialog.lesson-sheet::backdrop {
+dialog.lesson-sheet::backdrop,
+dialog.lesson-notice::backdrop {
   background: rgba(11, 11, 12, 0.75);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
@@ -359,7 +362,12 @@ dialog.lesson-sheet::backdrop {
     animation: lesson-sheet-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  dialog.lesson-sheet[open]::backdrop {
+  dialog.lesson-notice[open] {
+    animation: lesson-sheet-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  dialog.lesson-sheet[open]::backdrop,
+  dialog.lesson-notice[open]::backdrop {
     animation: lesson-backdrop-in 0.3s ease both;
   }
 
