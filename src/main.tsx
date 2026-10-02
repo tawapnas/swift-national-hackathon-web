@@ -8,12 +8,22 @@ import FullScreenLoader from './portal/FullScreenLoader'
 // Lazy so the marketing site never loads Firebase (and the portal bundle).
 const PortalPage = lazy(() => import('./portal/PortalPage'))
 const OrganizerPage = lazy(() => import('./portal/OrganizerPage'))
+// Public daily-lessons page; lazy too — it reads its lessons from Firestore.
+const LessonsPage = lazy(() => import('./lessons/LessonsPage'))
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
+        <Route
+          path="/explore"
+          element={
+            <Suspense fallback={<FullScreenLoader />}>
+              <LessonsPage />
+            </Suspense>
+          }
+        />
         <Route
           path="/portal"
           element={

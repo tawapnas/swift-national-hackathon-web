@@ -145,6 +145,45 @@ export const organizers = {
   ],
 }
 
+// Daily lessons (/explore): one lesson a day in the run-up to the
+// national round — public, no sign-in. Only the page chrome is here. Each
+// lesson's article is loaded from Firestore on its day and must never be
+// added to this file: that would ship every lesson early.
+export const lessons = {
+  // The page's name is deliberately general — no lesson count, no dates.
+  name: 'Explore Technologies',
+  navLabel: 'Explore Technologies',
+  lead: 'แต่ละวันมีเทคโนโลยีของ Apple เรื่องใหม่ให้ทำความรู้จัก ทั้งเครื่องมือสำหรับนักพัฒนา ความสามารถของอุปกรณ์ และ framework ที่ช่วยให้แอปทำได้มากขึ้น อ่านจบได้ในไม่กี่นาที และเรื่องไหนสักเรื่องอาจกลายเป็นจุดเด่นของแอปที่คุณกำลังจะสร้างใน Hackathon',
+  // Shown while LESSONS_ALL_OPEN (src/lessons/lessons.ts).
+  previewNotice: 'โหมดตรวจทาน: เปิดได้ทุกบทเรียน',
+  tile: {
+    // {n} = the lesson's number, {date} = its date.
+    today: 'วันนี้',
+    opens: 'เปิด {date}',
+    lockedAria: 'บทเรียนที่ {n} เปิดวันที่ {date}',
+    openAria: 'บทเรียนที่ {n}: {title}',
+    notReady: 'ยังเปิดไม่ได้ แตะเพื่อลองใหม่',
+    missing: 'ยังไม่มีเนื้อหา แตะเพื่อลองใหม่',
+    error: 'โหลดไม่สำเร็จ แตะเพื่อลองใหม่',
+  },
+  hackDay: {
+    title: 'Hack Day',
+    date: '17 ตุลาคม 2569',
+    note: 'แล้วเจอกันที่งาน',
+  },
+  // The opened lesson.
+  sheet: {
+    close: 'ปิด',
+    resources: 'แหล่งเรียนรู้',
+    sdk: 'iOS 27 SDK',
+    video: 'วิดีโอ',
+    doc: 'เอกสาร',
+    newTab: '(เปิดในแท็บใหม่)',
+    prev: '← บทเรียนก่อนหน้า',
+    next: 'บทเรียนถัดไป →',
+  },
+}
+
 // Team Portal copy. Hackathon-detail and submission-essay text are placeholders
 // until the organizers finalize them (marked with "(รอเนื้อหา)").
 export const portal = {

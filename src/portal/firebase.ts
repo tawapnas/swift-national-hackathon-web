@@ -1,22 +1,12 @@
-// Firebase app singletons. Config comes from VITE_FIREBASE_* env vars
-// (.env.local for dev — see .env.example; Vercel project env vars for deploys).
-// Only imported by portal code, and the /portal route is lazy-loaded, so the
-// marketing site never pulls in Firebase.
+// The portal's Firebase singletons, on the app from src/firebaseApp.ts (where
+// the VITE_FIREBASE_* config is read). Only imported by portal code, and the
+// /portal route is lazy-loaded, so the marketing site never pulls in Firebase.
 
-import { initializeApp } from 'firebase/app'
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { getStorage } from 'firebase/storage'
-
-const app = initializeApp({
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-})
+import { app } from '../firebaseApp'
 
 export const auth = getAuth(app)
 export const googleProvider = new GoogleAuthProvider()

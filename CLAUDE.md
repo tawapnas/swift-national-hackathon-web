@@ -24,7 +24,7 @@ If `npm install` runs under x64 node, it installs x64-only native binaries (`@ro
 
 ## Architecture
 
-Two routes via react-router (`src/main.tsx`): the marketing page at `/` and the Team Portal at `/portal` (lazy-loaded; Google sign-in + Firestore/Storage, all under `src/portal/`). `src/App.tsx` is the marketing page: it composes one section component per page region, top to bottom (`Hero`, `Gallery`, `About`, `Format`, `Eligibility`, `Timeline`, `Learn`, `Organizers`, plus `Navbar`/`Footer`). Each section is a presentational component that reads its copy from `src/data/content.ts`. `App.tsx` also renders `<Analytics />` (`@vercel/analytics/react`); the Meta Pixel snippet lives in `index.html`.
+Routes via react-router (`src/main.tsx`): the marketing page at `/`, the public daily-lessons page at `/explore` (lazy-loaded, `src/lessons/` — see its section below), and the Team Portal at `/portal` (lazy-loaded; Google sign-in + Firestore/Storage, all under `src/portal/`). `src/App.tsx` is the marketing page: it composes one section component per page region, top to bottom (`Hero`, `Gallery`, `About`, `Format`, `Eligibility`, `Timeline`, `Learn`, `Organizers`, plus `Navbar`/`Footer`). Each section is a presentational component that reads its copy from `src/data/content.ts`. `App.tsx` also renders `<Analytics />` (`@vercel/analytics/react`); the Meta Pixel snippet lives in `index.html`.
 
 - **`src/data/content.ts` is the single source of truth for all (Thai) copy.** Components contain layout/styling only — never hardcode display strings in components; add/edit them here. Section components import a named export (e.g. `import { themes } from '../data/content'`).
 - **`src/components/Section.tsx`** is the shared section shell enforcing the Apple-Swift-Student-Challenge rhythm (max-w container, large vertical padding, eyebrow + heading with orange underline, bottom divider). Most sections wrap their content in `<Section>`; pass `id` to make it a navbar scroll target.
@@ -50,4 +50,22 @@ The site must contain **zero** user-visible references to AI / On-device AI / Ap
 grep -rniE "\bAI\b|apple intelligence|\bLLM\b|foundation model|on-device" src/ index.html
 ```
 
-The only acceptable match is the explanatory comment at the top of `content.ts`.
+The acceptable matches are the explanatory comment at the top of `content.ts` and the regional-round submission questions about AI *coding tools* (`content.ts`, `id: 'ai'` and its neighbours). Anything else is a new leak — that includes code comments and identifiers, since `src/` is bundled and public.
+
+**One exception:** the public daily-lessons page at `/explore` ("Explore Technologies", below) names the theme openly — an organizer decision (2 Oct 2026). Its article text is still never in `src/`: it is stored in Firestore (`lessons/{1..14}`) and seeded from `scripts/lessons.data.mjs` (`scripts/` is gitignored), because bundling it would ship every lesson before its day. Never copy lesson titles, article text or resource names into `src/` — the `lessons` export in `content.ts` holds only the page chrome, and the rest of the site keeps the rule above.
+
+## Daily lessons (`/explore`)
+
+A public page (no sign-in), lazy-loaded: one lesson a day for the 14 days before the national round, each opening at midnight (Asia/Bangkok) from 3 to 16 Oct 2026. Everything is under `src/lessons/`: `LessonsPage.tsx` (the page, with the marketing `Navbar`/`Footer`), `lessons.ts` (flags + schedule, no Firebase import), `api.ts` (the Firestore read).
+
+- **Wording:** the source document calls each lesson a "door" (an advent calendar). The organizers dropped that idea — do not reintroduce "door"/"ประตู"/"advent" in copy, code or file names. The copy says "บทเรียนที่ N"; the code says `lesson` / `day`. The page's name and copy also stay general: no lesson count ("14") and no date range.
+- **The date gate is enforced by `firestore.rules`, not the UI.** Each lesson doc carries `unlockAt`; anyone's `get` is allowed once `request.time >= unlockAt`, and nobody's before. The page asks only for lessons its own clock says are open and treats `permission-denied` as "not open yet".
+- **Lessons are read with the lite SDK** (`src/lessons/api.ts`). Do not switch them to the full SDK's `getDoc`: that reads over a long-lived stream whose `request.time` stays at the moment the stream opened, so a browser refused just before midnight keeps being refused after it. The lite SDK also keeps Firebase Auth out of this page's chunk — `src/firebaseApp.ts` holds the bare app, shared with `portal/firebase.ts`.
+- **Two flags in `src/lessons/lessons.ts`:**
+  - `LESSONS_IN_NAV` — shows the "Explore Technologies" link in the navbar. While `false` the page still works at its address.
+  - `LESSONS_ALL_OPEN` — every lesson is readable by **anyone**, whatever its date (for checking ahead). The page shows a "โหมดตรวจทาน" pill while it is on. It is mirrored by `allLessonsOpen()` in `firestore.rules`; change both and deploy both.
+- **Launch order:** make `allLessonsOpen()` return `false` and deploy the rules first, then set `LESSONS_ALL_OPEN = false` and `LESSONS_IN_NAV = true` and deploy the site.
+- **The navbar now renders on two pages.** On `/` its section links are `#id` anchors; elsewhere they are router links to `/#id`, and `App.tsx` scrolls to the hash on mount. Its inline links show from `lg` (not `md`): with the "Explore Technologies" link they no longer fit on one line below that.
+- **Editing lesson copy:** edit `scripts/lessons.data.mjs`, then `node scripts/seed-lessons.mjs --apply` (dry run without `--apply`). No site deploy needed. The schedule's first instant is duplicated in `lessons.ts` and the seed script — change both. Each lesson has a topic icon on its card: an SF Symbol named by `symbol` in the data file, rendered to a small PNG by `node scripts/render-lesson-symbols.mjs` (macOS + Swift; writes `scripts/lesson-symbols.json`) and embedded in the lesson doc by the seed — run the render step after changing a `symbol`. A lesson's resources are all equal (no "main" one); videos are listed first. Video resources show a thumbnail: the video page's own preview image (`og:image`, on Apple's CDN), listed per URL in the `THUMBNAILS` table at the top of the data file — add an entry when adding a video, or the seed's validation fails.
+- **Rules test:** `firebase emulators:exec --only firestore --project demo-yidh "node scripts/test-lessons-rules.mjs"`.
+- **Dev only:** `?now=<ISO date-time>` overrides the page's clock to walk the date states.
