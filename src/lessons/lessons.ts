@@ -13,7 +13,7 @@ export const LESSONS_IN_NAV: boolean = true
  *  whatever its date — for checking the lessons ahead of time. The date check
  *  is enforced by firestore.rules, so this must match allLessonsOpen()
  *  there: change both, and deploy both the rules and the site. */
-export const LESSONS_ALL_OPEN: boolean = true
+export const LESSONS_ALL_OPEN: boolean = false
 
 export const LESSON_COUNT = 14
 
