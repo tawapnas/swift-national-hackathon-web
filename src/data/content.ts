@@ -592,6 +592,43 @@ export const portal = {
         'มี Workshop, Coaching Clinic และการนำเสนอผลงานต่อคณะกรรมการในวันสุดท้าย',
       ],
     },
+    // Suggested places near the venue; teams book and pay themselves. The
+    // Google Maps link searches for name (official) + Bangkok.
+    accommodation: {
+      heading: 'ที่พักใกล้สถานที่แข่งขัน',
+      lead: 'รายชื่อที่พักบริเวณอโศก ใกล้มหาวิทยาลัยศรีนครินทรวิโรฒ (ประสานมิตร) สำหรับประกอบการพิจารณา ทีมเป็นผู้ติดต่อจองและรับผิดชอบค่าใช้จ่ายเอง',
+      mapLink: 'เปิดใน Google Maps',
+      places: [
+        {
+          name: 'Asoke Residence Sukhumvit by UHG',
+          address: '235/20-25 ซอยสุขุมวิท 21 (อโศก) แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110',
+        },
+        {
+          name: 'Somerset Maison Asoke Bangkok',
+          address: '84 ซอยสุขุมวิท 23 (ประสานมิตร) แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110',
+        },
+        {
+          name: 'FX Hotel Metrolink Makkasan',
+          address: '57 ถนนอโศก-ดินแดง แขวงมักกะสัน เขตราชเทวี กรุงเทพฯ',
+        },
+        {
+          name: 'Narawad Boutique Hotel',
+          address: '44/1-3 ซอยสุขุมวิท 21 (อโศก) แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110',
+        },
+        {
+          name: 'The Fusion Suites',
+          address: '143/61-62 ซอยสุขุมวิท 21 (อโศก) แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110',
+        },
+        {
+          name: 'FuramaXclusive Asoke',
+          address: '133/2 ซอยสุขุมวิท 21 (อโศก) แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110',
+        },
+        {
+          name: 'Studio F Sukhumvit',
+          address: '22/3-4 ซอยสุขุมวิท 21 (อโศก) แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพฯ 10110',
+        },
+      ] as { name: string; address: string }[],
+    },
     lineChat: {
       heading: 'LINE Open Chat',
       body: 'ช่องทางหลักในการติดต่อและแจ้งข่าวระหว่างทีมกับผู้จัดงาน ขอให้หัวหน้าทีม สมาชิก และอาจารย์ที่ปรึกษาทุกคนเข้าร่วม และตั้งชื่อในแชทตามรูปแบบนี้',

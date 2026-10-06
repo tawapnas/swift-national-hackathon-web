@@ -79,6 +79,32 @@ export default function FinalRoundScreen({
           </ul>
         </PortalSection>
 
+        {/* Accommodation */}
+        <PortalSection heading={f.accommodation.heading}>
+          <p className="text-lg leading-relaxed text-muted">{f.accommodation.lead}</p>
+          <ul className="mt-6 divide-y divide-line border-y border-line">
+            {f.accommodation.places.map((p) => (
+              <li
+                key={p.name}
+                className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium">{p.name}</p>
+                  <p className="mt-1 text-sm text-muted">{p.address}</p>
+                </div>
+                <a
+                  href={mapsUrl(p.name)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${portalButtonClass('outline', 'sm')} flex-none`}
+                >
+                  {f.accommodation.mapLink}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </PortalSection>
+
         {/* LINE Open Chat */}
         <PortalSection heading={f.lineChat.heading}>
           <p className="text-lg leading-relaxed text-muted">
@@ -358,6 +384,10 @@ function formatConfirmedAt(value: unknown): string {
 }
 
 /* ---------- building blocks ---------- */
+
+// A Google Maps search for the place (opens its pin).
+const mapsUrl = (name: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name}, Bangkok`)}`
 
 export function DocumentRow({ title, note, url }: { title: string; note: string; url?: string }) {
   const d = f.documents

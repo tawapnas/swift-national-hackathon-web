@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { hero, lessons, nav, site } from '../data/content'
+import { accommodation, hero, lessons, nav, site } from '../data/content'
 import { LESSONS_IN_NAV } from '../lessons/lessons'
 import RegisterButton from './RegisterButton'
 
-const LESSONS_PATH = '/explore'
+// Links to whole pages, after the home page's section links.
+const pages = [
+  ...(LESSONS_IN_NAV ? [{ path: '/explore', label: lessons.navLabel }] : []),
+  { path: '/accommodation', label: accommodation.navLabel },
+]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
-  // The bar also tops the daily-lessons page. There the section links
-  // lead back to the home page (App scrolls to the hash when it mounts).
+  // The bar also tops the other pages. There the section links lead back
+  // to the home page (App scrolls to the hash when it mounts).
   const onHome = pathname === '/'
-  const onLessons = pathname === LESSONS_PATH
 
   // Close the mobile menu when the viewport grows to the desktop breakpoint
   // (lg — the inline links no longer fit on one line below it).
@@ -60,17 +63,18 @@ export default function Navbar() {
               </Link>
             ),
           )}
-          {LESSONS_IN_NAV && (
+          {pages.map((page) => (
             <Link
-              to={LESSONS_PATH}
-              aria-current={onLessons ? 'page' : undefined}
+              key={page.path}
+              to={page.path}
+              aria-current={pathname === page.path ? 'page' : undefined}
               className={`text-sm transition-colors hover:text-white ${
-                onLessons ? 'font-semibold text-white' : 'text-white/75'
+                pathname === page.path ? 'font-semibold text-white' : 'text-white/75'
               }`}
             >
-              {lessons.navLabel}
+              {page.label}
             </Link>
-          )}
+          ))}
           <RegisterButton size="sm">{hero.primaryCta}</RegisterButton>
         </div>
 
@@ -106,7 +110,7 @@ export default function Navbar() {
           composites in Chrome too. */}
       <div
         className={`nav-glass pointer-events-auto mx-4 mt-2 overflow-hidden rounded-3xl transition-all duration-300 lg:hidden ${
-          open ? 'max-h-96 opacity-100' : 'pointer-events-none max-h-0 opacity-0'
+          open ? 'max-h-[32rem] opacity-100' : 'pointer-events-none max-h-0 opacity-0'
         }`}
       >
         <div className="flex flex-col gap-1 p-4">
@@ -131,18 +135,19 @@ export default function Navbar() {
               </Link>
             ),
           )}
-          {LESSONS_IN_NAV && (
+          {pages.map((page) => (
             <Link
-              to={LESSONS_PATH}
-              aria-current={onLessons ? 'page' : undefined}
+              key={page.path}
+              to={page.path}
+              aria-current={pathname === page.path ? 'page' : undefined}
               onClick={() => setOpen(false)}
               className={`rounded-xl px-3 py-3 text-base transition-colors hover:bg-white/10 hover:text-white ${
-                onLessons ? 'font-semibold text-white' : 'text-white/80'
+                pathname === page.path ? 'font-semibold text-white' : 'text-white/80'
               }`}
             >
-              {lessons.navLabel}
+              {page.label}
             </Link>
-          )}
+          ))}
           <RegisterButton size="md" className="mt-3 w-full">
             {hero.primaryCta}
           </RegisterButton>
