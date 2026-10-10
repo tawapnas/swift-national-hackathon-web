@@ -36,7 +36,7 @@ import TeamPortalScreen from './TeamPortalScreen'
 import FinalRoundScreen from './FinalRoundScreen'
 import FinalistInfoScreen from './FinalistInfoScreen'
 import { sampleConsentDocs, sampleFinalistInfo, sampleTeam } from './previewData'
-import type { FinalistInfoInput } from './types'
+import type { FinalistInfoInput, WifiIdCards } from './types'
 
 const o = portal.organizer
 
@@ -94,10 +94,13 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
   const [previewConfirmation, setPreviewConfirmation] = useState<Team['finalRound']>(undefined)
   // Same for the finalist-info form preview (submitting it shows the summary).
   const [previewInfo, setPreviewInfo] = useState<Team['finalistInfo']>(undefined)
+  // And the Wi-Fi ID-card section at the top of that screen (null = not sent).
+  const [previewWifiIds, setPreviewWifiIds] = useState<WifiIdCards | null>(null)
   const closePreview = () => {
     setResultPreview(null)
     setPreviewConfirmation(undefined)
     setPreviewInfo(undefined)
+    setPreviewWifiIds(null)
   }
   // Shirt-size summary is opt-in (it needs the full team list).
   const [showShirts, setShowShirts] = useState(false)
@@ -307,6 +310,10 @@ export default function OrganizerDashboard({ onSignOut }: { onSignOut: () => voi
           consentDocs: sampleConsentDocs(),
         }}
         onSubmit={previewSubmit}
+        wifiIds={previewWifiIds}
+        onSubmitWifiIds={async (idCards) =>
+          setPreviewWifiIds({ idCards, submittedAt: new Date().toISOString(), locked: true })
+        }
         onBack={closePreview}
         onSignOut={onSignOut}
       />

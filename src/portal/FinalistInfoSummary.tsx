@@ -1,6 +1,6 @@
 import { portal } from '../data/content'
 import type { Advisor, FinalistInfo, Person, StudentInfo, Team } from './types'
-import { fullName } from './organizerUtils'
+import { formatTimestamp, fullName } from './organizerUtils'
 
 const fi = portal.finalistInfo
 const sm = fi.summary
@@ -279,6 +279,10 @@ export function formatDateTime(value: string): string {
   if (!value || Number.isNaN(d.getTime())) return '—'
   return new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium', timeStyle: 'short' }).format(d)
 }
+
+// Firestore reads yield a Timestamp; previews store an ISO string.
+export const formatSubmittedAt = (value: unknown) =>
+  typeof value === 'string' ? formatDateTime(value) : formatTimestamp(value)
 
 export function formatDate(value: string): string {
   const d = new Date(`${value}T00:00`)

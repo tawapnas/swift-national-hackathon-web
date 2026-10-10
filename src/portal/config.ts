@@ -18,6 +18,11 @@ export const RESULTS_ANNOUNCED: boolean = true
  *  submissions. Mirror in firestore.rules / storage.rules when flipping. */
 export const FINALIST_INFO_CLOSED: boolean = false
 
+/** The students' ID-card section (Wi-Fi access) at the top of the
+ *  finalist-info screen is closed — no new submissions. Mirror in
+ *  firestore.rules (delete the wifiIdCards create branch) when flipping. */
+export const WIFI_ID_CLOSED: boolean = false
+
 /** While true, the finalist-info form (/portal/final-round/info, and its entry
  *  card on the national-round page) is visible ONLY to the staff test
  *  account(s) below — for testing on production before opening it to every

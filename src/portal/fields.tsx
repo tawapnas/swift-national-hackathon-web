@@ -21,6 +21,8 @@ export function TextField({
   error,
   validate,
   type = 'text',
+  inputMode,
+  autoComplete,
 }: {
   label: string
   value: string
@@ -33,6 +35,8 @@ export function TextField({
   // (blurred), then kept live as the value changes. `error` takes precedence.
   validate?: (value: string) => string | undefined
   type?: 'text' | 'tel' | 'email' | 'date' | 'datetime-local'
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode']
+  autoComplete?: string
 }) {
   const [touched, setTouched] = useState(false)
   const message = error ?? (touched && validate ? validate(value) : undefined)
@@ -43,6 +47,8 @@ export function TextField({
         type={type}
         value={value}
         disabled={disabled}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
         onBlur={() => setTouched(true)}
         className={`${inputClass} ${message ? 'border-swift-orange' : ''}`}

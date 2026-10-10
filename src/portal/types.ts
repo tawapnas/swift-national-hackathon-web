@@ -185,6 +185,17 @@ export interface Team {
   thankYouLetterUrl?: string
 }
 
+// Students' national ID numbers for the venue's Wi-Fi, sent once by the leader
+// from the top of the finalist-info screen. Kept OUT of the team doc, in
+// wifiIdCards/{leaderEmail}, so team reads never carry them, and deleted as
+// soon as the Wi-Fi accounts are set up (scripts/delete-wifi-id-cards.mjs).
+export interface WifiIdCards {
+  idCards: string[] // 13 digits each — [leader, member 1, member 2]
+  // serverTimestamp() on write / Timestamp on read; ISO string in previews.
+  submittedAt: unknown
+  locked: true
+}
+
 // What the finalist-info form hands to its submit handler: memojiUrl is ''
 // until the caller uploads the images; submittedAt/locked are stamped on save.
 export type FinalistInfoInput = Omit<FinalistInfo, 'submittedAt' | 'locked'>

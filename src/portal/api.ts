@@ -23,7 +23,7 @@ import {
 } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { db, storage } from './firebase'
-import type { FinalistInfoInput, Submission, Team } from './types'
+import type { FinalistInfoInput, Submission, Team, WifiIdCards } from './types'
 
 const teamDoc = (email: string) => doc(db, 'teams', email.toLowerCase())
 const teamsCol = () => collection(db, 'teams')
@@ -112,6 +112,25 @@ export async function submitFinalistInfo(
       submittedAt: serverTimestamp(),
       locked: true,
     },
+  })
+}
+
+/** The team's Wi-Fi ID-card doc (wifiIdCards/{leaderEmail}), or null if not
+ *  sent yet. firestore.rules lets only the leader read their own. */
+export async function getWifiIdCards(email: string): Promise<WifiIdCards | null> {
+  const snap = await getDoc(doc(db, 'wifiIdCards', email.toLowerCase()))
+  return snap.exists() ? (snap.data() as WifiIdCards) : null
+}
+
+/** Finalist-only, one-shot: stores the students' national ID numbers
+ *  ([leader, member 1, member 2], 13 digits each) for the venue's Wi-Fi.
+ *  firestore.rules allows only creating the doc — by the leader of a
+ *  qualified, confirmed team — never updating it. */
+export async function submitWifiIdCards(email: string, idCards: string[]): Promise<void> {
+  await setDoc(doc(db, 'wifiIdCards', email.toLowerCase()), {
+    idCards,
+    submittedAt: serverTimestamp(),
+    locked: true,
   })
 }
 

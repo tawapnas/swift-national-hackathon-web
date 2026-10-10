@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
 import { portal } from '../data/content'
-import type { FinalistInfoInput, MemojiMode, Person, Team } from './types'
+import type { FinalistInfoInput, MemojiMode, Person, Team, WifiIdCards } from './types'
 import PortalShell from './PortalShell'
 import PortalSection from './PortalSection'
+import WifiIdSection from './WifiIdSection'
 import PortalButton from './PortalButton'
 import ConfirmDialog from './ConfirmDialog'
 import { withBold } from './HackathonDetailSection'
 import { CheckIcon } from './ResultBanner'
 import { ParentConsentRows } from './FinalRoundScreen'
-import FinalistInfoSummary, { formatDateTime } from './FinalistInfoSummary'
+import FinalistInfoSummary, { formatSubmittedAt } from './FinalistInfoSummary'
 import { toWhiteBackgroundPng } from './memojiImage'
-import { formatTimestamp, fullName } from './organizerUtils'
+import { fullName } from './organizerUtils'
 import {
   ImageUploadField,
   isValidEmail,
@@ -179,10 +180,17 @@ interface FinalistInfoScreenProps {
   onBack: () => void
   onSignOut: () => void
   closed?: boolean
+  // The students' ID-card section (Wi-Fi) at the top — sent on its own.
+  // wifiIds: undefined = loading, null = not sent yet.
+  wifiIds: WifiIdCards | null | undefined
+  wifiIdsError?: boolean
+  wifiIdsClosed?: boolean
+  onSubmitWifiIds: (idCards: string[]) => Promise<void>
 }
 
 /**
- * Finalist-info form (/portal/final-round/info): trip logistics, one section
+ * Finalist-info form (/portal/final-round/info): the students' ID cards for
+ * the venue's Wi-Fi (its own one-shot section on top), trip logistics, one section
  * per student, the advisor, the accompanying guardian, and the Code of
  * Conduct — filled once by the leader, then locked to a read-only summary.
  */
@@ -192,6 +200,10 @@ export default function FinalistInfoScreen({
   onBack,
   onSignOut,
   closed = false,
+  wifiIds,
+  wifiIdsError = false,
+  wifiIdsClosed = false,
+  onSubmitWifiIds,
 }: FinalistInfoScreenProps) {
   return (
     <PortalShell onSignOut={onSignOut}>
@@ -212,8 +224,18 @@ export default function FinalistInfoScreen({
         )}
       </header>
 
+      <div className="mt-10">
+        <WifiIdSection
+          team={team}
+          data={wifiIds}
+          loadError={wifiIdsError}
+          closed={wifiIdsClosed}
+          onSubmit={onSubmitWifiIds}
+        />
+      </div>
+
       {team.finalistInfo ? (
-        <div className="mt-8">
+        <div className="mt-12 border-t border-line pt-12">
           <p className="flex items-start gap-2 rounded-xl border border-swift-orange/40 bg-swift-orange/10 px-4 py-3 text-sm text-fg">
             <CheckIcon className="mt-0.5 h-4 w-4 flex-none text-swift-orange" />
             {fi.locked.notice}
@@ -226,7 +248,9 @@ export default function FinalistInfoScreen({
           </div>
         </div>
       ) : closed ? (
-        <p className="mt-8 leading-relaxed text-muted">{portal.finalRound.infoCard.closed}</p>
+        <p className="mt-12 border-t border-line pt-12 leading-relaxed text-muted">
+          {portal.finalRound.infoCard.closed}
+        </p>
       ) : (
         <InfoForm team={team} onSubmit={onSubmit} />
       )}
@@ -916,7 +940,3 @@ function ShirtSizeField({
     </div>
   )
 }
-
-// Firestore reads yield a Timestamp; previews store an ISO string.
-const formatSubmittedAt = (value: unknown) =>
-  typeof value === 'string' ? formatDateTime(value) : formatTimestamp(value)

@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { portal } from '../data/content'
-import type { FinalistInfoInput, Team } from './types'
+import type { FinalistInfoInput, Team, WifiIdCards } from './types'
 import { useAuth } from './useAuth'
-import { confirmFinalRound, getTeam, submitFinalistInfo, updateLastLogin } from './api'
+import {
+  confirmFinalRound,
+  getTeam,
+  getWifiIdCards,
+  submitFinalistInfo,
+  submitWifiIdCards,
+  updateLastLogin,
+} from './api'
 import FullScreenLoader from './FullScreenLoader'
 import RegistrationScreen from './RegistrationScreen'
 import RegistrationClosedScreen from './RegistrationClosedScreen'
@@ -19,6 +26,7 @@ import {
   FINALIST_INFO_CLOSED,
   REGISTRATION_CLOSED,
   RESULTS_ANNOUNCED,
+  WIFI_ID_CLOSED,
 } from './config'
 
 /**
@@ -49,6 +57,10 @@ export default function PortalPage({
   const [resultSeen, setResultSeen] = useState(false)
   // Bumped by the retry button to re-run the lookup effect.
   const [attempt, setAttempt] = useState(0)
+  // The students' Wi-Fi ID-card doc, read only on the finalist-info screen:
+  // undefined = not loaded yet, null = not sent.
+  const [wifiIds, setWifiIds] = useState<WifiIdCards | null | undefined>(undefined)
+  const [wifiIdsError, setWifiIdsError] = useState(false)
 
   const email = user?.email ?? null
 
@@ -78,6 +90,26 @@ export default function PortalPage({
       cancelled = true
     }
   }, [email, attempt])
+
+  // Gated like the screen itself, so the read never trips the rules.
+  const wantWifiIds =
+    view === 'finalistInfo' && team?.isQualifyingFinalRound === true && Boolean(team.finalRound)
+  const teamEmail = team?.email ?? null
+  useEffect(() => {
+    if (!wantWifiIds || !teamEmail) return
+    let cancelled = false
+    setWifiIdsError(false)
+    getWifiIdCards(teamEmail)
+      .then((d) => {
+        if (!cancelled) setWifiIds(d)
+      })
+      .catch(() => {
+        if (!cancelled) setWifiIdsError(true)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [wantWifiIds, teamEmail])
 
   if (loading || teamLoading) return <FullScreenLoader />
   if (!email) return <Navigate to="/" replace />
@@ -147,11 +179,20 @@ export default function PortalPage({
       const fresh = await getTeam(team.email)
       if (fresh) setTeam(fresh)
     }
+    // Creates the one-shot ID-card doc, then re-reads it for the server time.
+    const handleSubmitWifiIds = async (idCards: string[]) => {
+      await submitWifiIdCards(team.email, idCards)
+      setWifiIds(await getWifiIdCards(team.email))
+    }
     return (
       <FinalistInfoScreen
         team={team}
         onSubmit={handleSubmitInfo}
         closed={FINALIST_INFO_CLOSED}
+        wifiIds={wifiIds}
+        wifiIdsError={wifiIdsError}
+        wifiIdsClosed={WIFI_ID_CLOSED}
+        onSubmitWifiIds={handleSubmitWifiIds}
         onBack={() => navigate('/portal/final-round')}
         onSignOut={signOut}
       />
