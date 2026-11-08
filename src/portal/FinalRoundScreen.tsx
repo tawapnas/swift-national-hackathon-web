@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { portal } from '../data/content'
-import type { ParentFormKind, StudentConsent, Team } from './types'
+import type { ParentFormKind, PersonCertificate, StudentConsent, Team } from './types'
 import PortalShell from './PortalShell'
 import PortalSection from './PortalSection'
 import PortalButton, { portalButtonClass } from './PortalButton'
@@ -27,7 +27,8 @@ interface FinalRoundScreenProps {
 }
 
 /**
- * National-round page for finalist teams (/portal/final-round): the key
+ * National-round page for finalist teams (/portal/final-round): the per-person
+ * national-round certificates (first, now that the event is over), the key
  * facts, what to prepare, LINE Open Chat, per-team and shared documents, the
  * one-time participation confirmation (locked once confirmed), and — once
  * confirmed — the entry to the finalist-info form.
@@ -61,8 +62,13 @@ export default function FinalRoundScreen({
       </header>
 
       <div className="mt-10">
+        {/* National-round certificates */}
+        <PortalSection heading={f.certificates.heading} first>
+          <CertificateRows team={team} />
+        </PortalSection>
+
         {/* Key facts */}
-        <PortalSection heading={f.info.heading} first>
+        <PortalSection heading={f.info.heading}>
           <dl className="grid gap-5 sm:grid-cols-2">
             <Field label={f.info.dateLabel} value={f.info.date} note={f.info.dateNote} wide />
             <Field label={f.info.venueLabel} value={f.info.venue} wide />
@@ -233,6 +239,44 @@ function ConfirmationForm({ onConfirm }: { onConfirm: () => Promise<void> }) {
         busy={submitting}
       />
     </div>
+  )
+}
+
+/* ---------- national-round certificates ---------- */
+
+/** The team's result and one download row per student + the advisor
+ *  (team.nationalCertificates, scripts/upload-national-certificates.mjs).
+ *  A missing PDF shows the "preparing" pill. */
+function CertificateRows({ team }: { team: Team }) {
+  const c = f.certificates
+  const certs = team.nationalCertificates
+  const students = [team.leader, ...team.members]
+  const note = (doc: PersonCertificate | null | undefined, fallback: string) =>
+    doc ? c.certIdNote.replace('{certId}', doc.certId) : fallback
+  return (
+    <>
+      <p className="text-lg leading-relaxed text-muted">
+        {withBold(certs ? c.lead[certs.result] : c.pending)}
+      </p>
+      <ul className="mt-6 divide-y divide-line border-y border-line">
+        {students.map((p, i) => {
+          const doc = certs?.students?.[i] ?? null
+          return (
+            <DocumentRow
+              key={i}
+              title={c.studentTitle.replace('{name}', doc?.name ?? fullName(p))}
+              note={note(doc, c.studentNote)}
+              url={doc?.url}
+            />
+          )
+        })}
+        <DocumentRow
+          title={c.advisorTitle.replace('{name}', certs?.advisor?.name ?? team.advisor.nameTh)}
+          note={note(certs?.advisor, c.advisorNote)}
+          url={certs?.advisor?.url}
+        />
+      </ul>
+    </>
   )
 }
 

@@ -154,6 +154,23 @@ export interface ConsentDocs {
   students?: (StudentConsent | null)[] // [leader, member 1, member 2]
 }
 
+// National-round certificates, one PDF per person, uploaded by
+// scripts/upload-national-certificates.mjs (Admin SDK) — never written by the
+// client. `result` is what the team's certificates say.
+export type NationalResult = 'finalist' | 'winner' | 'runnerUp1' | 'runnerUp2' | 'honorable'
+
+export interface PersonCertificate {
+  url: string // tokenised Storage URL (certificates/{email}/national-*.pdf)
+  certId: string // SCCTH-XXXXXXXXXXXX, printed on the PDF
+  name: string // the name printed on the PDF (no title)
+}
+
+export interface NationalCertificates {
+  result: NationalResult
+  students: (PersonCertificate | null)[] // [leader, member 1, member 2]
+  advisor: PersonCertificate | null
+}
+
 export interface Team {
   email: string // == Firestore doc id; the leader's (registered) email
   teamName: string
@@ -180,6 +197,8 @@ export interface Team {
   // Filled after confirming (FinalistInfoScreen); absent until submitted.
   finalistInfo?: FinalistInfo
   consentDocs?: ConsentDocs
+  // Per-person national-round certificates; absent until uploaded.
+  nationalCertificates?: NationalCertificates
   certificateUrl?: string
   invitationLetterUrl?: string
   thankYouLetterUrl?: string

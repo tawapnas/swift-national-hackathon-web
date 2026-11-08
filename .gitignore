@@ -35,3 +35,6 @@ scripts/
 
 # Claude Code
 .claude/
+
+# Finalist Memoji/selfie downloads (PII)
+finalist-memoji/

@@ -3,7 +3,7 @@
 // anywhere.
 
 import { portal } from '../data/content'
-import type { ConsentDocs, FinalistInfo, StudentInfo, Team } from './types'
+import type { ConsentDocs, FinalistInfo, NationalCertificates, StudentInfo, Team } from './types'
 
 /** A submitted sample team. `qualified` sets the finalist flag; `withDocs`
  *  attaches a certificate URL (the invitation letter is deliberately left
@@ -73,6 +73,7 @@ export function sampleTeam(qualified: boolean, { withDocs = true } = {}): Team {
     },
     certificateUrl: withDocs ? '#' : undefined,
     consentDocs: withDocs ? sampleConsentDocs() : undefined,
+    nationalCertificates: withDocs && qualified ? sampleNationalCertificates() : undefined,
     thankYouLetterUrl: withDocs ? '#' : undefined,
   }
 }
@@ -144,5 +145,19 @@ export function sampleConsentDocs(): ConsentDocs {
       student('SCCTH26219', 'นางสาวมายด์ ตัวอย่าง'),
       student('SCCTH26220', 'นายเต้ ตัวอย่าง'),
     ],
+  }
+}
+
+/** Sample national-round certificates: a runner-up team with one student's
+ *  PDF still missing, so the section previews both row states. */
+export function sampleNationalCertificates(): NationalCertificates {
+  return {
+    result: 'runnerUp1',
+    students: [
+      { url: '#', certId: 'SCCTH-0123456789AB', name: 'ภูมิ ตัวอย่าง' },
+      { url: '#', certId: 'SCCTH-0123456789AC', name: 'มายด์ ตัวอย่าง' },
+      null,
+    ],
+    advisor: { url: '#', certId: 'SCCTH-0123456789AE', name: 'อรทัย ตัวอย่าง' },
   }
 }
