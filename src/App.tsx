@@ -8,6 +8,7 @@ import Eligibility from './components/Eligibility'
 import Learn from './components/Learn'
 import Timeline from './components/Timeline'
 import Organizers from './components/Organizers'
+import Sponsors from './components/Sponsors'
 import Footer from './components/Footer'
 import { Analytics } from '@vercel/analytics/react'
 import { useEffect } from 'react'
@@ -35,6 +36,7 @@ export default function App() {
         <Timeline />
         <Learn />
         <Organizers />
+        <Sponsors />
       </main>
       <Footer />
       <Analytics />

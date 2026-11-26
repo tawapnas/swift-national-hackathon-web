@@ -145,6 +145,27 @@ export const organizers = {
   ],
 }
 
+export const sponsors = {
+  heading: 'ผู้สนับสนุน',
+  // Two tiers by sponsorship package: the first row's logos render larger.
+  // White/light lockups on transparent backgrounds for the dark theme.
+  tiers: [
+    {
+      logos: [
+        { src: '/sponsors/arise.png', name: 'Arise by INFINITAS' },
+        { src: '/sponsors/uficon.png', name: 'UFICON' },
+        { src: '/sponsors/lmwn.png', name: 'LINE MAN Wongnai' },
+      ],
+    },
+    {
+      logos: [
+        { src: '/sponsors/borntodev.svg', name: 'borntoDev' },
+        { src: '/sponsors/lactasoy.png', name: 'Lactasoy' },
+      ],
+    },
+  ],
+}
+
 // Daily lessons (/explore): one lesson a day in the run-up to the
 // national round — public, no sign-in. Only the page chrome is here. Each
 // lesson's article is loaded from Firestore on its day and must never be
