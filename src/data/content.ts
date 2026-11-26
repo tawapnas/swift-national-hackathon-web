@@ -155,8 +155,8 @@ export const sponsors = {
       title: 'Gold Sponsor',
       logos: [
         { src: '/sponsors/arise.png', name: 'Arise by INFINITAS' },
-        { src: '/sponsors/uficon.png', name: 'UFICON' },
         { src: '/sponsors/lmwn.png', name: 'LINE MAN Wongnai' },
+        { src: '/sponsors/uficon.png', name: 'UFICON' },
       ],
     },
     {
