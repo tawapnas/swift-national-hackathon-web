@@ -147,10 +147,12 @@ export const organizers = {
 
 export const sponsors = {
   heading: 'ผู้สนับสนุน',
-  // Two tiers by sponsorship package: the first row's logos render larger.
-  // White/light lockups on transparent backgrounds for the dark theme.
+  // Tiers by sponsorship package, highest first: the first tier's logos
+  // render larger. White/light lockups on transparent backgrounds for the
+  // dark theme.
   tiers: [
     {
+      title: 'Gold Sponsor',
       logos: [
         { src: '/sponsors/arise.png', name: 'Arise by INFINITAS' },
         { src: '/sponsors/uficon.png', name: 'UFICON' },
@@ -158,6 +160,7 @@ export const sponsors = {
       ],
     },
     {
+      title: 'Bronze Sponsor',
       logos: [
         { src: '/sponsors/borntodev.svg', name: 'borntoDev' },
         { src: '/sponsors/lactasoy.png', name: 'Lactasoy' },
