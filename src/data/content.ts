@@ -161,6 +161,7 @@ export const sponsors = {
       logos: [
         { src: '/sponsors/borntodev.svg', name: 'borntoDev' },
         { src: '/sponsors/lactasoy.png', name: 'Lactasoy' },
+        { src: '/sponsors/indy.png', name: 'INDY T-Shirt' },
       ],
     },
   ],
